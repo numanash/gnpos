@@ -1,0 +1,17 @@
+[
+    {
+        "name": "Main Menu",
+        "icon": "fa fa-icon",
+        "id": "main-menu",
+        "type": "collapse",
+        "class": "",
+        "children": [
+            {
+                "name": "Categories",
+                "id": "categories",
+                "type": "item",
+                "url": "/dashboard/categories"
+            }
+        ]
+    }
+]
