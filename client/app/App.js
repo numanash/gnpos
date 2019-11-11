@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import Navigation from './components/Layout/Navigation';
 
-import Navbar from './components/Layout/Navbar';
+
 
 
 
@@ -16,7 +17,7 @@ class App extends Component {
             // <BrowserRouter basename={config.basename}>
             <div>
                 APP
-                        <Navbar />
+                        <Navigation />
             </div>
             // </BrowserRouter>
             // </Provider>
