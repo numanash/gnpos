@@ -5,6 +5,9 @@ const htmlPlugin = new HtmlWebPackPlugin({
     filename: path.join('./', 'index.html')
 });
 
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
+
 module.exports = {
     mode: "development",
     entry: "./client/index.js",
@@ -15,7 +18,6 @@ module.exports = {
         publicPath: '/',
     },
     devtool: 'inline-source-map',
-    plugins: [htmlPlugin],
     devServer: {
         contentBase: './dist',
     },
@@ -30,7 +32,12 @@ module.exports = {
             },
             {
                 test: /\.s?css$/,
-                use: ['style-loader', 'css-loader', 'sass-loader']
+                use: [
+                    'style-loader',
+                    MiniCssExtractPlugin.loader,
+                    'css-loader',
+                    'sass-loader',
+                ]
             },
             {
                 test: /\.(png|svg|jpg|gif)$/,
@@ -39,6 +46,9 @@ module.exports = {
             }
         ]
     },
+    plugins: [htmlPlugin, new MiniCssExtractPlugin({
+        filename: "style.css"
+    })],
     optimization: {
         splitChunks: {
             chunks: 'async',

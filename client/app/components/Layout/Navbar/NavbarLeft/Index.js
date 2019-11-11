@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import Aux from '../../../../constants/hoc/_Aux';
 
 
 class NavbarLeft extends Component {
@@ -8,9 +7,9 @@ class NavbarLeft extends Component {
         this.state = {}
     }
     render() {
-        return (<Aux>
+        return (<aside>
             <div></div>
-        </Aux>);
+        </aside>);
     }
 }
 

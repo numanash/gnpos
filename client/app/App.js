@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
-import Aux from './constants/hoc/_Aux';
+
+import Navbar from './components/Layout/Navbar';
+
+
+
 
 class App extends Component {
     constructor(props) {
@@ -7,9 +11,16 @@ class App extends Component {
         this.state = {}
     }
     render() {
-        return (<Aux>
-            <div></div>
-        </Aux>);
+        return (
+            // <Provider store={store}>
+            // <BrowserRouter basename={config.basename}>
+            <div>
+                APP
+                        <Navbar />
+            </div>
+            // </BrowserRouter>
+            // </Provider>
+        );
     }
 }
 
