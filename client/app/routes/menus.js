@@ -1,5 +1,13 @@
 export default [
     {
+        name: "Dashboard",
+        icon: "fa fa-dashboard",
+        id: "dashboard",
+        type: "item",
+        url: "/dashboard",
+        class: ""
+    },
+    {
         name: "Main Menu",
         icon: "fa fa-gift",
         id: "main-menu",
