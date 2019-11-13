@@ -4,6 +4,9 @@ import Navigation from './components/Layout/Navigation';
 import Aux from './constants/hoc/_Aux';
 import routes from './routes';
 import { connect } from 'react-redux';
+import Navbar from './components/Layout/Navbar';
+import Loader from './static/Loader';
+import "../public/css/adminlte.min.css";
 
 class App extends Component {
     constructor(props) {
@@ -31,17 +34,18 @@ class App extends Component {
 
         return (
             <Aux>
-                <Navigation />
-                <div className="content-wrapper p-2">
-                    <Suspense fallback={(props) => <div>Loading...</div>}>
-                        <Switch>
-                            {appRoutes}
-
-                            <Redirect from="/" to={this.props.defaultPath} />
-                        </Switch>
-                    </Suspense>
+                <div className="wrapper">
+                    <Navbar />
+                    <Navigation />
+                    <div className="content-wrapper p-2">
+                        <Suspense fallback={<Loader />}>
+                            <Switch>
+                                {appRoutes}
+                                <Redirect from="/" to={this.props.defaultPath} />
+                            </Switch>
+                        </Suspense>
+                    </div>
                 </div>
-
             </Aux>
         );
     }

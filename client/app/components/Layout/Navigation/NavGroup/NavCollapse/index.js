@@ -3,6 +3,7 @@ import NavItem from '../NavItem';
 import LopNavCollapse from './index.js';
 import { connect } from "react-redux";
 import { TOOGLE_COLLAPSED } from '../../../../../../actions/MenuActions';
+import Aux from '../../../../../constants/hoc/_Aux';
 
 
 class NavCollapse extends Component {
@@ -29,7 +30,7 @@ class NavCollapse extends Component {
         const isOpenedIndex = isOpened.findIndex(itemId => itemId === id);
 
         if (isOpenedIndex > -1) {
-            subMenuShow = 'show';
+            subMenuShow = 'menu-open';
         }
 
         if (triggerIndex > - 1) {
@@ -54,15 +55,18 @@ class NavCollapse extends Component {
 
         let item = '';
 
-        if (icon) {
-            item = <li id={id} key={id} className={`collapsed ${isActive} parent-item ${subMenuShow}`}>
-                <a href="#" onClick={() => this.props.onCollapseToggle(id, type)}>
-                    {icon && <i className={icon}></i>} {name} <span className="arrow"></span>
-                </a>
-                <ul className="sub-menu">{navItems}</ul>
-            </li>
-        }
-        return item
+
+        item = <li id={id} key={id} className={`nav-item has-treeview ${subMenuShow}`}>
+            <a href="#" className={`nav-link ${isActive}`} onClick={() => this.props.onCollapseToggle(id, type)}>
+                {icon && <i className={icon}></i>} <p>{name}<i className="right fa fa-angle-left"></i></p>
+            </a>
+            <ul className="nav nav-treeview">{navItems}</ul>
+        </li>
+
+
+        return <Aux>
+            {item}
+        </Aux>
 
 
     }

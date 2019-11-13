@@ -6,13 +6,10 @@ class NavItem extends Component {
         this.state = {}
     }
     render() {
-        return (<div>
-            {this.props.item.icon ?
-                <li key={this.props.item.id} className="nav-item  parent-item"><NavLink to={this.props.item.url} ><i className={this.props.item.icon}></i> {this.props.item.name}</NavLink></li>
-                :
-                <li id={this.props.item.id} key={this.props.item.id} className="nav-item"><NavLink to={this.props.item.url} > {this.props.item.name}</NavLink></li>
-            }
-        </div>);
+        if (this.props.item.icon)
+            return (<li key={this.props.item.id} className="nav-item"><NavLink className="nav-link" to={this.props.item.url} ><i className={this.props.item.icon}></i> {this.props.item.name}</NavLink></li>)
+        else
+            return (<li id={this.props.item.id} key={this.props.item.id} className="nav-item"><NavLink className="nav-link" to={this.props.item.url} > {this.props.item.name}</NavLink></li>)
     }
 }
 

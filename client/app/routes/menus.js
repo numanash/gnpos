@@ -10,21 +10,6 @@ export default [
     {
         name: "Main Menu",
         icon: "fa fa-gift",
-        id: "main-menu",
-        type: "collapse",
-        class: "",
-        children: [
-            {
-                name: "Categories",
-                id: "categories",
-                type: "item",
-                url: "/dashboard/categories"
-            },
-        ]
-    },
-    {
-        name: "Main Menu",
-        icon: "fa fa-gift",
         id: "main-menu2s",
         type: "collapse",
         class: "",

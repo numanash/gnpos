@@ -78,18 +78,42 @@ import React, { Component } from 'react'
 import menus from '../../../routes/menus';
 import NavGroup from './NavGroup/Index';
 import Aux from '../../../constants/hoc/_Aux';
-
+import { NavLink } from "react-router-dom"
 
 const Navigation = () => (
     <Aux>
-        <div className="nav-side-menu">
-            <div className="brand">Brand Logo</div>
-            <i className="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
-
-            <div className="menu-list">
-                <NavGroup items={menus} />
+        <aside className="main-sidebar sidebar-dark-primary elevation-4">
+            <a href="index3.html" className="brand-link">
+                {/* <img
+                    src="dist/img/AdminLTELogo.png"
+                    alt="AdminLTE Logo"
+                    className="brand-image img-circle elevation-3"
+                /> */}
+                <span className="brand-text font-weight-light">GN POS</span>
+            </a>
+            <div className="sidebar">
+                <div className="user-panel mt-3 pb-3 mb-3 d-flex">
+                    <div className="image">
+                        {/* <img
+                            src="dist/img/user2-160x160.jpg"
+                            className="img-circle elevation-2"
+                            alt="User Image"
+                        /> */}
+                        User Image
+                    </div>
+                    <div className="info">
+                        {/* <NavLink to="/user/profile" className="d-block">
+                            {user.user.name}
+                        </NavLink> */}
+                    </div>
+                </div>
+                <div className="slimScrollDiv">
+                    <nav className="mt-2">
+                        <NavGroup items={menus} />
+                    </nav>
+                </div>
             </div>
-        </div>
+        </aside>
     </Aux>
 )
 

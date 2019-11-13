@@ -16,7 +16,7 @@ const NavGroup = (props) => {
     })
     return (
         <Aux>
-            <ul id="menu-content" className="menu-content collapse out">
+            <ul id="menu-content" className="nav nav-pills nav-sidebar flex-column">
                 {navItems}
             </ul>
         </Aux>
