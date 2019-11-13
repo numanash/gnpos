@@ -1,8 +1,8 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const path = require('path');
 const htmlPlugin = new HtmlWebPackPlugin({
-    template: "./client/public/index.html",
-    filename: path.join('./', 'index.html')
+    template: path.resolve(__dirname, 'client/public', 'index.html'),
+    // filename: './index.html'
 });
 
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -20,6 +20,8 @@ module.exports = {
     devtool: 'inline-source-map',
     devServer: {
         contentBase: './dist',
+        historyApiFallback: true,
+        hot: true
     },
     module: {
         rules: [

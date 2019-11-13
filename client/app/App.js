@@ -11,12 +11,7 @@ class App extends Component {
         this.state = {}
     }
 
-
-
-
     render() {
-
-
         const appRoutes = routes.map((route, index) => {
             return (route.component) ? (
                 <Route

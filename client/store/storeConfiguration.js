@@ -12,8 +12,8 @@ export default () => {
 
     const store = createStore(rootReducer, compose(...enhancers));
     if (module.hot) {
-        module.hot.accept('./reducers', () => {
-            const nextReducer = require("./reducers").default
+        module.hot.accept('./rootReducers', () => {
+            const nextReducer = require("./rootReducers").default
             store.replaceReducer(nextReducer)
         })
     }

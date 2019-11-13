@@ -13,14 +13,14 @@ const mockResponse = {
 
 if (process.env.NODE_ENV !== 'production') {
 
-    // const webpack = require('webpack');
-    // const webpackDevMiddleware = require('webpack-dev-middleware');
-    // const config = require('../webpack.config.js');
-    // const compiler = webpack(config);
+    const webpack = require('webpack');
+    const webpackDevMiddleware = require('webpack-dev-middleware');
+    const config = require('../webpack.config.js');
+    const compiler = webpack(config);
 
-    // app.use(webpackDevMiddleware(compiler, {
-    //     publicPath: config.output.publicPath,
-    // }));
+    app.use(webpackDevMiddleware(compiler, {
+        publicPath: config.output.publicPath,
+    }));
 
 } else {
     const DIST_DIR = path.join(__dirname, '../dist');
@@ -28,7 +28,7 @@ if (process.env.NODE_ENV !== 'production') {
 
     app.use(express.static(DIST_DIR));
 
-    app.get('/*', (req, res) => {
+    app.get('*', (req, res) => {
         res.sendFile(HTML_FILE); // EDIT
     });
 }
