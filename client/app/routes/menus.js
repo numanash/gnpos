@@ -1,3 +1,5 @@
+import ProductRoutes from "../pages/Inventory/products/ProductRoutes";
+
 export default [
     {
         name: "Dashboard",
@@ -8,18 +10,13 @@ export default [
         class: ""
     },
     {
-        name: "Main Menu",
-        icon: "fa fa-gift",
-        id: "main-menu2s",
+        name: "Inventory",
+        icon: " fa fa-houzz",
+        id: "inventory",
         type: "collapse",
         class: "",
         children: [
-            {
-                name: "Categories",
-                id: "categories",
-                type: "item",
-                url: "/dashboard/categories"
-            },
+            ...ProductRoutes.menus
         ]
     },
     {

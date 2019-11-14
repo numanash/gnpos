@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import NavItem from '../NavItem';
 import LopNavCollapse from './index.js';
+import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { TOOGLE_COLLAPSED } from '../../../../../../actions/MenuActions';
 import Aux from '../../../../../constants/hoc/_Aux';
@@ -18,6 +19,8 @@ class NavCollapse extends Component {
             this.props.onCollapseToggle(this.props.item.id, this.props.item.type);
         }
     }
+
+
     render() {
 
         let navItems = '';
@@ -57,9 +60,9 @@ class NavCollapse extends Component {
 
 
         item = <li id={id} key={id} className={`nav-item has-treeview ${subMenuShow}`}>
-            <a href="#" className={`nav-link ${isActive}`} onClick={() => this.props.onCollapseToggle(id, type)}>
+            <Link to="#" className={`nav-link ${isActive}`} onClick={() => this.props.onCollapseToggle(id, type)}>
                 {icon && <i className={icon}></i>} <p>{name}<i className="right fa fa-angle-left"></i></p>
-            </a>
+            </Link>
             <ul className="nav nav-treeview">{navItems}</ul>
         </li>
 

@@ -13,8 +13,8 @@ module.exports = {
     entry: "./client/index.js",
     output: {
         path: path.join(__dirname, 'dist'),
-        filename: "[hash].js",
-        chunkFilename: '[hash].bundle.js',
+        filename: "[name].[hash].js",
+        chunkFilename: '[name].[hash].bundle.js',
         publicPath: '/',
     },
     devtool: 'inline-source-map',
