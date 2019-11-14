@@ -1,0 +1,34 @@
+Listening to prot \\.\pipe\d7f2aff1-3054-4ca0-ae94-e7ef8101b359
+heres
+heres
+heres
+here
+products here
+[ RowDataPacket {
+    ID: 18,
+    title: 'undefined',
+    description: '',
+    code: 'SGYPLX',
+    ref_client: 17,
+    ref_register: 0,
+    type: '',
+    createdAt: 2019-01-29T15:49:22.000Z,
+    date_mod: '0000-00-00 00:00:00',
+    payment_type: 'Cash',
+    author: '',
+    total_received: 16279,
+    discount_in_cash: 0,
+    at_a_discount: 0,
+    refund: 0,
+    discount_type: 'Price',
+    discount_percent: 0,
+    reduced_price_percent: 0,
+    refund_percent: 0,
+    total_payable: 16279,
+    total_items: 3,
+    re_type: '',
+    value_added_tax: 0,
+    group_discount: null,
+    ref_shipping_address: 0,
+    shipping_amount: 0,
+    expiration_date: '0000-00-00 00:00:00' } ]
