@@ -1,5 +1,5 @@
-const db = require("../db/connection");
-const Categories = require("../models/").Categories;
+const db = require("../../db/connection");
+const Categories = require("../../models").Categories;
 
 module.exports = {
   getAll: () => {

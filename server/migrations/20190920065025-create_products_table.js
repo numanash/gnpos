@@ -12,7 +12,7 @@ module.exports = {
       name: {
         type: Sequelize.CHAR(255),
         allowNull: false,
-        unique:true
+        unique: true
       },
       ref_category: {
         type: Sequelize.INTEGER(11),
@@ -91,21 +91,21 @@ module.exports = {
         unique: true
       },
       product_status: {
-        type: Sequelize.BOOLEAN(1),
-        defaultValue: 1,
+        type: Sequelize.ENUM('Active', 'De-Active'),
+        defaultValue: 'Active',
         allowNull: false
       },
       status: { type: Sequelize.BOOLEAN(), defaultValue: 1 },
-      
+
       service_charges: {
         type: Sequelize.INTEGER,
         defaultValue: 0
       },
-      tax : {
+      tax: {
         type: Sequelize.INTEGER,
         defaultValue: 0
       },
-      discount:{
+      discount: {
         type: Sequelize.INTEGER,
         allowNull: false
       },

@@ -3,8 +3,7 @@ const path = require('path');
 const helmet = require("helmet");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const app = express();
-const port = process.env.PORT || 4000;
+let app = express();
 
 
 
@@ -31,11 +30,10 @@ const port = process.env.PORT || 4000;
 // }
 process.env["NODE_CONFIG_DIR"] = __dirname + "/config/";
 
-app.use(express);
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static("../dist"));
+app.use(express.static(path.join(__dirname, "dist")));
 app.use(helmet());
 
 
@@ -47,6 +45,10 @@ require("./models/index");
 require("./startup/globalAccess");
 require("./startup/routes")(app);
 require("./startup/config")();
+
+
+const port = process.env.PORT || 3005;
+
 app.use(bodyParser.json());
 app.use(
     bodyParser.urlencoded({

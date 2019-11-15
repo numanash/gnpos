@@ -10,10 +10,10 @@ router.get("/", async (req, res, next) => {
 });
 
 router.post("/add", async (req, res) => {
-    var orderCode = await genCode(5);
+    var productCode = await genCode(5);
     let data = {
         ...req.body,
-        barcode: orderCode
+        barcode: productCode
     };
     await products
         .add(data)

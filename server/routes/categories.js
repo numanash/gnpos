@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const categories = require("../controllers/categories");
+const categories = require("../controllers/inventory/categories");
 
 router.get("/", async (req, res, next) => {
-  res.status(200).send({
-    data: await categories.getAll()
-  });
+  res.status(200).send(
+    await categories.getAll()
+  );
 });
 
 router.post("/add", async (req, res) => {

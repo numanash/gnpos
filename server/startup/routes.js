@@ -7,11 +7,12 @@ const customers = require("../routes/customers");
 const orders = require("../routes/orders");
 const reports = require("../routes/reports");
 const users = require("../routes/users");
+const auth = require("../middleware/auth");
 // const cors = require("cors");
 // const helmet = require("helmet");
 // const bodyParser = require("body-parser");
 
-module.exports = function(app) {
+module.exports = function (app) {
   app.use("/api/products", products);
   app.use("/api/categories", categories);
   app.use("/api/supplies", supplies);

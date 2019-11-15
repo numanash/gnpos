@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import axios from 'axios'
 import Cookie from "universal-cookie";
-import { logOutApi } from '../../Main/Services/Auth';
+// import { logOutApi } from '../../Main/Services/Auth';
 
 const cookie = new Cookie();
 // import store from '../store/index'
@@ -10,7 +10,7 @@ const cookie = new Cookie();
 
 // const version = 'v1';
 // const API_URL = (process.env.NODE_ENV === 'development') ? process.env.BASE_URL || (`http://localhost:${process.env.PORT}/api/${version}/`) : `/api/${version}`;
-const API_URL = process.env.MIX_API_URL;
+const API_URL = "http://localhost:3005/api";
 
 axios.defaults.baseURL = API_URL;
 axios.defaults.headers.common.Accept = 'application/json';
@@ -40,12 +40,12 @@ axios.interceptors.request.use(function (config) {
     // addClass();
     const token = cookie.get("Authorization");
     if (token) {
-        config.headers.Authorization = token
+        config.headers["x-auth-token"] = token
     }
     return config
 }, function (error) {
     // removeClass();
-    return Promise.reject(error);
+    return Promise.reject(error.response);
 });
 
 axios.interceptors.response.use(function (response) {

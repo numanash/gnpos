@@ -119,6 +119,8 @@ router.post("/login", async (req, res) => {
       }
     });
 });
+
+
 router.get("/getUserActions", auth, async (req, res) => {
   await users
     .getActions(req.user.s)
