@@ -3,7 +3,7 @@ import NavItem from '../NavItem';
 import LopNavCollapse from './index.js';
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { TOOGLE_COLLAPSED } from '../../../../../../actions/MenuActions';
+import { TOOGLE_COLLAPSED } from '../../../../../../actions/MenuAction';
 import Aux from '../../../../../constants/hoc/_Aux';
 
 

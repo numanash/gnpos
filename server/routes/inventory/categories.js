@@ -1,38 +1,41 @@
 const express = require("express");
 const router = express.Router();
-const categories = require("../controllers/inventory/categories");
+const categories = require("../../controllers/inventory/categories");
 
 router.get("/", async (req, res, next) => {
-  res.status(200).send(
-    await categories.getAll()
-  );
+  await categories.getAll(req.query).then(result =>
+    res.status(200).send(
+      result
+    )).catch(err => {
+      res.status(500).send(
+        err
+      )
+    })
+
 });
 
-router.post("/add", async (req, res) => {
+router.post("/", async (req, res) => {
   let data = req.body;
-
-  if (typeof data.parentCategory === "string") {
-    data = { ...data, parentCategory: 0 };
+  if (isNaN(data.parent_ref_id)) {
+    data.parent_ref_id = 0;
   }
 
   await categories
     .add(data)
     .then(result => {
       res.status(201).send({
-        message: "Category Inserted",
-        data: result
+        message: data.categoryName + " category created",
+        categories: result
       });
     })
     .catch(e => {
-      res.status(500).send({
-        error: "Failed !" + e
-      });
+      res.status(400).send(e);
     });
 
   // })
 });
 
-router.get("/edit/:id", async (req, res) => {
+router.get("/:id", async (req, res) => {
   await categories
     .get(parseInt(req.params.id))
     .then(result => {
@@ -47,8 +50,7 @@ router.get("/edit/:id", async (req, res) => {
     });
 });
 
-router.put("/edit/:id", async (req, res) => {
-  console.log(req.body);
+router.put("/:id", async (req, res) => {
   let data = req.body;
 
   if (typeof data.parentCategory === "string") {
@@ -68,7 +70,7 @@ router.put("/edit/:id", async (req, res) => {
     });
 });
 
-router.delete("/del/:id", async (req, res) => {
+router.delete("/:id", async (req, res) => {
   await categories
     .delete(req.params.id)
     .then(result => {

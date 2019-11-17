@@ -25,14 +25,9 @@ export default function (actionName) {
                     Http.post(`${actionName}${customAction ? `/${customAction}` : ""} `, data).then(
                         res => {
                             dispatch(action.add(res.data));
-                            return resolve();
+                            return resolve(res.data);
                         }).catch(err => {
-                            const statusCode = err.response.status;
-                            const error = {
-                                statusCode,
-                                ...err.response.data
-                            };
-                            return reject(error);
+                            return reject(err.data);
                         })
                 })
             )

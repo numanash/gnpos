@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Aux from '../../../constants/hoc/_Aux';
 import { withRouter } from 'react-router-dom';
 import { connect } from "react-redux";
-import { TOOGLE_COLLAPSED } from '../../../../Actions/MenuActions';
+import { TOOGLE_COLLAPSED } from '../../../../actions/MenuAction';
 
 const menu = [
     {

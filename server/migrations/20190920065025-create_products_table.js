@@ -74,7 +74,7 @@ module.exports = {
         type: Sequelize.FLOAT,
         defaultValue: 0
       },
-      promotional_start_price: {
+      promotional_start_date: {
         type: Sequelize.DATE,
         defaultValue: null
       },

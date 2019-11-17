@@ -4,5 +4,21 @@ body {
   color: brown;
 }
 
+input.no-spinner::-webkit-outer-spin-button,
+input.no-spinner::-webkit-inner-spin-button {
+  /* display: none; <- Crashes Chrome on hover */
+  -webkit-appearance: none;
+  margin: 0;
+  /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type=number].no-spinner {
+  -moz-appearance: textfield;
+  /* Firefox */
+}
+
 @import "~bootstrap/scss/bootstrap";
+@import "~react-datepicker/dist/react-datepicker.css";
+@import "~react-table/react-table.css";
+
 @import "./layout/navbar";

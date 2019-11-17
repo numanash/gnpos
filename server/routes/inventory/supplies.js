@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const supplies = require("../controllers/supplies");
+const supplies = require("../../controllers/supplies");
 
 router.get("/", async (req, res, next) => {
   res.status(200).send({
@@ -8,7 +8,7 @@ router.get("/", async (req, res, next) => {
   });
 });
 
-router.get("/view/:id", async (req, res, next) => {
+router.get("/:id", async (req, res, next) => {
   res.status(200).send({
     data: await supplies
       .get(req.params.id)
@@ -21,7 +21,7 @@ router.get("/view/:id", async (req, res, next) => {
   });
 });
 
-router.post("/add", async (req, res) => {
+router.post("/", async (req, res) => {
   var products = [];
   const data = {
     title: req.body.supName,
@@ -49,7 +49,7 @@ router.post("/add", async (req, res) => {
     });
 });
 
-router.get("/edit/:id", async (req, res) => {
+router.get("/:id", async (req, res) => {
   await supplies
     .get(parseInt(req.params.id))
     .then(result => {
@@ -64,9 +64,9 @@ router.get("/edit/:id", async (req, res) => {
     });
 });
 
-router.get("/edit/:id", async (req, res) => { });
+router.get("/:id", async (req, res) => { });
 
-router.put("/edit/:id", async (req, res) => {
+router.put("/:id", async (req, res) => {
   console.log(req.body);
   await supplies
     .edit(req.body, req.params.id)
@@ -82,7 +82,7 @@ router.put("/edit/:id", async (req, res) => {
     });
 });
 
-router.delete("/del/:id", async (req, res) => {
+router.delete("/:id", async (req, res) => {
   await supplies
     .delete(req.params.id)
     .then(result => {

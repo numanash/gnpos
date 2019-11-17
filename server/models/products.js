@@ -1,5 +1,5 @@
 const Sequelize = require("sequelize");
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   let Products = sequelize.define("Products", {
     id: {
       type: Sequelize.INTEGER,
@@ -71,7 +71,7 @@ module.exports = function(sequelize, DataTypes) {
       type: Sequelize.FLOAT,
       defaultValue: 0
     },
-    promotional_start_price: {
+    promotional_start_date: {
       type: Sequelize.DATE,
       defaultValue: null
     },
@@ -97,6 +97,6 @@ module.exports = function(sequelize, DataTypes) {
     service_charges: { type: Sequelize.INTEGER, defaultValue: 0 },
     discount: { type: Sequelize.INTEGER, allowNull: false, defaultValue: 0 }
   });
-  Products.association = function(models) {};
+  Products.association = function (models) { };
   return Products;
 };

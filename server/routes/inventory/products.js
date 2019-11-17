@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const products = require("../controllers/products");
-const genCode = require("../constant/generateCode");
+const products = require("../../controllers/products");
+const genCode = require("../../constant/generateCode");
 
 router.get("/", async (req, res, next) => {
     res.status(200).send({
@@ -9,7 +9,7 @@ router.get("/", async (req, res, next) => {
     });
 });
 
-router.post("/add", async (req, res) => {
+router.post("/", async (req, res) => {
     var productCode = await genCode(5);
     let data = {
         ...req.body,
@@ -38,7 +38,7 @@ router.post("/add", async (req, res) => {
         });
 });
 
-router.get("/edit/:id", async (req, res) => {
+router.get("/:id", async (req, res) => {
     await products
         .get(parseInt(req.params.id))
         .then(result => {
@@ -53,7 +53,7 @@ router.get("/edit/:id", async (req, res) => {
         });
 });
 
-router.put("/edit/:id", async (req, res) => {
+router.put("/:id", async (req, res) => {
     console.log(req.body);
     await products
         .edit(req.body, req.params.id)
@@ -69,7 +69,7 @@ router.put("/edit/:id", async (req, res) => {
         });
 });
 
-router.delete("/del/:id", async (req, res) => {
+router.delete("/:id", async (req, res) => {
     await products
         .delete(req.params.id)
         .then(result => {

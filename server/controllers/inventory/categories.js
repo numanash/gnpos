@@ -2,10 +2,14 @@ const db = require("../../db/connection");
 const Categories = require("../../models").Categories;
 
 module.exports = {
-  getAll: () => {
+  getAll: (query) => {
     // let query = "Select * from `categories` where status = 1 ";
     return new Promise((resolve, reject) => {
-      Categories.findAll()
+      Categories.findAndCountAll({
+        limit: parseInt(query.limit),
+        offset: parseInt(query.offset),
+        order: [[query.column, query.order]]
+      })
         .then(res => {
           resolve(res);
         })
@@ -35,12 +39,16 @@ module.exports = {
             }).then(responce => {
               resolve(responce);
             }).catch(err => {
+              console.log({ err });
               reject(err);
             })
           }
         })
         .catch(e => {
-          reject(e);
+          if (e.original.code === 'ER_DUP_ENTRY') {
+            return reject(e.original.sqlMessage);
+          }
+          reject(e.original.sqlMessage);
         });
     });
   },

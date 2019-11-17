@@ -58,13 +58,14 @@ axios.interceptors.response.use(function (response) {
 },
     (error) => {
         // removeClass();
+
         if (error.response.status === 401) {
             let location = window.location.pathname;
             cookie.remove("Authorization");
             window.location.pathname = `/login?Redirect=${location}`;
             // logOutApi();
         }
-        return Promise.reject(error);
+        return Promise.reject(error.response);
     });
 
 

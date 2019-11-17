@@ -1,8 +1,8 @@
 // const express = require("express");
-const categories = require("../routes/categories");
+const categories = require("../routes/inventory/categories");
 const suppliers = require("../routes/suppliers");
-const supplies = require("../routes/supplies");
-const products = require("../routes/products");
+const supplies = require("../routes/inventory/supplies");
+const products = require("../routes/inventory/products");
 const customers = require("../routes/customers");
 const orders = require("../routes/orders");
 const reports = require("../routes/reports");

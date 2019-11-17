@@ -7,7 +7,7 @@ import { createStore } from "redux";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 
-import config from "./config";
+import config from "./configs";
 import store from './store';
 
 

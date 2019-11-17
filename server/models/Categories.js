@@ -10,7 +10,8 @@ module.exports = function (sequelize, DataTypes) {
     },
     categoryName: {
       type: Sequelize.CHAR(200),
-      allowNull: false
+      allowNull: false,
+      unique: true
     },
     categoryDescription: Sequelize.TEXT,
     status: { type: Sequelize.BOOLEAN(), defaultValue: 1 },

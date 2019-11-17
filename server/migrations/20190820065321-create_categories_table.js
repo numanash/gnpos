@@ -11,18 +11,21 @@ module.exports = {
       },
       categoryName: {
         type: Sequelize.CHAR(200),
-        allowNull: false
+        allowNull: false,
+        unqiue: 'category'
       },
       categoryDescription: Sequelize.TEXT,
       status: { type: Sequelize.BOOLEAN(), defaultValue: 1 },
       parent_ref_id: { type: Sequelize.INTEGER(11), defaultValue: 0 },
-      tax:{
+      tax: {
         type: Sequelize.INTEGER,
         defaultValue: 0
       },
-      discount:{ type: Sequelize.INTEGER,
+      discount: {
+        type: Sequelize.INTEGER,
         allowNull: false,
-      defaultValue: 0},
+        defaultValue: 0
+      },
       createdAt: {
         type: "TIMESTAMP",
         defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
@@ -34,6 +37,12 @@ module.exports = {
           "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
         ),
         allowNull: false
+      }
+    }, {
+      uniqueKeys: {
+        category: {
+          fields: ['categoryName']
+        }
       }
     });
   },
