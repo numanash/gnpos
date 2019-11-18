@@ -4,18 +4,28 @@ const Categories = require("../../models").Categories;
 module.exports = {
   getAll: (query) => {
     // let query = "Select * from `categories` where status = 1 ";
+
     return new Promise((resolve, reject) => {
-      Categories.findAndCountAll({
-        limit: parseInt(query.limit),
-        offset: parseInt(query.offset),
-        order: [[query.column, query.order]]
-      })
-        .then(res => {
+      if (query.limit) {
+        Categories.findAndCountAll({
+          limit: parseInt(query.limit),
+          offset: parseInt(query.offset),
+          order: [[query.column, query.order]]
+        })
+          .then(res => {
+            resolve(res);
+          })
+          .catch(e => {
+            reject(e);
+          });
+      } else {
+        Categories.findAll().then(res => {
           resolve(res);
         })
-        .catch(e => {
-          reject(e);
-        });
+          .catch(e => {
+            reject(e);
+          });
+      }
       // db.query(query, (err, result) => {
       //   if (err) reject("error", err);
       //   resolve(result);

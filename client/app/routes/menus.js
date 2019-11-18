@@ -12,13 +12,13 @@ export default [
     },
     {
         name: "Inventory",
-        icon: " fa fa-houzz",
+        icon: "fa fa-houzz",
         id: "inventory",
         type: "collapse",
         class: "",
         children: [
             ...ProductRoutes.menus,
-            ...CategoryRoutes.menus
+            CategoryRoutes.menus
         ]
     }
 ]

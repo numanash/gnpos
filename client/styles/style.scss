@@ -16,7 +16,8 @@ input[type=number].no-spinner {
   -moz-appearance: textfield;
   /* Firefox */
 }
-
+$fa-font-path: "~font-awesome/fonts";
+@import "~font-awesome/scss/font-awesome";
 @import "~bootstrap/scss/bootstrap";
 @import "~react-datepicker/dist/react-datepicker.css";
 @import "~react-table/react-table.css";

@@ -61,7 +61,7 @@ class NavCollapse extends Component {
 
         item = <li id={id} key={id} className={`nav-item has-treeview ${subMenuShow}`}>
             <Link to="#" className={`nav-link ${isActive}`} onClick={() => this.props.onCollapseToggle(id, type)}>
-                {icon && <i className={icon}></i>} <p>{name}<i className="right fa fa-angle-left"></i></p>
+                {icon && <i className={'nav-icon ' + icon}></i>} <p>{name}<i className="right fa fa-angle-left"></i></p>
             </Link>
             <ul className="nav nav-treeview">{navItems}</ul>
         </li>

@@ -4,7 +4,7 @@ import CustomCard from '../../../components/CustomCard';
 import { Tabs, Tab, Row, Col, Form, Alert, Button } from "react-bootstrap"
 import FormInput from '../../../components/FormInput/Index';
 import { connect } from "react-redux";
-import axios from '../../../../Services/Http';
+import axios from '../../../../services/Http';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import Required from '../../../components/Required';

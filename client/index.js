@@ -1,5 +1,6 @@
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
+// import 'font-awesome/scss/font-awesome.scss';
 import './styles/style.scss';
 import Aux from './app/constants/hoc/_Aux';
 import App from './app/App';

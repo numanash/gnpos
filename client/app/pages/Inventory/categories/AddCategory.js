@@ -76,7 +76,8 @@ class AddCategory extends Component {
         this.setState({
             ...this.state,
             [e.target.name]: e.target.value,
-            success: undefined
+            success: undefined,
+            categoryError: undefined
         })
     }
 
@@ -125,11 +126,11 @@ class AddCategory extends Component {
                 <Form onSubmit={this.onSubmit}>
                     {this.state.success && <Alert size="sm" variant="success" className="py-2" dismissible onClose={() => this.setState({ success: undefined })}>{this.state.success}</Alert>}
                     {this.state.error && <Alert size="sm" variant="danger" className="py-2" dismissible onClose={() => this.setState({ error: undefined })}>{this.state.error}</Alert>}
-                    <FormInput type='text' label="Category Name" name='categoryName' value={this.state.categoryName} required onChange={this.handleInput} />
+                    <FormInput size="sm" type='text' label="Category Name" name='categoryName' value={this.state.categoryName} required onChange={this.handleInput} />
                     <CustomSelect name="parent_ref_id" label="Parent Category" options={categoryOptions} onChange={this.handleCategory} value={this.state.parent_ref_id} />
                     <FormInput as='textarea' rows={5} label="Category Description" name='categoryDescription' value={this.state.categoryDescription} onChange={this.handleInput} />
                     <div className="d-inline float-right">
-                        <Button variant="success" size="sm" type="submit" title={this.state.categoryError ? 'Please add category first' : ''} disabled={this.state.categoryError ? true : false}>Save</Button>
+                        <Button variant="success" size="sm" type="submit" title={this.state.categoryError ? 'Please add category first' : ''}>Save</Button>
                         <Button variant="danger" className="ml-2" size="sm" type="button">Cancel</Button>
                     </div>
                 </Form>
