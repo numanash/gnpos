@@ -1,5 +1,7 @@
 import ProductRoutes from "../pages/Inventory/products/ProductRoutes";
 import CategoryRoutes from "../pages/Inventory/categories/CategoryRoutes";
+import SuppliersRoutes from "../pages/suppliers/SuppliersRoutes";
+import SupplyRoutes from "../pages/Inventory/supplies/SupplyRoutes";
 
 export default [
     {
@@ -18,7 +20,9 @@ export default [
         class: "",
         children: [
             ...ProductRoutes.menus,
-            CategoryRoutes.menus
+            CategoryRoutes.menus,
+            SupplyRoutes.menus
         ]
-    }
+    },
+    SuppliersRoutes.menus
 ]

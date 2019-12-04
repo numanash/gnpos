@@ -13,6 +13,7 @@
   "author": "numanash",
   "license": "ISC",
   "dependencies": {
+    "@babel/runtime": "^7.7.4",
     "@casl/ability": "^3.2.0",
     "@casl/react": "^1.0.4",
     "axios": "^0.19.0",
@@ -26,6 +27,8 @@
     "helmet": "^3.21.2",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.15",
+    "match-sorter": "^4.0.2",
+    "moment": "^2.24.0",
     "mysql": "^2.17.1",
     "mysql2": "^2.0.0",
     "react": "^16.11.0",
@@ -40,6 +43,8 @@
     "redux-thunk": "^2.3.0",
     "sequelize": "^5.21.2",
     "sequelize-cli": "^5.5.1",
+    "sweetalert2": "^9.3.17",
+    "sweetalert2-react-content": "^2.0.2",
     "universal-cookie": "^4.0.2",
     "uuid": "^3.3.3"
   },
@@ -47,6 +52,7 @@
     "@babel/core": "^7.6.4",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/plugin-transform-runtime": "^7.7.4",
     "@babel/preset-env": "^7.6.3",
     "@babel/preset-react": "^7.7.0",
     "autoprefixer": "^9.7.1",

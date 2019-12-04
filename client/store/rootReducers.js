@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import getCommonReducers from '../reducers/CommonReducers';
 import reducer from '../Reducers/MenuReducers';
-let reducers = ["products", "categories"];
+let reducers = ["products", "categories", "suppliers", "supplies"];
 let allReducers = { reducer };
 reducers.map(rec => {
     allReducers[rec] = getCommonReducers(rec);

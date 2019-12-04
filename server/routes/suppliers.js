@@ -4,11 +4,11 @@ const suppliers = require("../controllers/suppliers");
 
 router.get("/", async (req, res, next) => {
   await suppliers
-    .getAll()
+    .getAll(req.query)
     .then(result => {
-      res.status(200).send({
-        data: result
-      });
+      res.status(200).send(
+        result
+      );
     })
     .catch(e => {
       console.log(e);
@@ -18,12 +18,12 @@ router.get("/", async (req, res, next) => {
     });
 });
 
-router.post("/add", async (req, res) => {
+router.post("/", async (req, res) => {
   await suppliers
     .add(req.body)
     .then(result => {
       res.status(201).send({
-        messsage: "Suppliers Added"
+        message: req.body.name + " Supplier Added"
       });
     })
     .catch(e => {

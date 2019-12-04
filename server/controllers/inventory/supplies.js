@@ -1,68 +1,75 @@
-const db = require("../db/connection");
-const Supplies = require("../models/").Supplies;
-const Products = require("../models/").Products;
-const Suppliers = require("../models/").Suppliers;
+const db = require("../../db/connection");
+const Supplies = require("../../models").Supplies;
+const Products = require("../../models").Products;
+const Suppliers = require("../../models").Suppliers;
 
-const ProductStockFlow = require("../models/").ProductStockFlow;
+const ProductStockFlow = require("../../models").ProductStockFlow;
 
 module.exports = {
-  getAll: () => {
+  getAll: (data) => {
 
 
     return new Promise((resolve, reject) => {
 
 
-      // Supplies.hasMany(Suppliers, {
-      //   foreignKey: "id"
-      // });
-      // Suppliers.belongsTo(Supplies, {
-      //   foreignKey: "ref_provider",
-      //   targetKey: "id"
-      // });
-      // Supplies.findAll({
-      //   as: "Supplies",
-      //   raw: true,
-      //   include: [
-      //     {
-      //       model: Suppliers,
-      //       nested: true,
-      //       all: true,
-      //       as: "Suppliers",
-      //       attributes: ["name"],
-      //       on: {
-      //         id: Sequelize.col("Supplies.ref_provider")
-      //       },
-      //       where: {
-      //         status: 1
-      //       }
-      //     }
-      //   ]
-      // })
-
-      sequelize
-        .query(
-          `Select sup.*,supp.name as provider from supplies sup INNER JOIN suppliers supp ON sup.ref_provider = supp.id `,
-          {
-            raw: false,
-            type: Sequelize.QueryTypes.SELECT,
-            plain: false
-          }
-        )
-        .then(res => {
-          console.log({ res });
+      //   // Supplies.hasMany(Suppliers, {
+      //   //   foreignKey: "id"
+      //   // });
+      //   // Suppliers.belongsTo(Supplies, {
+      //   //   foreignKey: "ref_provider",
+      //   //   targetKey: "id"
+      //   // });
+      //   // Supplies.findAll({
+      //   //   as: "Supplies",
+      //   //   raw: true,
+      //   //   include: [
+      //   //     {
+      //   //       model: Suppliers,
+      //   //       nested: true,
+      //   //       all: true,
+      //   //       as: "Suppliers",
+      //   //       attributes: ["name"],
+      //   //       on: {
+      //   //         id: Sequelize.col("Supplies.ref_provider")
+      //   //       },
+      //   //       where: {
+      //   //         status: 1
+      //   //       }
+      //   //     }
+      //   //   ]
+      //   // })
+      if (data.limit) {
+        sequelize
+          .query(
+            `Select sup.*,supp.name as provider from supplies sup INNER JOIN suppliers supp ON sup.ref_provider = supp.id ORDER BY sup.${data.column} ${data.order} LIMIT ${data.offset}, ${data.limit} `,
+            {
+              raw: false,
+              type: Sequelize.QueryTypes.SELECT,
+              plain: false
+            }
+          )
+          .then(res => {
+            console.log({ res });
+            resolve(res);
+          })
+          .catch(e => {
+            reject(e);
+          });
+      } else {
+        Supplies.findAll().then(res => {
           resolve(res);
-        })
-        .catch(e => {
+        }).catch(e => {
           reject(e);
         });
+      }
     });
   },
   add: async (data, products) => {
     return new Promise((resolve, reject) => {
       return sequelize.transaction().then(t => {
-        return Supplies.create(
-          _.pick(data, ["description", "value", "items", "ref_provider"]),
-          { transaction: t }
+        return Supplies.update(
+          _.pick(data, ["value", "items", "ref_provider"]),
+          { transaction: t, where: { id: data.supplyId } }
         )
           .then(supply => {
             products.map((product, index) => {
@@ -70,7 +77,7 @@ module.exports = {
                 pro => {
                   return Products.update(
                     {
-                      purchase_cost: product.purchasePrice,
+                      purchase_cost: product.price,
                       quantity: pro.quantity + product.quantity
                     },
                     { where: { id: product.id }, transaction: t }
@@ -83,10 +90,10 @@ module.exports = {
                         quantity: product.quantity,
                         quantity_after: pro.quantity + product.quantity,
                         type: "supply",
-                        unit_price: product.purchasePrice,
-                        total_price: product.purchasePrice * product.quantity,
+                        unit_price: product.price,
+                        total_price: product.price * product.quantity,
                         ref_supplier: data.ref_provider,
-                        ref_supply: supply.id
+                        ref_supply: data.supplyId
                       },
                       { transaction: t }
                     ).then(res => {
@@ -107,6 +114,17 @@ module.exports = {
       });
     });
   },
+  addNew: (data) => {
+    return new Promise((resolve, reject) => {
+      Supplies.create(_.pick(data, ['name'])).then(result => {
+
+        resolve(result);
+      })
+        .catch(e => {
+          reject(e);
+        });
+    });
+  },
   get: id => {
     ProductStockFlow.hasMany(Products, {
       foreignKey: "id"
@@ -115,11 +133,10 @@ module.exports = {
     //   foreignKey: "ref_product_id",
     //   targetKey: "id"
     // });
-    console.log({ id });
     return new Promise((resolve, rejcet) => {
       sequelize
         .query(
-          `SELECT psf.*,p.name,p.id,p.barcode from product_stock_flow psf  INNER JOIN products p ON p.id=psf.ref_product_id AND p.status = '1' WHERE ref_supply = '${id}' AND type = 'supply'`,
+          `SELECT psf.*,p.name,p.id,p.barcode from product_stock_flow psf  INNER JOIN products p ON p.id=psf.ref_product_id AND p.status = '1' WHERE ref_supply = '${id}' AND type = 'supply'  `,
           {
             raw: false,
             type: Sequelize.QueryTypes.SELECT,

@@ -1,0 +1,12 @@
+.product_div {
+    cursor: pointer;
+    background: $primary-color;
+
+    &:focus {
+        background: $secondary-color;
+    }
+
+    &:hover {
+        background: $secondary-color;
+    }
+}

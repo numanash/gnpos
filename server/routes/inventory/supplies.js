@@ -1,47 +1,59 @@
 const express = require("express");
 const router = express.Router();
-const supplies = require("../../controllers/supplies");
+const supplies = require("../../controllers/inventory/supplies");
 
 router.get("/", async (req, res, next) => {
-  res.status(200).send({
-    data: await supplies.getAll()
-  });
+  res.status(200).send(
+    await supplies.getAll(req.query)
+  );
 });
 
 router.get("/:id", async (req, res, next) => {
-  res.status(200).send({
-    data: await supplies
-      .get(req.params.id)
-      .then(result => {
-        return result;
-      })
-      .catch(err => {
-        return err;
-      })
-  });
-});
-
-router.post("/", async (req, res) => {
-  var products = [];
-  const data = {
-    title: req.body.supName,
-    description: req.body.supDesc,
-    value: req.body.subTotal,
-    items: req.body.totalItems,
-    ref_provider: req.body.suppName
-  };
-
-  products = req.body.supProducts;
 
   await supplies
-    .add(data, products)
+    .get(req.params.id)
+    .then(result => {
+      return res.status(200).send(result);
+    })
+    .catch(err => {
+      return res.status(404).send(err);;
+    })
+});
+
+router.post("/add", async (req, res) => {
+  await supplies.addNew(req.body).then(result => {
+    console.log(result)
+    res.status(201).send({
+      message: "Supply Inserted"
+    });
+  })
+    .catch(e => {
+      if (e.parent && e.parent.code === "ER_DUP_ENTRY") {
+        return res.status(403).send({
+          error: req.body.name + " name already exist"
+        })
+      }
+      res.status(500).send({
+        error: "Supply not added error on server"
+      });
+    });
+})
+
+router.post("/", async (req, res) => {
+
+
+  let products = req.body.products;
+
+  await supplies
+    .add(req.body, products)
     .then(result => {
       res.status(201).send({
-        message: "Supplies Inserted",
+        message: "Items Inserted into Supply",
         isAdd: true
       });
     })
     .catch(e => {
+      console.log(e);
       res.status(500).send({
         message: "Supply not added error on server",
         isAdd: false

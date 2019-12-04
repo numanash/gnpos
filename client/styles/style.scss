@@ -16,10 +16,49 @@ input[type=number].no-spinner {
   -moz-appearance: textfield;
   /* Firefox */
 }
+
+
+
+$primary-color: #007bff;
+$secondary-color: #343a40;
+$secondary-color-light: #4b545c;
+
+
 $fa-font-path: "~font-awesome/fonts";
 @import "~font-awesome/scss/font-awesome";
-@import "~bootstrap/scss/bootstrap";
 @import "~react-datepicker/dist/react-datepicker.css";
 @import "~react-table/react-table.css";
 
+@import "~bootstrap/scss/bootstrap";
+@import "../public/css/adminlte.min.css";
+
+
+
+input[type="number"] {
+  -webkit-appearance: textfield;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+
+.border-danger__control {
+  border: 1px solid red !important
+}
+
+.table_actions {
+  .dropdown-menu.show {
+    max-width: 60px !important;
+    min-width: 50px !important;
+  }
+
+}
+
+
 @import "./layout/navbar";
+
+@import "./pages/supply.scss";

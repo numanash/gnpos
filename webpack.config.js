@@ -17,7 +17,7 @@ module.exports = {
         chunkFilename: '[name].[hash].bundle.js',
         publicPath: '/',
     },
-    devtool: 'inline-source-map',
+    devtool: 'source-map',
     devServer: {
         // contentBase: './dist',
         historyApiFallback: true,

@@ -1,16 +1,29 @@
 const db = require("../db/connection");
 const Suppliers = require("../models/").Suppliers;
 module.exports = {
-  getAll: () => {
+  getAll: (query) => {
     return new Promise((resolve, reject) => {
-      Suppliers.findAll({ where: { status: 1 } })
-        .then(res => {
+      if (query.limit) {
+        Suppliers.findAndCountAll({
+          limit: parseInt(query.limit),
+          offset: parseInt(query.offset),
+          order: [[query.column, query.order]]
+        })
+          .then(res => {
+            resolve(res);
+          })
+          .catch(e => {
+            reject(e);
+          });
+      } else {
+        Suppliers.findAll().then(res => {
           resolve(res);
         })
-        .catch(e => {
-          console.log({ Supplierserror: e });
-          reject(e);
-        });
+          .catch(e => {
+            reject(e);
+          });
+      }
+
 
     });
   },

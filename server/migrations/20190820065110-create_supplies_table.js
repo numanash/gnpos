@@ -9,19 +9,24 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true
       },
+      name: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        unqiue: "supply"
+      },
       description: Sequelize.TEXT,
       items: {
         type: Sequelize.INTEGER(11),
-        defaultValue: null
+        defaultValue: 0
       },
       value: {
         type: Sequelize.FLOAT,
-        allowNull: false
+        defaultValue: 0
       },
       ref_provider: {
         type: Sequelize.INTEGER,
-        allowNull: false,
         foreignKey: true,
+        defaultValue: null,
         references: {
           model: {
             tableName: "suppliers"
@@ -41,6 +46,12 @@ module.exports = {
           "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
         ),
         allowNull: false
+      }
+    }, {
+      uniqueKeys: {
+        supply: {
+          fields: ['name']
+        }
       }
     });
   },

@@ -10,6 +10,8 @@ import makeAnimated from 'react-select/animated';
 import Required from '../../../components/Required';
 import DatePicker from "react-datepicker";
 import middleware from '../../../../middleware';
+import scrollToTop from '../../../constants/ScrollToTop';
+import FormValidation from '../../../components/FormValidation';
 
 
 const customStyles = {
@@ -23,6 +25,47 @@ class AddProduct extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            name: '',
+            selling_price: '',
+            description: '',
+            ref_category: {},
+            sku: '',
+            product_status: 'Active',
+            tax: '',
+            weight: '',
+            colour: '',
+            height: '',
+            width: '',
+            service_charges: '',
+            barcode: '',
+            productSC: '',
+            productTax: "",
+            discount: "",
+            promotional_price: "",
+            promotional_start_date: new Date(),
+            promotional_end_date: new Date(),
+            categories: [],
+            localErrors: {}
+        }
+    }
+
+
+    componentDidMount() {
+        axios.get("/categories").then(res => {
+            this.setState({
+                categories: res.data,
+                categoryError: res.data.length ? undefined : "No category found. Please add category first"
+            })
+        }).catch(err => {
+            this.setState({
+                categoryError: err.data.toString()
+            })
+        })
+    }
+
+
+    resetForm = e => {
+        this.setState({
             name: '',
             selling_price: '',
             description: '',
@@ -42,21 +85,7 @@ class AddProduct extends Component {
             promotional_price: "",
             promotional_start_date: new Date(),
             promotional_end_date: new Date(),
-            categories: []
-        }
-    }
-
-
-    componentDidMount() {
-        axios.get("/categories").then(res => {
-            this.setState({
-                categories: res.data,
-                categoryError: res.data.length ? undefined : "No category found. Please add category first"
-            })
-        }).catch(err => {
-            this.setState({
-                categoryError: err.data.toString()
-            })
+            localErrors: {}
         })
     }
     handleStartDate = date => {
@@ -72,7 +101,7 @@ class AddProduct extends Component {
     }
 
     handleCategory = (e) => {
-        const ref_category = e.value;
+        const ref_category = e;
         this.setState(() => ({ ref_category }));
     };
 
@@ -80,8 +109,8 @@ class AddProduct extends Component {
         this.setState({
             ...this.state,
             [e.target.name]: e.target.value,
-            localError: {
-                ...this.state,
+            localErrors: {
+                ...this.state.localErrors,
                 [e.target.name]: undefined
             }
         })
@@ -89,10 +118,32 @@ class AddProduct extends Component {
 
 
     onSubmit = e => {
-        e.preventDefault();
-        const formData = new FormData();
-        this.props.dispatch(middleware("porducts").postNew(this.state)).catch(error => {
-            console.log({ error });
+        if (!this.state.ref_category.value) {
+            this.setState({
+                ...this.state,
+                localErrors: {
+                    ...this.state.localErrors,
+                    ref_category: "Catgeory is required"
+                },
+                error: "Please choose category first"
+
+            })
+            return;
+        }
+
+
+        this.props.dispatch(middleware("products").postNew(this.state)).then(result => {
+            this.setState({
+                success: result.message
+            }, () => {
+                scrollToTop();
+            })
+        }).catch(error => {
+            this.setState({
+                error
+            }, () => {
+                scrollToTop();
+            })
         })
 
     }
@@ -100,17 +151,41 @@ class AddProduct extends Component {
     render() {
         const categoryOptions = this.state.categories.map(category => {
             return { value: category.id, label: category.categoryName }
-        })
+        });
+        const { name,
+            selling_price,
+            description,
+            ref_category,
+            sku,
+            product_status,
+            tax,
+            weight,
+            colour,
+            height,
+            width,
+            service_charges,
+            barcode,
+            productSC,
+            productTax,
+            discount,
+            promotional_price,
+            promotional_start_date,
+            promotional_end_date } = this.state.localErrors
         return (<Aux>
             <CustomCard >
-                <Form onSubmit={this.onSubmit}>
+                <FormValidation onSubmit={this.onSubmit} onError={(props) => this.setState({
+                    localErrors: props.localErrors,
+                    error: props.error
+                })}>
                     {this.state.categoryError && <Alert size="sm" variant="info" className="py-2" dismissible onClose={() => this.setState({ categoryError: undefined })}>{this.state.categoryError}</Alert>}
+                    {this.state.error && <Alert size="sm" variant="danger" className="py-2" dismissible onClose={() => this.setState({ error: undefined })}>{this.state.error}</Alert>}
+                    {this.state.success && <Alert size="sm" variant="success" className="py-2" dismissible onClose={() => this.setState({ success: undefined })}>{this.state.success}</Alert>}
                     <Tabs defaultActiveKey="productIdentification" id="product-tab" >
                         {/* Product Identification (PI) */}
-                        <Tab eventKey="productIdentification" title="Product Identification" className="pt-5" tabClassName="font-weight-bold bg-gray border-bottom-0">
+                        <Tab eventKey="productIdentification" title="Product Identification" className="pt-5" tabClassName="font-weight-bold bg-gray text-dark border-bottom-0">
                             <Row>
                                 <Col sm="6">
-                                    <FormInput label="Product Name" placeholder="Example: Eggs, T-shirt" name="name" type="text" required size="sm" onChange={this.handleInput} value={this.state.name} />
+                                    <FormInput label="Product Name" placeholder="Example: Eggs, T-shirt" error={name} name="name" type="text" required size="sm" onChange={this.handleInput} value={this.state.name} />
                                 </Col>
                                 <Col sm="6">
                                     <Form.Group controlId="ref_category">
@@ -123,21 +198,19 @@ class AddProduct extends Component {
                                             placeholder={
                                                 (this.state.ref_category !== '') ? this.state.ref_category : "Select Category"
                                             }
-                                            defaultValue={
-                                                (this.state.ref_category !== '') ? this.state.ref_category : "Select Category"
-                                            }
                                             value={this.state.ref_category}
-                                            className="text-dark"
+                                            className={`text-dark ${ref_category ? 'border-danger' : ''}`}
                                             onChange={this.handleCategory}
                                         />
+                                        {ref_category && <p className="m-0"><small className="text-danger">{ref_category}</small></p>}
                                     </Form.Group>
                                 </Col>
                                 <Col sm="6">
-                                    <FormInput label="Product SKU" placeholder="SKU-123" name="sku" type="text" required size="sm" onChange={this.handleInput} value={this.state.sku} />
+                                    <FormInput label="Product SKU" error={sku} placeholder="SKU-123" name="sku" type="text" required size="sm" onChange={this.handleInput} value={this.state.sku} />
                                 </Col>
 
                                 <Col sm="6">
-                                    <FormInput label="Product Barcode" placeholder="AFJLA" name="barcode" type="text" required size="sm" onChange={this.handleInput} value={this.state.barcode} />
+                                    <FormInput label="Product Barcode" error={barcode} placeholder="AFJLA" name="barcode" type="text" size="sm" onChange={this.handleInput} value={this.state.barcode} />
                                 </Col>
                                 <Col sm="6">
                                     <Form.Group controlId="ref_category">
@@ -147,12 +220,13 @@ class AddProduct extends Component {
                                             <option value="De-Active">Not-Available</option>
                                         </Form.Control>
                                         <p className="m-0"><small>Define whether the product is available for sale or not.</small></p>
+                                        {product_status && <p className="m-0"><small className="text-danger">{product_status}</small></p>}
                                     </Form.Group>
                                 </Col>
                             </Row>
                         </Tab>
                         {/* Product Pricing (PP) */}
-                        <Tab eventKey="pricing" title="Pricing" className="pt-5" tabClassName="font-weight-bold bg-gray border-bottom-0">
+                        <Tab eventKey="pricing" title="Pricing" className="pt-5" tabClassName="font-weight-bold bg-gray text-dark border-bottom-0">
                             <Row>
                                 <Col sm="6">
                                     <FormInput label="Product Tax" placeholder="" name="tax" type="text" size="sm" onChange={this.handleInput} value={this.state.tax} />
@@ -161,7 +235,7 @@ class AddProduct extends Component {
                                     <FormInput label="Discount" placeholder="" name="discount" type="number" size="sm" onChange={this.handleInput} value={this.state.discount} message="Dicount from original price in local currency" />
                                 </Col>
                                 <Col sm="6">
-                                    <FormInput label="Product Price" placeholder="" name="selling_price" type="number" required size="sm" onChange={this.handleInput} value={this.state.selling_price} message="The selling price may be different from the selling price displayed at the point of sale." />
+                                    <FormInput label="Product Price" placeholder="" error={selling_price} name="selling_price" type="number" required size="sm" onChange={this.handleInput} value={this.state.selling_price} message="The selling price may be different from the selling price displayed at the point of sale." />
                                 </Col>
                                 <Col sm="6">
                                     <FormInput label="Promotional Price" placeholder="" name="promotional_price" type="number" size="sm" onChange={this.handleInput} value={this.state.promotional_price} message="The promotional price is a special sales price applicable to a product during a specific period." />
@@ -196,7 +270,7 @@ class AddProduct extends Component {
 
                         </Tab>
 
-                        <Tab eventKey="detail" title="Product Detail" className="pt-5" tabClassName="font-weight-bold bg-gray border-bottom-0">
+                        <Tab eventKey="detail" title="Product Detail" className="pt-5" tabClassName="font-weight-bold bg-gray text-dark border-bottom-0">
                             <Row>
                                 <Col sm="6">
                                     <FormInput label="Product Width" placeholder="" name="width" type="number" size="sm" onChange={this.handleInput} value={this.state.width} />
@@ -220,9 +294,9 @@ class AddProduct extends Component {
                         <Button variant="success" size="sm" type="submit" title={this.state.categoryError ? 'Please add category first' : ''} disabled={this.state.categoryError ? true : false}>Save</Button>
                         <Button variant="danger" className="ml-2" size="sm" type="button">Cancel</Button>
                     </div>
-                </Form>
+                </FormValidation>
             </CustomCard>
-        </Aux>);
+        </Aux >);
     }
 }
 

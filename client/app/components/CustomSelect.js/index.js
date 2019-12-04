@@ -14,7 +14,7 @@ const customStyles = {
 
 const CustomSelect = (props) => {
     return (
-        <FormGroup controlId={props.name}>
+        <FormGroup controlId={props.name} className={props.parentClassName}>
             {props.label && <FormLabel>{props.label}</FormLabel>}
             <Select
                 options={props.options}
@@ -23,19 +23,24 @@ const CustomSelect = (props) => {
                 components={makeAnimated()}
                 placeholder={props.placeholder}
                 value={props.value}
-                className="text-dark"
+                className={"text-dark " + props.className}
                 onChange={props.onChange}
+                isMulti={props.isMulti}
+                classNamePrefix={props.error ? "border-danger" : ""}
             />
+            {props.error && <small className="text-danger">{props.error}</small>}
         </FormGroup>
     );
 }
 
 CustomSelect.propTypes = {
     options: PropTypes.array.isRequired,
-    name: PropTypes.string.isRequired,
+    name: PropTypes.string,
     label: PropTypes.string,
     placeholder: PropTypes.string,
     value: PropTypes.object,
+    className: PropTypes.string,
+    parentClassName: PropTypes.string,
     onChange: PropTypes.func.isRequired
 }
 

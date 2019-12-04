@@ -1,25 +1,32 @@
 const express = require("express");
 const router = express.Router();
-const products = require("../../controllers/products");
+const products = require("../../controllers/inventory/products");
 const genCode = require("../../constant/generateCode");
 
 router.get("/", async (req, res, next) => {
-    res.status(200).send({
-        data: await products.getAll()
-    });
+    res.status(200).send(await products.getAll(req.query));
+});
+router.get("/find", async (req, res, next) => {
+    await products.search(req.query).then(result => {
+        return result.length ?
+            res.status(200).send(result) : res.status(404).send("Nothing Found");
+    }).catch(err => {
+        return res.status(404).send(err);
+    })
 });
 
 router.post("/", async (req, res) => {
     var productCode = await genCode(5);
     let data = {
         ...req.body,
-        barcode: productCode
+        barcode: productCode,
+        ref_category: req.body.ref_category.value
     };
     await products
         .add(data)
         .then(result => {
             res.status(201).send({
-                message: "Product Added",
+                message: req.body.name + "Product Added",
                 isAdd: true
             });
         })

@@ -6,7 +6,7 @@ import routes from './routes';
 import { connect } from 'react-redux';
 import Navbar from './components/Layout/Navbar';
 import Loader from './static/Loader';
-import "../public/css/adminlte.min.css";
+
 
 class App extends Component {
     constructor(props) {

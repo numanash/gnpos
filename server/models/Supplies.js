@@ -1,6 +1,6 @@
 const Sequelize = require("sequelize");
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   let Supplies = sequelize.define("Supplies", {
     id: {
       type: Sequelize.INTEGER,
@@ -8,19 +8,24 @@ module.exports = function(sequelize, DataTypes) {
       autoIncrement: true,
       primaryKey: true
     },
+    name: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      unique: true
+    },
     description: Sequelize.TEXT,
     items: {
       type: Sequelize.INTEGER(11),
-      defaultValue: null
+      defaultValue: 0
     },
     value: {
       type: Sequelize.FLOAT,
-      allowNull: false
+      defaultValue: 0,
     },
     ref_provider: {
       type: Sequelize.INTEGER,
-      allowNull: false,
       foreignKey: true,
+      defaultValue: null,
       references: {
         model: {
           tableName: "suppliers"
