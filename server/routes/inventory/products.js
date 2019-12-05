@@ -26,20 +26,24 @@ router.post("/", async (req, res) => {
         .add(data)
         .then(result => {
             res.status(201).send({
-                message: req.body.name + "Product Added",
-                isAdd: true
+                message: req.body.name + " Product Added",
             });
         })
         .catch(e => {
+            console.log(e);
             if (e.original.code === "ER_DUP_ENTRY") {
                 res.status(500).send({
-                    message: "Product Already Exists",
-                    isAdd: false
+                    message: "Product Already Exists"
                 });
+            } else if (e.name === "SequelizeDatabaseError") {
+                res.status(500).send({
+                    message: e.parent.sqlMessage
+                });
+
             } else {
                 res.status(500).send({
-                    message: "Server Error",
-                    isAdd: false
+                    message: "Server Error Review in request",
+                    error: e
                 });
             }
         });

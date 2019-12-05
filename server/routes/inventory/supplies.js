@@ -32,6 +32,10 @@ router.post("/add", async (req, res) => {
         return res.status(403).send({
           error: req.body.name + " name already exist"
         })
+      } else if (e.name === "SequelizeDatabaseError") {
+        return res.status(403).send({
+          error: e.parent.sqlMessage
+        })
       }
       res.status(500).send({
         error: "Supply not added error on server"

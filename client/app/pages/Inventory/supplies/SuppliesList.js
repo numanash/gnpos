@@ -41,7 +41,7 @@ class SuppliesList extends Component {
 
     render() {
         return (<Aux>
-            <ServerSideTable url="/supplies" columns={columns} actionId="id" canView="true" canEdit="true" canDelete="true" extraButtons={
+            <ServerSideTable url="/supplies" actions="true" columns={columns} actionId="id" canView="true" canEdit="true" canDelete="true" extraButtons={
                 [
                     {
                         icon: "fa fa-list-ol",

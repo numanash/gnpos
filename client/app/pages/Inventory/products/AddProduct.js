@@ -118,6 +118,7 @@ class AddProduct extends Component {
 
 
     onSubmit = e => {
+
         if (!this.state.ref_category.value) {
             this.setState({
                 ...this.state,
@@ -130,6 +131,10 @@ class AddProduct extends Component {
             })
             return;
         }
+        this.setState({
+            error: undefined,
+            success: undefined
+        })
 
 
         this.props.dispatch(middleware("products").postNew(this.state)).then(result => {
@@ -140,7 +145,7 @@ class AddProduct extends Component {
             })
         }).catch(error => {
             this.setState({
-                error
+                error: error.message
             }, () => {
                 scrollToTop();
             })
