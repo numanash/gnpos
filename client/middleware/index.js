@@ -15,7 +15,12 @@ export default function (actionName) {
                         dispatch(action.get(res.data));
                     }
                 ).catch(err => {
-                    console.log({ err });
+                    if (err.data.message) {
+                        return reject(err.data.message);
+                    } else {
+                        console.log({ err });
+                        return reject({ message: "Something Wrong on Server" })
+                    }
                 })
             }
         },
@@ -27,7 +32,12 @@ export default function (actionName) {
                             dispatch(action.add(res.data));
                             return resolve(res.data);
                         }).catch(err => {
-                            return reject(err.data);
+                            if (err.data.message) {
+                                return reject(err.data.message);
+                            } else {
+                                console.log({ err });
+                                return reject({ message: "Something Wrong on Server" })
+                            }
                         })
                 })
             )
@@ -38,14 +48,14 @@ export default function (actionName) {
                     Http.get(`${actionName}${customAction ? `/${customAction}` : ""}/${id}`).then(
                         res => {
                             dispatch(action.add(res.data));
-                            return resolve();
+                            return resolve(res.data);
                         }).catch(err => {
-                            const statusCode = err.response.status;
-                            const error = {
-                                statusCode,
-                                ...err.response.data
-                            };
-                            return reject(error);
+                            if (err.data.message) {
+                                return reject(err.data.message);
+                            } else {
+                                console.log({ err });
+                                return reject({ message: "Something Wrong on Server" })
+                            }
                         })
                 })
             )
@@ -56,14 +66,14 @@ export default function (actionName) {
                     Http.put(`${actionName}${customAction ? `/${customAction}` : ""} `, data).then(
                         res => {
                             dispatch(action.add(res.data));
-                            return resolve();
+                            return resolve(res.data);
                         }).catch(err => {
-                            const statusCode = err.response.status;
-                            const error = {
-                                statusCode,
-                                ...err.response.data
-                            };
-                            return reject(error);
+                            if (err.data.message) {
+                                return reject(err.data.message);
+                            } else {
+                                console.log({ err });
+                                return reject({ message: "Something Wrong on Server" })
+                            }
                         })
                 })
             )
@@ -76,12 +86,12 @@ export default function (actionName) {
                             dispatch(action.remove(res.data));
                             return resolve();
                         }).catch(err => {
-                            const statusCode = err.response.status;
-                            const error = {
-                                statusCode,
-                                ...err.response.data
-                            };
-                            return reject(error);
+                            if (err.data.message) {
+                                return reject(err.data.message);
+                            } else {
+                                console.log({ err });
+                                return reject({ message: "Something Wrong on Server" })
+                            }
                         })
                 })
             )

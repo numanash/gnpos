@@ -10,15 +10,13 @@ const columns = [
         Header: 'Product Name',
         accessor: 'name',
         sortable: false,
-        filterMethod: (filter, rows) =>
-            matchSorter(rows, filter.value, { keys: ["name"] }),
+        filterMethod: (filter, rows) => matchSorter(rows, filter.value, { keys: ["name"] }),
         filterAll: true
     }, {
         Header: 'Barcode',
         accessor: 'barcode',
         sortable: false,
-        filterMethod: (filter, rows) =>
-            matchSorter(rows, filter.value, { keys: ["barcode"] }),
+        filterMethod: (filter, rows) => matchSorter(rows, filter.value, { keys: ["barcode"] }),
         filterAll: true
     }, {
         Header: 'Quantity Before',
@@ -41,6 +39,11 @@ const columns = [
         sortable: false,
         filterable: false
     }, {
+        Header: 'Supplier',
+        accessor: 'supplier_name',
+        sortable: false,
+        filterable: false
+    }, {
         id: 'createdAt',
         Header: 'Created At',
         accessor: d => {
@@ -48,8 +51,7 @@ const columns = [
                 .local()
                 .format("DD/MM/YYYY hh:mm:ss")
         },
-        filterMethod: (filter, rows) =>
-            matchSorter(rows, filter.value, { keys: ["createdAt"] }),
+        filterMethod: (filter, rows) => matchSorter(rows, filter.value, { keys: ["createdAt"] }),
         filterAll: true,
         width: 200
     }, {
@@ -73,18 +75,25 @@ class SuppliesList extends Component {
         console.log(data);
     }
 
+    onEdit = data => {
+        this.props.history.push(`/inventory/supply/products/edit/${data}`, {
+            id: data
+        })
+    }
+
+
+
+
     render() {
         return (<Aux>
-            <SimpleDataTable url={`/supplies/${this.props.match.params.id}`} columns={columns} actionId="id" canView="true" canEdit="true" canDelete="true" extraButtons={
-                [
-                    {
-                        icon: "fa fa-list-ol",
-                        title: "Products",
-                        variant: "success",
-                        action: this.handleProducts
-                    }
-                ]
-            } />
+            <SimpleDataTable
+                onEdit={this.onEdit}
+                url={`/supplies/${this.props.match.params.id}`}
+                columns={columns}
+                actionId="id"
+                canEdit="true"
+                canDelete="true"
+            />
         </Aux>);
     }
 }

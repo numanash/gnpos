@@ -3,6 +3,7 @@ import ProductRoutes from '../pages/Inventory/products/ProductRoutes';
 import CategoryRoutes from '../pages/Inventory/categories/CategoryRoutes';
 import SuppliersRoutes from '../pages/suppliers/SuppliersRoutes';
 import SupplyRoutes from '../pages/Inventory/supplies/SupplyRoutes';
+import CustomersRoutes from '../pages/customers/CustomersRoutes';
 
 const Dashboard = React.lazy(() => import("../pages/Dashboard"));
 
@@ -11,5 +12,6 @@ export default [
     ...ProductRoutes.routes,
     ...CategoryRoutes.routes,
     ...SuppliersRoutes.routes,
-    ...SupplyRoutes.routes
+    ...SupplyRoutes.routes,
+    ...CustomersRoutes.routes,
 ]

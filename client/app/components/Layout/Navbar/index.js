@@ -3,6 +3,7 @@ import Aux from '../../../constants/hoc/_Aux';
 import { withRouter } from 'react-router-dom';
 import { connect } from "react-redux";
 import { TOOGLE_COLLAPSED } from '../../../../actions/MenuAction';
+import Calculator from '../../Calculator';
 
 const menu = [
     {
@@ -46,12 +47,20 @@ const menu = [
 class Navbar extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            showCalculator: false
+        }
     }
 
 
     componentDidMount() {
         console.log(this.props);
+    }
+
+    handleCalculator = e => {
+        this.setState((prevState) => ({
+            showCalculator: !prevState.showCalculator
+        }))
     }
     render() {
 
@@ -61,6 +70,7 @@ class Navbar extends Component {
 
         return (
             <Aux>
+
                 <nav className="main-header navbar navbar-expand bg-white navbar-light border-bottom">
                     <ul className="navbar-nav">
                         <li className="nav-item">
@@ -69,7 +79,14 @@ class Navbar extends Component {
                             </a>
                         </li>
 
-                        <li className="nav-item d-none d-sm-inline-block" />
+                        <li className="nav-item position-relative">
+                            <button className="fa fa-calculator d-flex bg-transparent nav-link border-0" onClick={this.handleCalculator}>
+                            </button>
+                            {this.state.showCalculator &&
+                                <Calculator />
+                            }
+
+                        </li>
 
                         <li className="nav-item d-none d-sm-inline-block">
                             {/* <a href="#" className="nav-link">

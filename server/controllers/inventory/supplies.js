@@ -136,7 +136,7 @@ module.exports = {
     return new Promise((resolve, rejcet) => {
       sequelize
         .query(
-          `SELECT psf.*,p.name,p.id,p.barcode from product_stock_flow psf  INNER JOIN products p ON p.id=psf.ref_product_id AND p.status = '1' WHERE ref_supply = '${id}' AND type = 'supply'  `,
+          `SELECT psf.*,p.name,p.barcode,sup.name as supplier_name from product_stock_flow psf INNER JOIN products p ON p.id=psf.ref_product_id INNER JOIN suppliers sup ON sup.id=psf.ref_supplier AND p.status = '1' WHERE ref_supply = '${id}' AND type = 'supply'  `,
           {
             raw: false,
             type: Sequelize.QueryTypes.SELECT,
@@ -144,11 +144,9 @@ module.exports = {
           }
         )
         .then(res => {
-          console.log(res);
           resolve(res);
         })
         .catch(error => {
-          console.log({ error });
           rejcet(error);
         });
       // ProductStockFlow.findAll({
@@ -174,7 +172,59 @@ module.exports = {
     });
   },
   getSignle: id => {
-    let query = "Select sup.*,";
+    return new Promise((resolve, reject) => {
+      Supplies.findAll({
+        attributes: ['id', 'ref_provider', 'name', 'description'],
+        where: {
+          id
+        }
+      }).then(res => {
+        resolve(res[0])
+      }).catch(err => {
+        reject(err)
+      })
+    });
+  },
+  updateSignle: data => {
+    return new Promise((resolve, reject) => {
+      Supplies.update(_.pick(data, ['name', 'description', 'ref_provider']), {
+        where: {
+          id: data.id
+        }
+      }).then(res => {
+        resolve(res)
+      }).catch(err => {
+        reject(err)
+      })
+    });
+  },
+  getProduct: id => {
+    return new Promise((resolve, reject) => {
+      ProductStockFlow.findAll({
+        attributes: ['id', 'ref_product_code', 'ref_product_id', 'quantity_before', 'quantity', 'quantity_after', 'unit_price'],
+        where: {
+          id
+        }
+      }).then(res => {
+        resolve(res[0])
+      }).catch(err => {
+        reject(err)
+      })
+    });
+  },
+  updateProductStock: data => {
+    return new Promise((resolve, reject) => {
+      ProductStockFlow.update(_.pick(data, ["unit_price", "quantity_after", "quantity"]), {
+        where: {
+          id: data.id
+        }
+      }).then(res => {
+        resolve(res);
+
+      }).catch(err => {
+        reject(err)
+      })
+    })
   },
   edit: (data, param) => {
     let query = `Update  SET Name=\'${data.Name}\',Description=\'${

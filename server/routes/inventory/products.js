@@ -30,7 +30,6 @@ router.post("/", async (req, res) => {
             });
         })
         .catch(e => {
-            console.log(e);
             if (e.original.code === "ER_DUP_ENTRY") {
                 res.status(500).send({
                     message: "Product Already Exists"
@@ -53,29 +52,28 @@ router.get("/:id", async (req, res) => {
     await products
         .get(parseInt(req.params.id))
         .then(result => {
-            res.status(200).send({
-                data: result
-            });
+            res.status(200).send(
+                result
+            );
         })
         .catch(e => {
-            res.status(500).send({
-                error: e
+            res.status(400).send({
+                message: e
             });
         });
 });
 
 router.put("/:id", async (req, res) => {
-    console.log(req.body);
     await products
         .edit(req.body, req.params.id)
         .then(result => {
             res.status(202).send({
-                data: "Product Updated SuccessFully"
+                message: "Product Updated SuccessFully"
             });
         })
         .catch(e => {
             res.status(204).send({
-                error: new Error(e)
+                message: new Error(e)
             });
         });
 });

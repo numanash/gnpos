@@ -1,22 +1,22 @@
 import React, { Component } from 'react';
-import Aux from '../../../constants/hoc/_Aux';
-import middleware from '../../../../middleware';
+import Aux from '../../constants/hoc/_Aux';
+import AddCustomer from './AddCustomer';
+import middleware from '../../../middleware';
 import { Card, Alert } from 'react-bootstrap';
 import { connect } from "react-redux";
-import AddProduct from './AddProduct';
 
-class EditProduct extends Component {
+class EditCustomer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            product: undefined
+            customer: undefined
         }
     }
 
     componentDidMount() {
-        this.props.dispatch(middleware("products").getSingle(this.props.match.params.id)).then(res => {
+        this.props.dispatch(middleware("customers").getSingle(this.props.match.params.id)).then(res => {
             this.setState({
-                product: res
+                customer: res
             })
         }).catch(error => {
             this.setState({
@@ -29,7 +29,7 @@ class EditProduct extends Component {
     render() {
         return (<Aux>
 
-            {this.state.product ? <AddProduct product={this.state.product[0]} edit={true} /> : <Card>
+            {this.state.customer ? <AddCustomer customer={this.state.customer[0]} edit={true} /> : <Card>
                 <Card.Header>
                     {this.state.error ? <Alert variant="danger">{this.state.error.toString()}</Alert> : "Loading..."}
                 </Card.Header>
@@ -41,9 +41,9 @@ class EditProduct extends Component {
 
 const mapStateToProps = state => {
     return {
-        product: state.products.data
+        customer: state.customers.data
     }
 }
 
 
-export default connect(mapStateToProps)(EditProduct);
+export default connect(mapStateToProps)(EditCustomer);

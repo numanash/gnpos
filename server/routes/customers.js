@@ -3,17 +3,18 @@ const router = express.Router();
 const customers = require("../controllers/customers");
 
 router.get("/", async (req, res, next) => {
-  res.status(200).send({
-    data: await customers.getAll()
-  });
+  res.status(200).send(
+    await customers.getAll(req.query)
+  );
+
 });
 
-router.post("/add", async (req, res) => {
+router.post("/", async (req, res) => {
   await customers
     .add(req.body)
     .then(result => {
       res.status(201).send({
-        message: "Customer Added "
+        message: req.body.name + " Customer Added"
       });
     })
     .catch(e => {
@@ -25,38 +26,42 @@ router.post("/add", async (req, res) => {
   // })
 });
 
-router.get("/edit/:id", async (req, res) => {
+router.get("/:id", async (req, res) => {
   await customers
     .get(parseInt(req.params.id))
     .then(result => {
-      res.status(200).send({
-        data: result
-      });
+      if (result.length) {
+        res.status(200).send(result);
+      } else {
+        res.status(400).send({
+          message: "Not Found"
+        });
+      }
     })
     .catch(e => {
-      res.status(500).send({
-        error: e
+      res.status(400).send({
+        message: e
       });
     });
 });
 
-router.put("/edit/:id", async (req, res) => {
-  console.log(req.body);
+router.put("/:id", async (req, res) => {
   await customers
     .edit(req.body, req.params.id)
     .then(result => {
       res.status(202).send({
-        data: "Category Updated SuccessFully"
+        message: "Category Updated SuccessFully"
       });
     })
     .catch(e => {
       res.status(204).send({
-        error: e
+        error: e,
+        message: "Something went wrong"
       });
     });
 });
 
-router.delete("/del/:id", async (req, res) => {
+router.delete("/:id", async (req, res) => {
   await customers
     .delete(req.params.id)
     .then(result => {

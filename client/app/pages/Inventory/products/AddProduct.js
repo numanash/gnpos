@@ -51,16 +51,46 @@ class AddProduct extends Component {
 
 
     componentDidMount() {
-        axios.get("/categories").then(res => {
+
+        if (this.props.edit) {
             this.setState({
-                categories: res.data,
-                categoryError: res.data.length ? undefined : "No category found. Please add category first"
+                ...this.state,
+                ...this.props.product,
+                ref_category: {
+                    value: this.props.product.ref_category,
+                    label: ""
+                }
             })
+
+        }
+        axios.get("/categories").then(res => {
+            if (this.props.edit) {
+                this.setState({
+                    categories: res.data.map(category => {
+                        if (category.id === this.props.product.ref_category) {
+                            this.setState({
+                                ref_category: {
+                                    value: category.id,
+                                    label: category.categoryName
+                                }
+                            })
+                        }
+                        return category;
+                    }),
+                    categoryError: res.data.length ? undefined : "No category found. Please add category first"
+                })
+            } else {
+                this.setState({
+                    categories: res.data,
+                    categoryError: res.data.length ? undefined : "No category found. Please add category first"
+                })
+            }
         }).catch(err => {
             this.setState({
                 categoryError: err.data.toString()
             })
         })
+
     }
 
 
@@ -117,6 +147,44 @@ class AddProduct extends Component {
     }
 
 
+    onUpdate = e => {
+
+        if (!this.state.ref_category.value) {
+            this.setState({
+                ...this.state,
+                localErrors: {
+                    ...this.state.localErrors,
+                    ref_category: "Catgeory is required"
+                },
+                error: "Please choose category first"
+
+            })
+            return;
+        }
+        this.setState({
+            error: undefined,
+            success: undefined
+        })
+
+        let ref_category = this.state.ref_category.value;
+
+        this.props.dispatch(middleware("products").update({ ...this.state, ref_category }, this.props.product.id)).then(result => {
+            this.setState({
+                success: result.message
+            }, () => {
+                scrollToTop();
+            })
+        }).catch(error => {
+            this.setState({
+                error: error
+            }, () => {
+                scrollToTop();
+            })
+        })
+
+    }
+
+
     onSubmit = e => {
 
         if (!this.state.ref_category.value) {
@@ -136,11 +204,12 @@ class AddProduct extends Component {
             success: undefined
         })
 
-
-        this.props.dispatch(middleware("products").postNew(this.state)).then(result => {
+        let ref_category = this.state.ref_category.value;
+        this.props.dispatch(middleware("products").postNew({ ...this.state, ref_category })).then(result => {
             this.setState({
                 success: result.message
             }, () => {
+                this.resetForm();
                 scrollToTop();
             })
         }).catch(error => {
@@ -178,7 +247,7 @@ class AddProduct extends Component {
             promotional_end_date } = this.state.localErrors
         return (<Aux>
             <CustomCard >
-                <FormValidation onSubmit={this.onSubmit} onError={(props) => this.setState({
+                <FormValidation onSubmit={this.props.edit ? this.onUpdate : this.onSubmit} onError={(props) => this.setState({
                     localErrors: props.localErrors,
                     error: props.error
                 })}>
@@ -296,7 +365,7 @@ class AddProduct extends Component {
                         </Tab>
                     </Tabs>
                     <div className="d-inline">
-                        <Button variant="success" size="sm" type="submit" title={this.state.categoryError ? 'Please add category first' : ''} disabled={this.state.categoryError ? true : false}>Save</Button>
+                        <Button variant="success" size="sm" type="submit">{this.props.edit ? "Update" : "Add"} Product</Button>
                         <Button variant="danger" className="ml-2" size="sm" type="button">Cancel</Button>
                     </div>
                 </FormValidation>
@@ -305,9 +374,4 @@ class AddProduct extends Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        products: state.products.data
-    }
-}
-export default connect(mapStateToProps)(AddProduct);
+export default connect()(AddProduct);

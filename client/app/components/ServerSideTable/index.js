@@ -67,8 +67,8 @@ class ServerSideTable extends React.Component {
             let data = this.props.actions ? arr.map(row => {
                 let maindata = row;
                 maindata['actions'] = <>
-                    <Dropdown className="position-static table_actions" >
-                        <Dropdown.Toggle variant="success" id="dropdown-basic">
+                    <Dropdown className="position-static table_actions " >
+                        <Dropdown.Toggle variant="success" id="dropdown-basic" size="sm">
                             <i className="fa fa-cog"></i>
                         </Dropdown.Toggle>
 

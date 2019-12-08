@@ -19,6 +19,52 @@ router.get("/:id", async (req, res, next) => {
       return res.status(404).send(err);;
     })
 });
+router.get("/:id", async (req, res, next) => {
+
+  await supplies
+    .get(req.params.id)
+    .then(result => {
+      return res.status(200).send(result);
+    })
+    .catch(err => {
+      return res.status(404).send(err);;
+    })
+});
+
+
+router.get("/single/:id", async (req, res, next) => {
+
+  await supplies
+    .getSignle(req.params.id)
+    .then(result => {
+      return res.status(200).send(result);
+    })
+    .catch(err => {
+      return res.status(404).send(err);;
+    })
+});
+router.put("/single/:id", async (req, res, next) => {
+
+  await supplies
+    .updateSignle(req.body)
+    .then(result => {
+      return res.status(200).send({ message: "Supply update" });
+    })
+    .catch(err => {
+      return res.status(400).send({ err, message: "Something went wrong. review in network request" });
+    })
+});
+
+router.get("/product/:id", async (req, res, next) => {
+  await supplies
+    .getProduct(req.params.id)
+    .then(result => {
+      return res.status(200).send(result);
+    })
+    .catch(err => {
+      return res.status(404).send(err);
+    })
+})
 
 router.post("/add", async (req, res) => {
   await supplies.addNew(req.body).then(result => {
@@ -65,6 +111,18 @@ router.post("/", async (req, res) => {
     });
 });
 
+
+router.put("/product/:id", async (req, res, next) => {
+  await supplies
+    .updateProductStock(req.body)
+    .then(result => {
+      return res.status(200).send({ message: 'Stock update successfully' });
+    })
+    .catch(err => {
+      return res.status(400).send(err);
+    })
+})
+
 router.get("/:id", async (req, res) => {
   await supplies
     .get(parseInt(req.params.id))
@@ -79,8 +137,6 @@ router.get("/:id", async (req, res) => {
       });
     });
 });
-
-router.get("/:id", async (req, res) => { });
 
 router.put("/:id", async (req, res) => {
   console.log(req.body);

@@ -1,20 +1,38 @@
 const db = require("../db/connection");
 const Customers = require("../models/").Customers;
 module.exports = {
-  getAll: () => {
+  getAll: (query) => {
     // let query = "Select * from `customers` ";
     return new Promise((resolve, reject) => {
-      Customers.findAll({ where: { status: 1 } })
-        .then(res => {
-          resolve(res);
+      if (query.limit) {
+        Customers.findAll({
+          where: { status: 1 },
+          limit: parseInt(query.limit),
+          offset: parseInt(query.offset),
+          order: [[query.column, query.order]]
         })
-        .catch(e => {
-          reject(e);
-        });
-      // db.query(query, (err, result) => {
-      //   if (err) reject("error", err);
-      //   resolve(result);
-      // });
+          .then(res => {
+            resolve(res);
+          })
+          .catch(e => {
+            reject(e);
+          });
+      } else {
+        Customers.findAll({ where: { status: 1 } })
+          .then(res => {
+            console.log({ res });
+            resolve(res);
+          })
+          .catch(e => {
+            console.log({ e });
+            reject(e);
+          });
+        // db.query(query, (err, result) => {
+        //   if (err) reject("error", err);
+        //   resolve(result);
+        // });
+
+      }
     });
   },
   add: data => {
@@ -50,30 +68,35 @@ module.exports = {
         });
     });
   },
-  get: data => {
-    let query = `Select * From customers WHERE id = ${data}`;
+  get: id => {
     return new Promise((resolve, reject) => {
-      db.query(query, (err, result) => {
-        if (err) reject(err.sqlMessage);
-        resolve(result);
-      });
+      Customers.findAll({
+        where: {
+          id
+        }
+      }).then(res => {
+        resolve(res);
+      }).catch(err => {
+        reject(err);
+      })
     });
   },
-  edit: (data, param) => {
-    let query = `Update customers SET name=\'${data.name}\',phone=\'${
-      data.phone
-    }\',email=\'${data.email}\',city=\'${data.city}\',address=\'${
-      data.address
-    }\',description=\'${data.description}\' WHERE id = ${param};`;
+  edit: (data, id) => {
+    console.log({ data, id });
     return new Promise((resolve, reject) => {
-      db.query(query, (err, result) => {
-        if (err) {
-          console.log(err);
-          reject(err.sqlMessage);
+      Customers.update(_.pick(data, ["name", "phone", "email", "address", "city", "description"]), {
+        where: {
+          id
         }
-        resolve(result);
-      });
-    });
+      }).then(res => {
+        console.log({ res });
+        resolve(res);
+      }).catch(err => {
+        console.log({ err })
+        resolve(err);
+      })
+    })
+
   },
   delete: params => {
     return new Promise((resolve, reject) => {

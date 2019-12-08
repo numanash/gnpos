@@ -2,6 +2,7 @@ import ProductRoutes from "../pages/Inventory/products/ProductRoutes";
 import CategoryRoutes from "../pages/Inventory/categories/CategoryRoutes";
 import SuppliersRoutes from "../pages/suppliers/SuppliersRoutes";
 import SupplyRoutes from "../pages/Inventory/supplies/SupplyRoutes";
+import CustomersRoutes from "../pages/customers/CustomersRoutes";
 
 export default [
     {
@@ -19,10 +20,11 @@ export default [
         type: "collapse",
         class: "",
         children: [
-            ...ProductRoutes.menus,
+            ProductRoutes.menus,
             CategoryRoutes.menus,
-            SupplyRoutes.menus
+            SupplyRoutes.menus,
         ]
     },
-    SuppliersRoutes.menus
+    SuppliersRoutes.menus,
+    CustomersRoutes.menus
 ]
