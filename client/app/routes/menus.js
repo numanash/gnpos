@@ -3,8 +3,10 @@ import CategoryRoutes from "../pages/Inventory/categories/CategoryRoutes";
 import SuppliersRoutes from "../pages/suppliers/SuppliersRoutes";
 import SupplyRoutes from "../pages/Inventory/supplies/SupplyRoutes";
 import CustomersRoutes from "../pages/customers/CustomersRoutes";
+import POSRoutes from "../pages/POS/POSRoutes";
 
 export default [
+    POSRoutes.menus,
     {
         name: "Dashboard",
         icon: "fa fa-dashboard",

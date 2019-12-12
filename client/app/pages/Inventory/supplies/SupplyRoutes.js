@@ -16,7 +16,7 @@ export default {
     ],
     "menus": {
         name: "Supplies",
-        id: "supplies",
+        id: "supply",
         type: "collapse",
         class: "",
         children: [

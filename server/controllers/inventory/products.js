@@ -68,7 +68,7 @@ module.exports = {
               barcode: { [Op.like]: '%' + query.search + '%' }
             }
           },
-          attributes: ["name", "barcode", "id", "sku", "purchase_cost"]
+          attributes: ["name", "barcode", "id", "sku", "purchase_cost", "selling_price"]
         })
           .then(res => {
 

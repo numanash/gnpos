@@ -18,7 +18,6 @@ export default function (actionName) {
                     if (err.data.message) {
                         return reject(err.data.message);
                     } else {
-                        console.log({ err });
                         return reject({ message: "Something Wrong on Server" })
                     }
                 })
