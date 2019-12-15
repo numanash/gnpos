@@ -25,6 +25,20 @@ module.exports = {
       }
     });
   },
+  getByCategory: categoryId => {
+    return new Promise((resolve, reject) => {
+      Products.findAll({
+        attributes: ["name", "barcode", "id", "sku", "purchase_cost", "selling_price"],
+        where: {
+          ref_category: categoryId
+        }
+      }).then(res => {
+        resolve(res);
+      }).catch(error => {
+        reject(error);
+      })
+    })
+  },
   add: data => {
     return new Promise((resolve, reject) => {
       Products.create(

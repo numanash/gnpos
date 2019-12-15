@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Row, Col, Table, Form } from "react-bootstrap";
+import { Card, Row, Col, Table, Form, Button } from "react-bootstrap";
 import CustomCard from '../../components/CustomCard';
 import Aux from '../../constants/hoc/_Aux';
 import CustomSelect from '../../components/CustomSelect.js';
@@ -9,7 +9,8 @@ import axios from '../../../Services/Http';
 import { connect } from "react-redux";
 import middleware from '../../../middleware';
 import "../../../styles/pages/pos.scss";
-
+import LiveSearch from '../../components/LiveSearch';
+import PerfectScrollbar from 'react-perfect-scrollbar'
 
 class PointOfSale extends Component {
     constructor(props) {
@@ -18,6 +19,8 @@ class PointOfSale extends Component {
             inputValue: "",
             customers: [],
             products: [],
+            categories: [],
+            itemsSearched: [],
             selectedCustomer: { value: "Walk In Customer", },
             total: 0,
             totalItems: 0,
@@ -26,7 +29,9 @@ class PointOfSale extends Component {
     }
     componentDidMount() {
         this.props.dispatch(middleware("customers").fetchAll())
+        this.props.dispatch(middleware("categories").fetchAll());
     }
+
     componentDidUpdate(prevProps) {
         if (this.props.customers !== prevProps.customers) {
             let customers = this.props.customers.map(customer => ({ value: customer.id, label: customer.name }))
@@ -34,8 +39,26 @@ class PointOfSale extends Component {
                 customers
             })
         }
+        if (this.props.categories !== prevProps.categories) {
+            let categories = this.props.categories;
+            this.setState({
+                categories
+            })
+        }
     }
+    onCategoryClicked = e => {
+        this.setState({
+            selectedCategory: parseInt(e.target.getAttribute("data-value"))
+        }, () => {
+            axios.get(`/products/category/${this.state.selectedCategory}`).then(res => {
+                this.setState({
+                    productsByCategory: res.data
+                })
+            }).catch(err => {
 
+            })
+        })
+    }
     handleSelectedCustomer = e => {
         this.setState({
             selectedCustomer: e
@@ -48,23 +71,26 @@ class PointOfSale extends Component {
         return inputValue;
     };
 
-    handleSearch = (inputValue, callback) => {
+    handleSearch = (inputValue) => {
 
         this.setState({
             isLoading: true,
             noProduct: undefined
         })
         if (!inputValue) {
-            return callback([]);
+            return inputValue;
         }
         axios.get(`/products/find?search=${inputValue}&limit=5`).then(res => {
-            let products = res.data.map(product => ({ ...product, value: product.id, label: product.name }));
-            return callback(products);
+            let products = res.data.map(product => ({ ...product, id: product.id, value: product.name }));
+            this.setState({ itemsSearched: products })
+            return inputValue;
         }).catch(err => {
             if (err.status === 404) {
-                return callback([]);
+                this.setState({ itemsSearched: [] })
+                return inputValue;
             } else {
-                return callback([]);
+                this.setState({ itemsSearched: [] })
+                return inputValue;
             }
 
         })
@@ -100,22 +126,40 @@ class PointOfSale extends Component {
             })
         }
     };
+    onItemClicked = item => {
+
+        let products = this.state.products;
+
+        if (products.findIndex(p => p.id === item.id) !== -1) {
+            products = products.map(p => p.id === item.id ? { ...p, quantity: p.quantity + 1, total: (p.quantity + 1) * p.selling_price } : p)
+            this.setState({
+                products
+            })
+        } else {
+            let product = { ...item, quantity: 1, total: 1 * item.selling_price };
+            products.push(product);
+            this.setState({
+                products
+            })
+        }
+
+    }
 
     handleQuantity = e => {
 
         let products = this.state.products;
-
-        let product = products[e.target.tabIndex];
+        let id = parseInt(e.target.getAttribute('data-val'));
+        let product = products[id];
         if (product) {
             let quantity = parseInt(e.target.value) ? parseInt(e.target.value) : 1;
-            products[e.target.tabIndex] = {
+            products[id] = {
                 ...product,
                 quantity,
-                total: parseInt(product.price) * quantity
+                total: parseInt(product.selling_price) * quantity
             }
             let overAllCost = _.sumBy(products, 'total');
             let totalItems = _.sumBy(products, 'quantity');
-            let total = _.sumBy(products, 'price');
+            let total = _.sumBy(products, 'selling_price');
             this.setState({
                 products,
                 total,
@@ -126,29 +170,29 @@ class PointOfSale extends Component {
         }
     }
 
-    handlePrice = e => {
+    // handlePrice = e => {
 
-        let products = this.state.products;
+    //     let products = this.state.products;
 
-        let product = products[e.target.tabIndex];
-        if (product) {
-            products[e.target.tabIndex] = {
-                ...product,
-                price: parseInt(e.target.value),
-                total: parseInt(product.quantity) * parseInt(e.target.value)
-            }
-            let overAllCost = _.sumBy(products, 'total');
-            let totalItems = _.sumBy(products, 'quantity');
-            let total = _.sumBy(products, 'price');
-            this.setState({
-                products,
-                totalItems,
-                total,
-                overAllCost
-            })
+    //     let product = products[e.target.tabIndex];
+    //     if (product) {
+    //         products[e.target.tabIndex] = {
+    //             ...product,
+    //             selling_price: parseInt(e.target.value),
+    //             total: parseInt(product.quantity) * parseInt(e.target.value)
+    //         }
+    //         let overAllCost = _.sumBy(products, 'total');
+    //         let totalItems = _.sumBy(products, 'quantity');
+    //         let total = _.sumBy(products, 'selling_price');
+    //         this.setState({
+    //             products,
+    //             totalItems,
+    //             total,
+    //             overAllCost
+    //         })
 
-        }
-    }
+    //     }
+    // }
 
     render() {
         const { products } = this.state;
@@ -158,7 +202,7 @@ class PointOfSale extends Component {
                     <Col sm="12" md="5">
                         <CustomCard>
                             <CustomSelect placeholder="Select Customer" name="selectedCustomer" options={this.state.customers} onChange={this.handleSelectedCustomer} value={this.state.selectedCustomer} />
-                            <AsyncSelect
+                            {/* <AsyncSelect
                                 isMulti
                                 cacheOptions
                                 defaultOptions
@@ -168,66 +212,101 @@ class PointOfSale extends Component {
                                 value={this.state.selection}
                                 placeholder="Search Product"
                             // classNamePrefix={product ? "border-danger" : ""}
+                            /> */}
+
+                            {/* <Search
+                                items={this.state.itemsSearched}
+                                placeholder='Search Product by SKU, BarCode and Name '
+                                // maxSelected={3}
+                                multiple={true}
+                                getItemsAsync={this.handleSearch}
+                                onItemsChanged={this.handleProductChange}
+                            /> */}
+
+                            <LiveSearch
+                                items={this.state.itemsSearched}
+                                placeholder='Search Product by SKU, BarCode and Name'
+                                onSearch={this.handleSearch}
+                                onItemClicked={this.onItemClicked}
                             />
-
-                            <Table className="pos_product_table">
-                                <thead className="bg-gray-dark">
-                                    <tr>
-                                        <th width="40%">Product</th>
-                                        <th width="15%">Price</th>
-                                        <th width="15%">Qty</th>
-                                        <th width="30%">SubTotal</th>
-                                        {/* <th width="15%"><i className="fa fa-trash"> </i></th> */}
-                                    </tr>
-                                </thead>
-                                <tbody className="light-gray border-bottom">
-                                    {products.map((product, index) => {
-                                        return <tr name={product.label} id={product.value} key={product.value}>
-                                            <td>{product.label}</td>
-                                            <td>
-                                                {product.price}
-                                            </td>
-                                            <td className="d-inline-flex">
-                                                <Form.Control as="input" type="number" name={product.label} onChange={this.handleQuantity} tabIndex={index} size="sm" value={products[index]["quantity"]} />
-                                            </td>
-                                            <td>
-                                                Rs. {product.total}
-                                            </td>
-
-                                            {/* <td>
-                                                <Button size="sm" onClick={this.removeItem} name={product.label} tabIndex={index} variant="danger"><i className="fa fa-window-close" aria-hidden="true"></i></Button>
-                                            </td> */}
+                            <div className="pos_product_table">
+                                <Table >
+                                    <thead className="bg-gray-dark">
+                                        <tr>
+                                            <th width="30%">Product</th>
+                                            <th width="15%">Price</th>
+                                            <th width="20%">Qty</th>
+                                            <th width="20%">SubTotal</th>
+                                            <th width="15%"><i className="fa fa-trash"> </i></th>
                                         </tr>
-                                    })}
-                                </tbody>
-                                <tfoot >
-                                    <tr>
-                                        <td className="text-left">Items</td>
-                                        <td className="font-weight-bold text-right">{this.state.totalItems}</td>
-                                        <td className="text-left">Total</td>
-                                        <td className="font-weight-bold text-right">{this.state.overAllCost}</td>
-                                    </tr>
-                                </tfoot>
-                            </Table>
+                                    </thead>
+                                    <tbody className="light-gray border-bottom">
+                                        {products.map((product, index) => {
+                                            return <tr name={product.label} id={product.value} key={product.value}>
+                                                <td>{product.name}</td>
+                                                <td>
+                                                    {product.selling_price}
+                                                </td>
+                                                <td className="d-inline-flex">
+                                                    <Form.Control as="input" type="number" data-val={index} name={product.name} onChange={this.handleQuantity} tabIndex={index + 3} size="sm" value={products[index]["quantity"]} />
+                                                </td>
+                                                <td>
+                                                    Rs. {product.total}
+                                                </td>
+                                                <td>
+                                                    <Button size="sm" onClick={this.removeItem} name={product.label} data-val={index + 100} variant="danger"><i className="fa fa-window-close" aria-hidden="true"></i></Button>
+                                                </td>
+                                            </tr>
+                                        })}
+                                    </tbody>
 
+                                </Table>
+                            </div>
+                            <div className="overAll-detail-bottom">
+                                <Table>
+                                    <thead >
+                                        <tr>
+                                            <th className="text-left">Items</th>
+                                            <th className="font-weight-bold text-right">{this.state.totalItems}</th>
+                                            <th className="text-left">Total</th>
+                                            <th className="font-weight-bold text-right" colSpan="2">{this.state.overAllCost}</th>
+                                        </tr>
+                                    </thead>
+                                </Table>
+
+                            </div>
                         </CustomCard>
 
                     </Col>
                     <Col sm="12" md="7">
-
                         <CustomCard>
+                            <div className="category_bar">
+                                <label htmlFor="category_title" title="Tip: Scroll X">Choose Category</label>
+                                <PerfectScrollbar>
+                                    <div className="categories_list d-inline-flex w-100" id="category_title" >
 
+                                        {this.state.categories.map(category => <Button size="sm" key={category.id} className={`p-2 mr-1 mb-1 ${this.state.selectedCategory === category.id ? 'bg-secondary' : ''}`}>{category.categoryName}</Button>)}
+
+                                    </div>
+                                </PerfectScrollbar>
+                            </div>
+                            <div className="products_listed">
+                                <PerfectScrollbar>
+
+                                </PerfectScrollbar>
+                            </div>
 
                         </CustomCard>
                     </Col>
                 </Row>
             </div>
-        </Aux>);
+        </Aux >);
     }
 }
 const mapStateToProps = state => {
     return {
-        customers: state.customers.data
+        customers: state.customers.data,
+        categories: state.categories.data,
     }
 }
 

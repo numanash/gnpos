@@ -15,6 +15,15 @@ router.get("/find", async (req, res, next) => {
     })
 });
 
+router.get("/category/:categoryId", async (req, res, next) => {
+    await products.getByCategory(req.params.categoryId).then(result => {
+        return result.length ?
+            res.status(200).send(result) : res.status(404).send("Nothing Found");
+    }).catch(err => {
+        return res.status(404).send(err);
+    })
+});
+
 router.post("/", async (req, res) => {
     var productCode = await genCode(5);
     let data = {

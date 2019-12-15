@@ -1,8 +1,13 @@
 .point_of_sale {
     .pos_product_table {
-        tbody {
-            min-height: 250px;
-            max-height: 300px;
+        min-height: 250px;
+        height: 280px;
+        max-height: 300px;
+    }
+
+    .category_bar {
+        .categories_list {
+            // overflow-x: auto;
         }
     }
 }

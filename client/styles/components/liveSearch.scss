@@ -1,0 +1,13 @@
+.live_search {
+    .search_input {}
+
+    .search_body {
+        .search_list {
+            border: 1px solid lightgrey;
+
+            .search_item {
+                cursor: pointer;
+            }
+        }
+    }
+}
