@@ -21,6 +21,7 @@ class PointOfSale extends Component {
             products: [],
             categories: [],
             itemsSearched: [],
+            productsByCategory: [],
             selectedCustomer: { value: "Walk In Customer", },
             total: 0,
             totalItems: 0,
@@ -55,6 +56,12 @@ class PointOfSale extends Component {
                     productsByCategory: res.data
                 })
             }).catch(err => {
+                if (typeof (err.data) === "string") {
+                    this.setState({
+                        productsError: err.data,
+                        productsByCategory: []
+                    })
+                }
 
             })
         })
@@ -254,7 +261,7 @@ class PointOfSale extends Component {
                                                     Rs. {product.total}
                                                 </td>
                                                 <td>
-                                                    <Button size="sm" onClick={this.removeItem} name={product.label} data-val={index + 100} variant="danger"><i className="fa fa-window-close" aria-hidden="true"></i></Button>
+                                                    <Button size="sm" onClick={this.removeItem} name={product.label} data-val={product.id} variant="danger"><i className="fa fa-window-close" aria-hidden="true"></i></Button>
                                                 </td>
                                             </tr>
                                         })}
@@ -285,14 +292,21 @@ class PointOfSale extends Component {
                                 <PerfectScrollbar>
                                     <div className="categories_list d-inline-flex w-100" id="category_title" >
 
-                                        {this.state.categories.map(category => <Button size="sm" key={category.id} className={`p-2 mr-1 mb-1 ${this.state.selectedCategory === category.id ? 'bg-secondary' : ''}`}>{category.categoryName}</Button>)}
+                                        {this.state.categories.map(category =>
+                                            <Button size="sm" data-value={category.id} key={category.id} className={`p-2 mr-1 mb-1 ${this.state.selectedCategory === category.id ? 'bg-secondary' : ''}`} onClick={this.onCategoryClicked}>
+                                                {category.categoryName}
+                                            </Button>)}
 
                                     </div>
                                 </PerfectScrollbar>
                             </div>
                             <div className="products_listed">
                                 <PerfectScrollbar>
-
+                                    <div className="products_scroller h-100 py-2">
+                                        {this.state.productsByCategory.map(item => {
+                                            return <Button key={item.id} variant="light" data-value={item.id} className="btn-products" onClick={this.addToCart}><img src="/img.jpg" /><span>{item.name}</span></Button>
+                                        })}
+                                    </div>
                                 </PerfectScrollbar>
                             </div>
 
