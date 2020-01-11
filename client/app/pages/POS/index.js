@@ -460,25 +460,25 @@ class PointOfSale extends Component {
                                     value={this.state.selectedCustomer}
                                 />
                                 {/* <AsyncSelect
-                                isMulti
-                                cacheOptions
-                                defaultOptions
-                                loadOptions={this.handleSearch}
-                                onChange={this.handleProductChange}
-                                onInputChange={this.handleInputChange}
-                                value={this.state.selection}
-                                placeholder="Search Product"
-                            // classNamePrefix={product ? "border-danger" : ""}
-                            /> */}
+                                    isMulti
+                                    cacheOptions
+                                    defaultOptions
+                                    loadOptions={this.handleSearch}
+                                    onChange={this.handleProductChange}
+                                    onInputChange={this.handleInputChange}
+                                    value={this.state.selection}
+                                    placeholder="Search Product"
+                                // classNamePrefix={product ? "border-danger" : ""}
+                                /> */}
 
                                 {/* <Search
-                                items={this.state.itemsSearched}
-                                placeholder='Search Product by SKU, BarCode and Name '
-                                // maxSelected={3}
-                                multiple={true}
-                                getItemsAsync={this.handleSearch}
-                                onItemsChanged={this.handleProductChange}
-                            /> */}
+                                    items={this.state.itemsSearched}
+                                    placeholder='Search Product by SKU, BarCode and Name '
+                                    // maxSelected={3}
+                                    multiple={true}
+                                    getItemsAsync={this.handleSearch}
+                                    onItemsChanged={this.handleProductChange}
+                                /> */}
 
                                 <LiveSearch
                                     items={this.state.itemsSearched}
@@ -570,7 +570,7 @@ class PointOfSale extends Component {
                                                 <th className="text-left border-0">Discount</th>
                                                 <th className="font-weight-bold text-right d-flex justify-content-end border-0" colSpan="2">
                                                     <span>{this.state.discount_type === "percentage" ? `${this.state.discount} %` : `Rs. ${this.state.discount}`}</span>&nbsp;&nbsp;
-                                                    <Dropdown>
+                                                        <Dropdown>
                                                         <DropdownButton
                                                             variant="success"
                                                             id="dropdown-basic"
@@ -601,7 +601,7 @@ class PointOfSale extends Component {
                                                                         <option value="payment">Payment</option>
                                                                         <option value="percentage">
                                                                             Percentage
-                                    </option>
+                                        </option>
                                                                     </Form.Control>
                                                                 </Form.Group>
                                                                 <Dropdown.Item
@@ -611,7 +611,7 @@ class PointOfSale extends Component {
                                                                     onClick={this.addDiscount}
                                                                 >
                                                                     Submit
-                                </Dropdown.Item>
+                                    </Dropdown.Item>
                                                             </div>
                                                             {/* </Dropdown.Menu> */}
                                                         </DropdownButton>
@@ -636,7 +636,7 @@ class PointOfSale extends Component {
                                 <div className="category_bar">
                                     <label htmlFor="category_title" title="Tip: Scroll X">
                                         Choose Category
-                  </label>
+                    </label>
                                     <PerfectScrollbar>
                                         <div
                                             className="categories_list d-inline-flex w-100"
