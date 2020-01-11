@@ -28,17 +28,17 @@ module.exports = {
   },
   add: (data, products) => {
     let posData = {
-      title: data.orderName,
+      title: data.title,
       code: data.orderCode,
-      ref_client: data.selectedCustomer.value,
-      payment_type: data.paymentType,
-      total_received: data.totalPaid,
-      discount_in_cash: data.discount,
-      discount_type: data.discountType,
-      discount_percent: data.discountPercentage,
-      total_payable: data.subTotal,
-      total_items: data.totalItems,
-      description: data.orderNote,
+      ref_client: data.ref_client,
+      payment_type: data.payment_type,
+      total_received: data.total_received,
+      discount_in_cash: data.discount_in_cash,
+      discount_type: data.discount_type,
+      discount_percent: data.discount_percent,
+      total_payable: data.total_payable,
+      total_items: data.total_items,
+      description: data.description,
       customer_pay: data.customer_pay,
       order_status: data.order_status,
       customer_return: data.customer_return
@@ -68,8 +68,8 @@ module.exports = {
             return products.map((product, index) => {
               OrderedItems.create(
                 {
-                  item_price: product.price,
-                  item_code: product.code,
+                  item_price: product.selling_price,
+                  item_code: product.barcode,
                   item_id: product.id,
                   item_quantity: product.quantity,
                   order_code: data.orderCode,
@@ -238,6 +238,7 @@ module.exports = {
                         }
                         if (index === products.length - 1) {
                           t.commit();
+                          console.log(pos.code);
                           resolve(pos.code);
                         }
                       });
@@ -319,7 +320,10 @@ module.exports = {
       }',colour='${data.colour}',codebar='${data.codebar}' WHERE id=${param}`;
     return new Promise((resolve, reject) => {
       db.query(query, (err, result) => {
-        if (err) reject("error", err);
+        if (err){ 
+          console.log({err});
+          reject("error", err);
+        }
         resolve(result);
       });
     });

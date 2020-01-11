@@ -45,6 +45,9 @@ axios.interceptors.request.use(function (config) {
     return config
 }, function (error) {
     // removeClass();
+    if (error.response.status === 404 && error.response.data.parent && error.response.data.parent.code === "ECONNREFUSED") {
+        alert("db not connected");
+    }
     return Promise.reject(error.response);
 });
 
@@ -58,12 +61,16 @@ axios.interceptors.response.use(function (response) {
 },
     (error) => {
         // removeClass();
+
         if (error.response) {
             if (error.response.status === 401) {
                 let location = window.location.pathname;
                 cookie.remove("Authorization");
                 window.location.pathname = `/login?Redirect=${location}`;
                 // logOutApi();
+            }
+            if (error.response.status === 404 && error.response.data.parent && error.response.data.parent.code === "ECONNREFUSED") {
+                alert("db not connected");
             }
             return Promise.reject(error.response);
         }

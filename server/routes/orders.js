@@ -10,7 +10,7 @@ router.get("/", async (req, res, next) => {
   });
 });
 
-router.post("/add", async (req, res) => {
+router.post("/place-order", async (req, res) => {
   var orderCode = await genCode();
   const body = { ...req.body, orderCode };
   const products = body.products;

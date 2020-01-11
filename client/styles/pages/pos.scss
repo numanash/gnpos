@@ -1,8 +1,16 @@
 .point_of_sale {
+
+    .table th,
+    .table td {
+        padding: 5px;
+    }
+
     .pos_product_table {
-        min-height: 250px;
-        height: 280px;
-        max-height: 300px;
+        min-height: 170px;
+        height: 180px;
+        max-height: 220px;
+        // overflow: hidden;
+        // overflow-x:hidden;
     }
 
     .category_bar {

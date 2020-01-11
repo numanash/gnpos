@@ -30,8 +30,8 @@ $fa-font-path: "~font-awesome/fonts";
 @import "~react-table/react-table.css";
 
 @import "~bootstrap/scss/bootstrap";
-@import "../public/css/adminlte.min.css";
 @import "~react-perfect-scrollbar/dist/css/styles.css";
+@import "../public/css/adminlte.min.css";
 
 
 
@@ -51,12 +51,22 @@ input[type=number]::-webkit-outer-spin-button {
   border: 1px solid red !important
 }
 
+.search_body {
+  z-index: 9;
+}
+
 .table_actions {
   .dropdown-menu.show {
     max-width: 60px !important;
     min-width: 50px !important;
   }
 
+}
+
+button {
+  i {
+    pointer-events: none;
+  }
 }
 
 

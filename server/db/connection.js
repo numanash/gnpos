@@ -5,7 +5,7 @@ const db = mysql.createPool({
   host: "localhost",
   user: "root",
   password: "",
-  database: "gn_pos"
+  database: "gnpos"
 });
 // *{ --exec babel - node--presets env}*
 // db.connect(function(err) {
