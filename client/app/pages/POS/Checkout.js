@@ -46,9 +46,15 @@ const Checkout = (props) => {
                     {[10, 20, 50, 100, 500, 1000, 5000].map((price, i) => <Button className="w-100 rounded-0" onClick={props.handleCustomerPay} variant={i % 2 ? "warning" : "primary"} key={"price_" + price + i} value={price}>{price}</Button>)}
                 </Col>
             </Row>
-
-
-                <Button variant="primary" onClick={props.submitPayNow}>Pay Now</Button>
+                {props.update ?
+                    <Button variant="success" onClick={props.submitPayNow}>Complete Order</Button>
+                    :
+                    <>
+                        <Button variant="success" onClick={props.submitPayNow}>Pay Now</Button>&nbsp;
+                        <Button variant="warning" onClick={props.saveOrderNow}>Save Order</Button>&nbsp;
+                        <Button variant="danger" onClick={props.advanceOrder}>Advance Order</Button>
+                    </>
+                }
             </>
                 : <div>
                     Please select items first

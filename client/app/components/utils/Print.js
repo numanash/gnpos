@@ -1,15 +1,15 @@
 export default props => {
-    // function(data) {
-    // const data = this.setElement;
-    var data = document.getElementById(props.divId).innerHTML;
-    let mywindow = window.open("", "", "height=680,width=720");
-    mywindow.document.write(
-      '<link rel="stylesheet" href="http://localhost:4000/assets/bootstrap/css/bootstrap.min.css" type="text/css" />'
-    );
-    mywindow.document.write(
-      `<html><head><title>${
-        props.title
-      } | GN POS</title><style type="text/css" media="screen,print">
+  // function(data) {
+  // const data = this.setElement;
+  var data = document.getElementById(props.divId).innerHTML;
+  let mywindow = window.open("", "", "height=680,width=720");
+  mywindow.document.write(
+    `<link rel="stylesheet" href="${window.origin}/dist/css/adminlte.min.css" type="text/css" />`
+  );
+  mywindow.document.write(
+    `<html><head><title>${
+    props.title
+    } | GN POS</title><style type="text/css" media="screen,print">
            
             
             
@@ -60,20 +60,19 @@ export default props => {
             ${props.printStyle}
           }
             </style>`
-    );
-  
-    mywindow.document.write("</head><body class='bg-transparent'> ");
-    mywindow.document.write(data);
-    mywindow.document.write("</body></html>");
-  
-    mywindow.document.close(); // necessary for IE >= 10
-    mywindow.focus(); // necessary for IE >= 10
-  
-    setTimeout(function() {
-      mywindow.print();
-      // mywindow.close();
-    }, 600);
-  
-    return true;
-  };
-  
+  );
+
+  mywindow.document.write("</head><body class='bg-transparent'> ");
+  mywindow.document.write(data);
+  mywindow.document.write("</body></html>");
+
+  mywindow.document.close(); // necessary for IE >= 10
+  mywindow.focus(); // necessary for IE >= 10
+
+  setTimeout(function () {
+    mywindow.print();
+    // mywindow.close();
+  }, 600);
+
+  return true;
+};

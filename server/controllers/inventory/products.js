@@ -140,7 +140,6 @@ module.exports = {
     })
   },
   delete: params => {
-    console.log(params);
     let query = `Delete FROM category Where id=${params}`;
     return new Promise((resolve, reject) => {
       db.query(query, (err, result) => {

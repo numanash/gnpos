@@ -5,9 +5,7 @@ const genCode = require("../constant/generateCode");
 
 router.get("/", async (req, res, next) => {
   console.log("here");
-  res.status(200).send({
-    data: await orders.getAll()
-  });
+  res.status(200).send(await orders.getAll(req.query));
 });
 
 router.post("/place-order", async (req, res) => {
@@ -32,13 +30,11 @@ router.post("/place-order", async (req, res) => {
     });
 });
 
-router.get("/pending/:id", async (req, res) => {
+router.get("/pending/:orderCode", async (req, res) => {
   await orders
-    .getPendingOrder(req.params.id)
+    .getPendingOrder(req.params.orderCode)
     .then(result => {
-      res.status(200).send({
-        data: result
-      });
+      res.status(200).send(result);
     })
     .catch(e => {
       console.log(e);
@@ -84,9 +80,7 @@ router.put("/update/:id", async (req, res) => {
   await orders
     .updateOrder(body, products, req.params.id)
     .then(result => {
-      console.log({
-        result
-      });
+      console.log({ result });
       res.status(202).send({
         message: "Order updated successfully ",
         orders: result

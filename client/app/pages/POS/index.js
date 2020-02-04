@@ -22,7 +22,7 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import { percentage } from "../../constants/functions";
 import Checkout from "./Checkout";
 import SalesReceipt from "./SalesReceipt";
-
+let productToBeRemoved = [];
 class PointOfSale extends Component {
     constructor(props) {
         super(props);
@@ -36,9 +36,11 @@ class PointOfSale extends Component {
             selectedCustomer: { value: 3, label: "Walk In Customer" },
             total: 0,
             totalItems: 0,
+            payment_type: "Cash",
             selectedCategory: 1,
             overAllCost: 0,
             discount: 0,
+            order_status: "completed",
             subTotal: 0,
             discount_type: "payment",
             customer_pay: 0,
@@ -49,6 +51,21 @@ class PointOfSale extends Component {
         this.props.dispatch(middleware("customers").fetchAll());
         this.props.dispatch(middleware("categories").fetchAll());
         this.onCategoryClicked(1);
+        if (this.props.match.params.orderCode) {
+            axios.get(`/orders/pending/${this.props.match.params.orderCode}`).then(res => {
+                let products = res.data.oi.map(product => ({
+                    ...product,
+                    total: parseInt(product.selling_price) * product.quantity
+                }))
+                const order = res.data;
+                this.setState({
+                    products,
+                    overAllCost: res.data.total_payable,
+                    ...order,
+                    update: true
+                })
+            })
+        }
     }
 
     componentDidUpdate(prevProps) {
@@ -265,17 +282,23 @@ class PointOfSale extends Component {
                 totalItems = _.sumBy(products, "quantity"),
                 total = _.sumBy(products, "price"),
                 subTotal = _.sumBy(products, "total");
+
             if (this.state.discount) {
                 this.state.discount_type === "percentage" ?
                     overAllCost = subTotal - percentage(subTotal, this.state.discount)
                     :
                     overAllCost = subTotal - this.state.discount
             }
+
+            productToBeRemoved.push(productId);
+            productToBeRemoved = _.uniqBy(productToBeRemoved);
+
             this.setState({
                 products,
                 total,
                 overAllCost,
                 subTotal,
+                productToBeRemoved,
                 totalItems
             });
 
@@ -400,30 +423,91 @@ class PointOfSale extends Component {
     }
 
     submitPayNow = e => {
+
+        if (this.state.update) {
+            let data = {
+                title: this.state.orderName,
+                code: this.state.code,
+                ref_client: this.state.selectedCustomer.value,
+                payment_type: "Cash",
+                discount_in_cash: this.state.discount,
+                discount_type: this.state.discount_type,
+                discount_percent: this.state.discount,
+                total_payable: this.state.overAllCost,
+                total_items: this.state.totalItems,
+                description: this.state.orderNote,
+                order_status: "completed",
+                total_received: this.state.customer_pay,
+                customer_pay: this.state.customer_pay,
+                customer_return: this.state.customer_change,
+                deletedItem: productToBeRemoved
+            };
+            axios.put(`/orders/update/${this.props.match.params.orderCode}`, { ...data, products: this.state.products }).then(result => {
+
+                this.setState({
+                    orderCode: result.data.orders,
+                    checkOut: false
+                })
+                // this.resetOrder();
+                this.props.history.push("/orders")
+            }).catch(err => {
+                console.log({ err });
+            })
+            return;
+        }
         let data = {
             title: this.state.orderName,
             ref_client: this.state.selectedCustomer.value,
-            payment_type: "Cash",
-            total_received: this.state.customer_pay,
+            payment_type: this.state.payment_type,
             discount_in_cash: this.state.discount,
             discount_type: this.state.discount_type,
             discount_percent: this.state.discount,
             total_payable: this.state.overAllCost,
             total_items: this.state.totalItems,
             description: this.state.orderNote,
+            order_status: this.state.order_status,
+            total_received: this.state.customer_pay,
             customer_pay: this.state.customer_pay,
-            order_status: "completed",
             customer_return: this.state.customer_change
         }
 
         axios.post("/orders/place-order", { ...data, products: this.state.products }).then(result => {
             this.setState({
-                orderCode: result.data.orders
+                orderCode: result.data.orders,
+                checkOut: false
             })
+            this.resetOrder();
         }).catch(err => {
             console.log({ err });
         })
     }
+
+    closeReceipt = e => {
+        this.setState({
+            orderCode: undefined
+        })
+    }
+    advanceOrder = e => {
+        this.setState({
+            order_status: "advance",
+            payment_type: "pending",
+        }, () => {
+            this.submitPayNow();
+        })
+    }
+
+    saveOrderNow = e => {
+        this.setState({
+            order_status: "pending",
+            payment_type: "pending",
+            total_received: 0,
+            customer_pay: 0,
+            customer_return: 0
+        }, () => {
+            this.submitPayNow();
+        })
+    }
+
     render() {
         const { products } = this.state;
         return (
@@ -431,10 +515,11 @@ class PointOfSale extends Component {
                 <div className="point_of_sale">
                     {this.state.orderCode && <SalesReceipt
                         orderCode={this.state.orderCode}
-
+                        closeReceipt={this.closeReceipt}
                     />}
                     {this.state.checkOut &&
                         <Checkout
+                            advanceOrder={this.advanceOrder}
                             hideModal={() => this.setState({
                                 checkOut: false
                             })}
@@ -446,8 +531,10 @@ class PointOfSale extends Component {
                                 customer_pay: this.state.customer_pay,
                                 customer_change: this.state.customer_change
                             }}
+                            saveOrderNow={this.saveOrderNow}
                             handleCustomerPay={this.handleCustomerPay}
                             submitPayNow={this.submitPayNow}
+                            update={this.state.update}
                         />}
                     <Row>
                         <Col sm="12" md="5">

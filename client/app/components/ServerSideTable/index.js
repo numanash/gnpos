@@ -76,7 +76,12 @@ class ServerSideTable extends React.Component {
                             {this.props.canView && <Dropdown.Item title="view" onClick={() => this.onView(row[this.props.actionId])} ><i className="fa fa-eye"></i></Dropdown.Item>}
                             {this.props.canEdit && <Dropdown.Item title="edit" onClick={() => this.onEdit(row[this.props.actionId])} ><i className="fa fa-edit"></i></Dropdown.Item>}
                             {this.props.canDelete && <Dropdown.Item title="delete" onClick={() => this.onDelete(row[this.props.actionId])} ><i className="fa fa-trash"></i></Dropdown.Item>}
-                            {this.props.extraButtons && this.props.extraButtons.length && this.props.extraButtons.map(button => <Dropdown.Item key={button.title} title={button.title} onClick={() => button.action(row[this.props.actionId])} ><i className={button.icon}></i></Dropdown.Item>)}
+                            {this.props.extraButtons && this.props.extraButtons.length && this.props.extraButtons.map(button =>
+                                button.condition ?
+                                    (maindata[button.conditionPropertyName] === button.conditionPropertyValue &&
+                                        <Dropdown.Item key={button.title} title={button.title} onClick={() => button.action(row[this.props.actionId])} ><i className={button.icon}></i></Dropdown.Item>) :
+                                    <Dropdown.Item key={button.title} title={button.title} onClick={() => button.action(row[this.props.actionId])} ><i className={button.icon}></i></Dropdown.Item>)}
+
                         </Dropdown.Menu>
                     </Dropdown>
 

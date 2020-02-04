@@ -49,7 +49,6 @@ module.exports = {
             }
           )
           .then(res => {
-            console.log({ res });
             resolve(res);
           })
           .catch(e => {

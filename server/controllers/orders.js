@@ -6,24 +6,25 @@ const ProductStockFlow = require("../models/").ProductStockFlow;
 const Products = require("../models/").Products;
 
 module.exports = {
-  getAll: () => {
+  getAll: (data) => {
     // let query = "Select * from `category` ";
     return new Promise((resolve, reject) => {
-      sequelize
-        .query(
-          `Select pos.*, c.name as cname from point_of_sale pos INNER JOIN customers c ON c.id=pos.ref_client `,
-          {
-            raw: false,
-            type: Sequelize.QueryTypes.SELECT,
-            plain: false
-          }
-        ).then(res => {
-          console.log({ res });
-          resolve(res);
-        }).catch(e => {
-          reject(e);
-        })
-
+      if (data.limit) {
+        sequelize
+          .query(
+            `Select pos.*, c.name as cname from point_of_sale pos INNER JOIN customers c ON c.id=pos.ref_client ORDER BY pos.${data.column} ${data.order} LIMIT ${data.offset}, ${data.limit} `,
+            {
+              raw: false,
+              type: Sequelize.QueryTypes.SELECT,
+              plain: false
+            }
+          ).then(res => {
+            console.log({ res });
+            resolve(res);
+          }).catch(e => {
+            reject(e);
+          })
+      }
     });
   },
   add: (data, products) => {
@@ -115,9 +116,6 @@ module.exports = {
               });
             });
           })
-          .then(data => {
-            console.log({ data });
-          })
           .catch(posErro => {
             console.log({ posErro });
             t.rollback();
@@ -128,17 +126,17 @@ module.exports = {
   },
   updateOrder: (data, products, id) => {
     let posData = {
-      title: data.orderName,
+      title: data.title,
       code: data.code,
-      ref_client: data.selectedCustomer.value,
-      payment_type: data.paymentType,
-      total_received: data.totalPaid,
-      discount_in_cash: data.discount,
-      discount_type: data.discountType,
-      discount_percent: data.discountPercentage,
-      total_payable: data.subTotal,
-      total_items: data.totalItems,
-      description: data.orderNote,
+      ref_client: data.ref_client,
+      payment_type: data.payment_type,
+      total_received: data.total_received,
+      discount_in_cash: data.discount_in_cash,
+      discount_type: data.discount_type,
+      discount_percent: data.discount_percent,
+      total_payable: data.total_payable,
+      total_items: data.total_items,
+      description: data.description,
       customer_pay: data.customer_pay,
       order_status: data.order_status,
       customer_return: data.customer_return
@@ -167,8 +165,7 @@ module.exports = {
           ]),
           {
             where: {
-              id: id,
-              code: data.code
+              code: posData.code
             },
             transaction: t
           }
@@ -191,22 +188,22 @@ module.exports = {
               ).then(orderItem => {
                 return Products.findOne({ where: { id: product.id } }).then(
                   foundProduct => {
-                    return ProductStockFlow.create(
+                    return ProductStockFlow.update(
                       {
-                        ref_product_id: foundProduct.id,
-                        ref_product_code: foundProduct.barcode,
+
                         quantity_before: foundProduct.quantity,
                         quantity: product.quantity,
-                        quantity_after:
-                          foundProduct.quantity - product.quantity,
+                        quantity_after: foundProduct.quantity - product.quantity,
                         type: "sale",
                         unit_price: foundProduct.selling_price,
-                        total_price:
-                          foundProduct.selling_price * product.quantity,
-                        ref_supplier: null,
-                        ref_supply: null
+                        total_price: foundProduct.selling_price * product.quantity,
                       },
-                      { transaction: t }
+                      {
+                        where: {
+                          ref_product_id: product.id,
+                          ref_pos_code: data.code
+                        }, transaction: t
+                      }
                     ).then(stockFlow => {
                       return Products.update(
                         {
@@ -272,7 +269,7 @@ module.exports = {
     return new Promise((resolve, reject) => {
       sequelize
         .query(
-          `SELECT pos.id, pos.title, pos.description, pos.code, pos.total_items, pos.ref_client, pos.payment_type, pos.total_received, pos.discount_in_cash, pos.discount_type, pos.discount_percent, pos.total_payable, pos.customer_pay, pos.customer_return, pos.status, pos.order_status, pos.createdAt, pos.updatedAt, oi.id AS 'oi.oiId', oi.item_price AS 'oi.item_price', oi.item_code AS 'oi.item_code', oi.item_id AS 'oi.id', oi.item_quantity AS 'oi.quantity', oi.order_code AS 'oi.order_code', oi.total_price AS 'oi.totalPrice', oi.status AS 'oi.status', oi.createdAt AS 'oi.createdAt', oi.updatedAt AS 'oi.updatedAt', p.id AS 'oi.pId',p.name AS 'oi.name',p.quantity AS 'oi.pQuantity',p.quantity_remaining As 'oi.quantity_remaining', p.selling_price	as 'oi.selling_price' FROM point_of_sale pos INNER JOIN ordered_items oi INNER JOIN products p ON oi.order_code = '${orderCode}' AND p.id=oi.item_id  WHERE pos.code = '${orderCode}' AND pos.status = 1 AND pos.order_status = 'pending' `,
+          `SELECT pos.id, pos.title, pos.description, pos.code, pos.total_items, pos.ref_client, pos.payment_type, pos.total_received, pos.discount_in_cash, pos.discount_type, pos.discount_percent, pos.total_payable, pos.customer_pay, pos.customer_return, pos.status, pos.order_status, pos.createdAt, pos.updatedAt, oi.id AS 'oi.oiId', oi.item_price AS 'oi.item_price', oi.item_code AS 'oi.item_code', oi.item_id AS 'oi.id', oi.item_quantity AS 'oi.quantity', oi.order_code AS 'oi.order_code', oi.total_price AS 'oi.totalPrice', oi.status AS 'oi.status', oi.createdAt AS 'oi.createdAt', oi.updatedAt AS 'oi.updatedAt', p.id AS 'oi.pId',p.name AS 'oi.name',p.quantity AS 'oi.pQuantity',p.quantity_remaining As 'oi.quantity_remaining', p.selling_price	as 'oi.selling_price' FROM point_of_sale pos INNER JOIN ordered_items oi INNER JOIN products p ON oi.order_code = '${orderCode}' AND p.id=oi.item_id  WHERE pos.code = '${orderCode}' AND pos.status = 1 AND (pos.order_status = 'pending' OR pos.order_status = 'advance')`,
           {
             raw: false,
             type: Sequelize.QueryTypes.SELECT,
@@ -320,8 +317,8 @@ module.exports = {
       }',colour='${data.colour}',codebar='${data.codebar}' WHERE id=${param}`;
     return new Promise((resolve, reject) => {
       db.query(query, (err, result) => {
-        if (err){ 
-          console.log({err});
+        if (err) {
+          console.log({ err });
           reject("error", err);
         }
         resolve(result);
