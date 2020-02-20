@@ -79,46 +79,72 @@ import menus from '../../../routes/menus';
 import NavGroup from './NavGroup/Index';
 import Aux from '../../../constants/hoc/_Aux';
 import { NavLink } from "react-router-dom"
+import windowSize from 'react-window-size';
 
-const Navigation = () => (
-    <Aux>
-        <aside className="main-sidebar sidebar-dark-primary elevation-4">
-            <a href="index3.html" className="brand-link">
-                {/* <img
-                    src="dist/img/AdminLTELogo.png"
-                    alt="AdminLTE Logo"
-                    className="brand-image img-circle elevation-3"
-                /> */}
-                <span className="brand-text font-weight-light">GN POS</span>
-            </a>
-            <div className="sidebar">
-                <div className="user-panel mt-3 pb-3 mb-3 d-flex">
-                    <div className="image">
-                        {/* <img
-                            src="dist/img/user2-160x160.jpg"
-                            className="img-circle elevation-2"
-                            alt="User Image"
-                        /> */}
-                        User Image
+class Navigation extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {}
+    }
+
+    componentDidMount() {
+        window.addEventListener('scroll', this.scroll)
+    }
+
+    scroll = () => {
+        let ele = document.querySelector(".main-sidebar.sidebar-dark-primary");
+        const scrollPosition = window.pageYOffset;
+        if (scrollPosition > 60) {
+            ele.style.position = "fixed";
+            ele.style.transition = "none";
+        } else {
+            ele.style.position = 'absolute';
+        }
+    }
+
+    UNSAFE_componentWillUnmount() {
+        window.removeEventListener('scroll', this.scroll);
+    }
+
+    render() {
+
+        return (<Aux>
+            <aside className={`main-sidebar sidebar-dark-primary elevation-4`}>
+                <a href="index3.html" className="brand-link">
+                    {/* <img
+                        src="dist/img/AdminLTELogo.png"
+                        alt="AdminLTE Logo"
+                        className="brand-image img-circle elevation-3"
+                    /> */}
+                    <span className="brand-text font-weight-light">GN POS</span>
+                </a>
+                <div className="sidebar">
+                    <div className="user-panel mt-3 pb-3 mb-3 d-flex">
+                        <div className="image">
+                            {/* <img
+                                src="dist/img/user2-160x160.jpg"
+                                className="img-circle elevation-2"
+                                alt="User Image"
+                            /> */}
+                            User Image
+                        </div>
+                        <div className="info">
+                            {/* <NavLink to="/user/profile" className="d-block">
+                                {user.user.name}
+                            </NavLink> */}
+                        </div>
                     </div>
-                    <div className="info">
-                        {/* <NavLink to="/user/profile" className="d-block">
-                            {user.user.name}
-                        </NavLink> */}
+                    <div className="slimScrollDiv">
+                        <nav className="mt-2">
+                            <NavGroup items={menus} />
+                        </nav>
                     </div>
                 </div>
-                <div className="slimScrollDiv">
-                    <nav className="mt-2">
-                        <NavGroup items={menus} />
-                    </nav>
-                </div>
-            </div>
-        </aside>
-    </Aux>
-)
+            </aside>
+        </Aux >)
+    }
+}
 
-
-
-export default Navigation;
+export default windowSize(Navigation);
 
 

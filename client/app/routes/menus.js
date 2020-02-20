@@ -4,6 +4,8 @@ import SuppliersRoutes from "../pages/suppliers/SuppliersRoutes";
 import SupplyRoutes from "../pages/Inventory/supplies/SupplyRoutes";
 import CustomersRoutes from "../pages/customers/CustomersRoutes";
 import POSRoutes from "../pages/POS/POSRoutes";
+import OrdersRoutes from "../pages/Orders/OrdersRoutes";
+import ReportsRoutes from "../pages/Reports/ReportsRoutes";
 
 export default [
     POSRoutes.menus,
@@ -27,6 +29,8 @@ export default [
             SupplyRoutes.menus,
         ]
     },
+    OrdersRoutes.menus,
     SuppliersRoutes.menus,
-    CustomersRoutes.menus
+    CustomersRoutes.menus,
+    ReportsRoutes.menus
 ]

@@ -13,7 +13,7 @@ class Salereceipt extends Component {
 
     UNSAFE_componentWillMount() {
         axios.get(`/reports/receipt/${this.props.orderCode}`).then(res => {
-            let orderDetails = res.data.items[0];
+            let orderDetails = res.data[0];
             if (orderDetails) {
                 if (orderDetails.quantity.includes(",")) {
                     const quantity = orderDetails.quantity.split(",");
@@ -48,7 +48,7 @@ class Salereceipt extends Component {
     UNSAFE_componentWillReceiveProps(props) {
         if (this.props.orderCode !== props.orderCode) {
             axios.get(`/reports/receipt/${this.props.orderCode}`).then(res => {
-                let orderDetails = res.data.items[0];
+                let orderDetails = res.data[0];
                 if (orderDetails) {
                     if (orderDetails.quantity.includes(",")) {
                         const quantity = orderDetails.quantity.split(",");
@@ -164,8 +164,10 @@ class Salereceipt extends Component {
                                 onClick={this.props.closeReceipt}
                             >
                                 X
-              </button>
+                                </button>
+
                             <h1 className="text-center">GN POS</h1>
+
                             <div className="row">
                                 <div className="col-md-6 col-sm-6 col-xs-6">
                                     <p>Customer: {orderDetails.cName}</p>
@@ -174,8 +176,7 @@ class Salereceipt extends Component {
                                 <div className="col-md-6 col-sm-6 col-xs-6">
                                     <p className="text-right">Cashier: Admin</p>
                                     <p className="text-right">
-                                        Date:
-                    {moment(orderDetails.createdAt).format(
+                                        Date: {moment(orderDetails.createdAt).format(
                                             "DD-MM-YYYY HH:mm:ss"
                                         )}
                                     </p>
@@ -260,7 +261,7 @@ class Salereceipt extends Component {
                                     </tr>
                                     {(orderDetails.total_payable - orderDetails.discount).toFixed(
                                         2
-                                    ) !== parseFloat(orderDetails.total_received).toFixed(2) && (
+                                    ) !== parseFloat(orderDetails.total_received).toFixed(2) && orderDetails.order_status === "pending" && (
                                             <tr className="text-right">
                                                 <td>DUE:</td>
                                                 <td className="text-danger">

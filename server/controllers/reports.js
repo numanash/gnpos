@@ -30,10 +30,9 @@ module.exports = {
   },
   getBestSales: (from, to) => {
     // let query = "Select * from `category` ";
-    console.log({ from, to });
     if ((from, to)) {
       return new Promise((resolve, reject) => {
-        const query = `SELECT GROUP_CONCAT(item_quantity) as quantity,item_code, GROUP_CONCAT(DATE_FORMAT(oi.createdAt,"%Y-%m-%d")) as order_date, name FROM ordered_items oi JOIN products p WHERE p.barcode = oi.item_code AND oi.createdAt BETWEEN '${from}' AND '${to}' GROUP BY oi.item_Code`;
+        const query = `SELECT GROUP_CONCAT(item_quantity) as quantity,item_code, GROUP_CONCAT(DATE_FORMAT(oi.createdAt,"%Y-%m-%d")) as order_date, name FROM ordered_items oi JOIN products p INNER JOIN point_of_sale pos WHERE p.barcode = oi.item_code AND (pos.code = oi.order_code AND pos.order_status='completed') AND oi.createdAt BETWEEN '${from}' AND '${to}' GROUP BY oi.item_Code `;
 
         db.query(query, (err, result) => {
           if (err) {
@@ -300,12 +299,13 @@ module.exports = {
   getSaleReceipt: orderCode => {
     return new Promise((resolve, reject) => {
       db.query(
-        `Select code,GROUP_CONCAT(item_quantity) as quantity,GROUP_CONCAT(total_price) as price,GROUP_CONCAT(item_price) as iPrice,total_received,discount_in_cash as discount,customer_pay,customer_return, total_payable,GROUP_CONCAT(p.name) as pName,GROUP_CONCAT(item_code) as iCode,pos.createdAt,cs.name as cName, pos.total_items as items from point_of_sale pos JOIN ordered_items oi JOIN products p ON pos.code = oi.order_code AND p.id = oi.item_id JOIN customers cs WHERE pos.ref_client = cs.id AND pos.code = '${orderCode}' GROUP BY pos.code`,
+        `Select code,order_status,GROUP_CONCAT(item_quantity) as quantity,GROUP_CONCAT(total_price) as price,GROUP_CONCAT(item_price) as iPrice,total_received,discount_in_cash as discount,customer_pay,customer_return, total_payable,GROUP_CONCAT(p.name) as pName,GROUP_CONCAT(item_code) as iCode,pos.createdAt,cs.name as cName, pos.total_items as items from point_of_sale pos JOIN ordered_items oi JOIN products p ON pos.code = oi.order_code AND p.id = oi.item_id JOIN customers cs WHERE pos.ref_client = cs.id AND pos.code = '${orderCode}' GROUP BY pos.code`,
         (err, result) => {
           if (err) {
             console.log({ err });
             reject("error", err);
           }
+
           resolve(result);
         }
       );

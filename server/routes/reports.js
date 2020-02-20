@@ -17,21 +17,15 @@ router.get("/sales", async (req, res, next) => {
   const { from, to } = req.query;
   var result = await reports.getSales(from, to);
 
-  res.status(200).send({
-    data: { sales: result }
-  });
+  res.status(200).send(result);
 });
 
 router.get("/best-sales", async (req, res) => {
   const { from, to } = req.query;
   if ((from && to) !== (null || undefined)) {
-    res.status(200).send({
-      data: await reports.getBestSales(from, to)
-    });
+    res.status(200).send(await reports.getBestSales(from, to));
   } else {
-    res.status(200).send({
-      data: await reports.getBestSales()
-    });
+    res.status(200).send(await reports.getBestSales());
   }
 });
 router.get("/order-details", async (req, res) => {
@@ -122,9 +116,7 @@ router.get("/receipt/:id", async (req, res) => {
   await reports
     .getSaleReceipt(req.params.id)
     .then(result => {
-      res.status(200).send({
-        data: result
-      });
+      res.status(200).send(result);
     })
     .catch(e => {
       res.status(500).send({

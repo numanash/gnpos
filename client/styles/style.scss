@@ -75,3 +75,25 @@ button {
 @import "./pages/supply.scss";
 
 @import "./print.scss";
+
+
+.order-detail-popup {
+  position: fixed;
+  z-index: 2000;
+  padding: 20px;
+  left: 0;
+  height: 100%;
+  top: 0;
+  background: rgba(0, 0, 0, 0.7);
+  overflow-y: auto;
+  width: 100%;
+}
+
+.order-details {
+  background: white;
+  position: relative;
+  margin: 20px auto;
+  width: 500px;
+  padding: 80px 40px 40px;
+  overflow-y: auto;
+}

@@ -3,6 +3,7 @@ import NavCollapse from './NavCollapse';
 import NavItem from './NavItem';
 import Aux from '../../../../constants/hoc/_Aux';
 
+
 const NavGroup = (props) => {
     let navItems = props.items.map(item => {
         switch (item.type) {
