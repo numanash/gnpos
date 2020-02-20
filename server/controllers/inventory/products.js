@@ -69,7 +69,6 @@ module.exports = {
   },
   search: (query) => {
     return new Promise((resolve, reject) => {
-      console.log(query);
       if (query.search) {
         const Op = Sequelize.Op;
 

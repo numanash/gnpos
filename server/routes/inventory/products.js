@@ -28,8 +28,7 @@ router.post("/", async (req, res) => {
     var productCode = await genCode(5);
     let data = {
         ...req.body,
-        barcode: productCode,
-        ref_category: req.body.ref_category.value
+        barcode: productCode
     };
     await products
         .add(data)

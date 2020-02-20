@@ -26,22 +26,22 @@ class AddProduct extends Component {
         super(props);
         this.state = {
             name: '',
-            selling_price: '',
+            selling_price: 0,
             description: '',
             ref_category: {},
             sku: '',
             product_status: 'Active',
-            tax: '',
-            weight: '',
-            colour: '',
-            height: '',
-            width: '',
-            service_charges: '',
+            tax: 0,
+            weight: 0,
+            colour: 0,
+            height: 0,
+            width: 0,
+            service_charges: 0,
             barcode: '',
             productSC: '',
-            productTax: "",
-            discount: "",
-            promotional_price: "",
+            productTax: 0,
+            discount: 0,
+            promotional_price: 0,
             promotional_start_date: new Date(),
             promotional_end_date: new Date(),
             categories: [],
@@ -287,7 +287,7 @@ class AddProduct extends Component {
                                     <FormInput label="Product Barcode" error={barcode} placeholder="AFJLA" name="barcode" type="text" size="sm" onChange={this.handleInput} value={this.state.barcode} />
                                 </Col>
                                 <Col sm="6">
-                                    <Form.Group controlId="ref_category">
+                                    <Form.Group controlId="product_status">
                                         <Form.Label>Product Status <Required /> </Form.Label>
                                         <Form.Control size="sm" as="select" onChange={this.handleSelect} name="product_status" selected={this.state.product_status}>
                                             <option value="Active">Available</option>
@@ -303,7 +303,7 @@ class AddProduct extends Component {
                         <Tab eventKey="pricing" title="Pricing" className="pt-5" tabClassName="font-weight-bold bg-gray text-dark border-bottom-0">
                             <Row>
                                 <Col sm="6">
-                                    <FormInput label="Product Tax" placeholder="" name="tax" type="text" size="sm" onChange={this.handleInput} value={this.state.tax} />
+                                    <FormInput label="Product Tax" placeholder="" name="tax" type="number" size="sm" onChange={this.handleInput} value={this.state.tax} />
                                 </Col>
                                 <Col sm="6">
                                     <FormInput label="Discount" placeholder="" name="discount" type="number" size="sm" onChange={this.handleInput} value={this.state.discount} message="Dicount from original price in local currency" />
