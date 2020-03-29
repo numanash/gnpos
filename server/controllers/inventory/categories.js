@@ -10,7 +10,7 @@ module.exports = {
         Categories.findAndCountAll({
           limit: parseInt(query.limit),
           offset: parseInt(query.offset),
-          order: [[query.column, query.order]]
+          order: [[query.column, query.order]],
         })
           .then(res => {
             resolve(res);
@@ -19,7 +19,11 @@ module.exports = {
             reject(e);
           });
       } else {
-        Categories.findAll().then(res => {
+        Categories.findAll({
+          where:{
+            parent_ref_id:0
+          }
+        }).then(res => {
           resolve(res);
         })
           .catch(e => {
@@ -30,6 +34,19 @@ module.exports = {
       //   if (err) reject("error", err);
       //   resolve(result);
       // });
+    });
+  },
+  getSubCategories: id =>{
+    return new Promise((resolve,reject)=>{
+      Categories.findAll({
+        where:{parent_ref_id: id}
+      })
+        .then(res => {
+              resolve(res);
+        })
+        .catch(e => {
+          reject(e.original.sqlMessage);
+        });
     });
   },
   add: data => {

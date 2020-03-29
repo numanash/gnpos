@@ -8,7 +8,8 @@ import {
     Button,
     InputGroup,
     Dropdown,
-    DropdownButton
+    DropdownButton,
+    Alert
 } from "react-bootstrap";
 import CustomCard from "../../components/CustomCard";
 import Aux from "../../constants/hoc/_Aux";
@@ -22,7 +23,12 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import { percentage } from "../../constants/functions";
 import Checkout from "./Checkout";
 import SalesReceipt from "./SalesReceipt";
+import {Link} from "react-router-dom";
 let productToBeRemoved = [];
+// import { getDevices } from 'usb-barcode-scanner';
+import SweetAlert from 'sweetalert2-react';
+
+
 class PointOfSale extends Component {
     constructor(props) {
         super(props);
@@ -33,21 +39,29 @@ class PointOfSale extends Component {
             categories: [],
             itemsSearched: [],
             productsByCategory: [],
-            selectedCustomer: { value: 3, label: "Walk In Customer" },
+            selectedCustomer: { value: 1, label: "Walk In Customer" },
             total: 0,
             totalItems: 0,
             payment_type: "Cash",
             selectedCategory: 1,
             overAllCost: 0,
             discount: 0,
+            discount_in_cash:0,
+            discount_percent:0,
             order_status: "completed",
             subTotal: 0,
             discount_type: "payment",
             customer_pay: 0,
-            customer_change: 0
+            customer_change: 0,
+            isLoading: true
         };
     }
     componentDidMount() {
+        // console.log(getDevices());
+
+        this.setState({
+            isLoading:true
+        })
         this.props.dispatch(middleware("customers").fetchAll());
         this.props.dispatch(middleware("categories").fetchAll());
         this.onCategoryClicked(1);
@@ -60,10 +74,20 @@ class PointOfSale extends Component {
                 const order = res.data;
                 this.setState({
                     products,
+                    subTotal:res.data.discount_in_cash + res.data.total_payable,
                     overAllCost: res.data.total_payable,
                     ...order,
                     update: true
                 })
+            }).catch(err=>{ 
+                if(err.status === 404){
+                    this.props.history.push({
+                        pathname:"/orders",
+                        params:{
+                            notFound:true
+                        }
+                    })
+                }
             })
         }
     }
@@ -75,16 +99,44 @@ class PointOfSale extends Component {
                 label: customer.name
             }));
             this.setState({
-                customers
+                customers,
+                isLoading:false
             });
         }
         if (this.props.categories !== prevProps.categories) {
             let categories = this.props.categories;
             this.setState({
-                categories
+                categories,
+                isLoading:false
             });
         }
     }
+
+    resetOrder = e=>{
+        this.setState({
+            inputValue: "",
+            products: [],
+            itemsSearched: [],
+            discount: 0,
+            discount_in_cash:0,
+            discount_percent:0,
+            // productsByCategory: [],
+            selectedCustomer: { value: 1, label: "Walk In Customer" },
+            total: 0,
+            totalItems: 0,
+            payment_type: "Cash",
+            selectedCategory: 1,
+            overAllCost: 0,
+            discount: 0,
+            order_status: "completed",
+            subTotal: 0,
+            discount_type: "payment",
+            customer_pay: 0,
+            customer_change: 0,
+            isLoading: true
+        })
+    }
+
     onCategoryClicked = e => {
         if (parseInt(e)) {
             axios
@@ -127,11 +179,13 @@ class PointOfSale extends Component {
             );
         }
     };
+
     handleSelectedCustomer = e => {
         this.setState({
             selectedCustomer: e
         });
     };
+
     handleInput = e => {
         if (e.target.name === "discount") {
 
@@ -156,19 +210,6 @@ class PointOfSale extends Component {
                 [e.target.name]: parseInt(e.target.value)
             });
         }
-    };
-
-    handleDiscount = e => {
-
-        this.setState({
-            ...this.state,
-            [e.target.name]: e.target.value
-        });
-
-        this.setState({
-            ...this.state,
-            [e.target.name]: e.target.value
-        });
     };
 
     handleInputChange = newValue => {
@@ -236,6 +277,7 @@ class PointOfSale extends Component {
             });
         }
     };
+
     onItemClicked = item => {
         let products = this.state.products;
 
@@ -347,23 +389,45 @@ class PointOfSale extends Component {
         }
     };
 
+    //Discount Handle
+    
+    handleDiscount = e => {
+
+        this.setState({
+            ...this.state,
+            [e.target.name]: e.target.value
+        });
+
+    };
+
+
     addDiscount = e => {
 
         let discount_type = this.state.discount_type,
             discount = this.state.discount,
             overAllCost = this.state.overAllCost,
-            subTotal = this.state.subTotal;
+            subTotal = this.state.subTotal,
+            discount_in_cash= this.state.discount_in_cash,
+            discount_percent=this.state.discount_percent;
+
         if (discount_type === "percentage") {
             overAllCost = subTotal - percentage(subTotal, discount);
-
+            discount_in_cash=percentage(subTotal, discount);
+            discount_percent= discount;
             this.setState({
-                overAllCost
+                overAllCost,
+                discount_in_cash,
+                discount_percent
             });
         } else if (discount_type === "payment") {
             overAllCost = subTotal - discount;
+            discount_in_cash = discount;
+            discount_percent = 0;
             this.setState({
                 discount,
-                overAllCost
+                discount_percent,
+                overAllCost,
+                discount_in_cash
             });
         }
     };
@@ -416,6 +480,7 @@ class PointOfSale extends Component {
         if (value) {
             this.setState(prevState => ({
                 customer_pay: value,
+                amountError:undefined,
                 customer_change: value > prevState.overAllCost ? parseInt(value - prevState.overAllCost) : 0,
                 customer_remaning: value < prevState.overAllCost ? parseInt(prevState.overAllCost - value) : 0
             }))
@@ -423,16 +488,26 @@ class PointOfSale extends Component {
     }
 
     submitPayNow = e => {
-
+        if(!this.state.customers.length){
+            this.setState({
+                error:"Customers not found."
+            })
+        }
+        
         if (this.state.update) {
+            if(this.state.customer_pay < this.state.overAllCost){
+                return this.setState({
+                    amountError: "Please pay full amount"
+                })
+            }
             let data = {
                 title: this.state.orderName,
                 code: this.state.code,
                 ref_client: this.state.selectedCustomer.value,
                 payment_type: "Cash",
-                discount_in_cash: this.state.discount,
+                discount_in_cash: this.state.discount_in_cash,
                 discount_type: this.state.discount_type,
-                discount_percent: this.state.discount,
+                discount_percent: this.state.discount_percent,
                 total_payable: this.state.overAllCost,
                 total_items: this.state.totalItems,
                 description: this.state.orderNote,
@@ -448,7 +523,7 @@ class PointOfSale extends Component {
                     orderCode: result.data.orders,
                     checkOut: false
                 })
-                // this.resetOrder();
+                this.resetOrder();
                 this.props.history.push("/orders")
             }).catch(err => {
                 console.log({ err });
@@ -459,9 +534,9 @@ class PointOfSale extends Component {
             title: this.state.orderName,
             ref_client: this.state.selectedCustomer.value,
             payment_type: this.state.payment_type,
-            discount_in_cash: this.state.discount,
+            discount_in_cash: this.state.discount_in_cash,
             discount_type: this.state.discount_type,
-            discount_percent: this.state.discount,
+            discount_percent: this.state.discount_percent,
             total_payable: this.state.overAllCost,
             total_items: this.state.totalItems,
             description: this.state.orderNote,
@@ -474,6 +549,7 @@ class PointOfSale extends Component {
         axios.post("/orders/place-order", { ...data, products: this.state.products }).then(result => {
             this.setState({
                 orderCode: result.data.orders,
+                success:"Order has been placed order code is " + result.data.orders,
                 checkOut: false
             })
             this.resetOrder();
@@ -487,8 +563,11 @@ class PointOfSale extends Component {
             orderCode: undefined
         })
     }
+    
+
     advanceOrder = e => {
         this.setState({
+            error:undefined,
             order_status: "advance",
             payment_type: "pending",
         }, () => {
@@ -502,6 +581,7 @@ class PointOfSale extends Component {
             payment_type: "pending",
             total_received: 0,
             customer_pay: 0,
+            error:undefined,
             customer_return: 0
         }, () => {
             this.submitPayNow();
@@ -512,7 +592,14 @@ class PointOfSale extends Component {
         const { products } = this.state;
         return (
             <Aux>
+                {this.state.success && <SweetAlert
+        show={this.state.success}
+        title="Success"
+        text={this.state.success}
+        onConfirm={() => this.setState({ success: false })}
+      />}
                 <div className="point_of_sale">
+                    {this.state.error && <Alert variant="danger">{this.state.error}</Alert>}
                     {this.state.orderCode && <SalesReceipt
                         orderCode={this.state.orderCode}
                         closeReceipt={this.closeReceipt}
@@ -520,6 +607,7 @@ class PointOfSale extends Component {
                     {this.state.checkOut &&
                         <Checkout
                             advanceOrder={this.advanceOrder}
+                            error={this.state.amountError}
                             hideModal={() => this.setState({
                                 checkOut: false
                             })}
@@ -536,6 +624,8 @@ class PointOfSale extends Component {
                             submitPayNow={this.submitPayNow}
                             update={this.state.update}
                         />}
+                        {this.state.customers.length === 0 && !this.state.isLoading && <Alert variant="danger">Please add customer first. <Link to="/">Click Here</Link></Alert>}
+
                     <Row>
                         <Col sm="12" md="5">
                             <CustomCard>
@@ -656,7 +746,7 @@ class PointOfSale extends Component {
                                                 </th>
                                                 <th className="text-left border-0">Discount</th>
                                                 <th className="font-weight-bold text-right d-flex justify-content-end border-0" colSpan="2">
-                                                    <span>{this.state.discount_type === "percentage" ? `${this.state.discount} %` : `Rs. ${this.state.discount}`}</span>&nbsp;&nbsp;
+                                                    <span>{this.state.discount_type === "percentage" ? `${this.state.discount_percent} %` : `Rs. ${this.state.discount_in_cash}`}</span>&nbsp;&nbsp;
                                                         <Dropdown>
                                                         <DropdownButton
                                                             variant="success"

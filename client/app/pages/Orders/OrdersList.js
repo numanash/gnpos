@@ -7,23 +7,32 @@ const columns = [
         Header: 'Order Code',
         accessor: 'code'
     }, {
+        Header: 'Client Name',
+        accessor: 'cname'
+    },  {
         Header: 'Payment Type',
-        accessor: 'payment_type'
+        accessor: 'payment_type',
+        filterable:false
     }, {
         Header: 'Discount Type',
-        accessor: 'discount_type'
+        accessor: 'discount_type',
+        filterable:false
     }, {
         Header: 'Total',
-        accessor: 'total_payable'
+        accessor: 'total_payable',
+        filterable:false
     }, {
         Header: 'Payed',
-        accessor: 'customer_pay'
+        accessor: 'customer_pay',
+        filterable:false
     }, {
         Header: 'Status',
-        accessor: 'order_status'
+        accessor: 'order_status',
+        filterable:false
     }, {
         Header: 'Return',
-        accessor: 'customer_return'
+        accessor: 'customer_return',
+        filterable:false
     }, {
         Header: 'Actions',
         accessor: 'actions',

@@ -170,16 +170,21 @@ class Salereceipt extends Component {
 
                             <div className="row">
                                 <div className="col-md-6 col-sm-6 col-xs-6">
-                                    <p>Customer: {orderDetails.cName}</p>
-                                    <p>Order No: {this.props.orderCode}</p>
+                                    Customer: {orderDetails.cName}
+                                </div>
+                                <div className="col-md-6 col-sm-6 col-xs-6 text-right">
+                                    Order No: {this.props.orderCode}
                                 </div>
                                 <div className="col-md-6 col-sm-6 col-xs-6">
-                                    <p className="text-right">Cashier: Admin</p>
-                                    <p className="text-right">
+                                    Cashier: Admin
+                                    </div>
+                                <div className="col-md-6 col-sm-6 col-xs-6 text-right">
                                         Date: {moment(orderDetails.createdAt).format(
                                             "DD-MM-YYYY HH:mm:ss"
                                         )}
-                                    </p>
+                                </div>
+                                <div className="col-md-6 col-sm-6 col-xs-6">
+                                    Order Status: {orderDetails.order_status}
                                 </div>
                                 <div className="text-center col-md-12">
                                     <h3>Sales Receipt</h3>
@@ -188,8 +193,8 @@ class Salereceipt extends Component {
                             <table className="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th className="text-left">ITEMS</th>
-                                        <th className="text-right">TOTAL</th>
+                                        <th className="text-left p-1">ITEMS</th>
+                                        <th className="text-right p-1">TOTAL</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -197,11 +202,11 @@ class Salereceipt extends Component {
                                         orderDetails.quantity.map((val, i) => {
                                             return (
                                                 <tr key={i + val}>
-                                                    <td>
+                                                    <td  className="p-1">
                                                         {orderDetails.pName[i]} <br />
                                                         Rs. {parseInt(orderDetails.iPrice[i])} X {val}
                                                     </td>
-                                                    <td className="text-right">
+                                                    <td className="text-right p-1">
                                                         Rs. {orderDetails.price[i]}
                                                     </td>
                                                 </tr>
@@ -209,32 +214,32 @@ class Salereceipt extends Component {
                                         })
                                     ) : (
                                             <tr>
-                                                <td className="text-left">
+                                                <td className="text-left p-1">
                                                     {orderDetails.pName} <br />
                                                     Rs. {orderDetails.iPrice} X {orderDetails.quantity}
                                                 </td>
-                                                <td className="text-right">Rs. {orderDetails.price}</td>
+                                                <td className="text-right p-1">Rs. {orderDetails.price}</td>
                                             </tr>
                                         )}
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <td className="text-left">PRODUCTS COUNT</td>
-                                        <td className="text-right">{orderDetails.items}</td>
+                                        <td className="text-left p-1">PRODUCTS COUNT</td>
+                                        <td className="text-right p-1">{orderDetails.items}</td>
                                     </tr>
                                     <tr>
-                                        <th className="text-left">SUB TOTAL</th>
-                                        <td className="text-right">
+                                        <th className="text-left p-1">SUB TOTAL</th>
+                                        <td className="text-right p-1">
                                             Rs. {orderDetails.total_payable}
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td className="text-left">DISCOUNT</td>
-                                        <td className="text-right">Rs. {orderDetails.discount}</td>
+                                        <td className="text-left p-1">DISCOUNT</td>
+                                        <td className="text-right p-1">Rs. {orderDetails.discount}</td>
                                     </tr>
                                     <tr>
-                                        <th className="text-left">NET PAYABLE</th>
-                                        <td className="text-right">
+                                        <th className="text-left p-1">NET PAYABLE</th>
+                                        <td className="text-right p-1">
                                             Rs.
                       {(
                                                 orderDetails.total_payable - orderDetails.discount
@@ -242,20 +247,20 @@ class Salereceipt extends Component {
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td className="text-left">TOTAL RECEIVED AMOUNT</td>
-                                        <td className="text-right">
+                                        <td className="text-left p-1">TOTAL RECEIVED AMOUNT</td>
+                                        <td className="text-right p-1">
                                             Rs. {parseFloat(orderDetails.total_received).toFixed(2)}
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td className="text-left">CASH</td>
-                                        <td className="text-right">
+                                        <td className="text-left p-1">CASH</td>
+                                        <td className="text-right p-1">
                                             Rs. {orderDetails.customer_pay}
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td className="text-left">CHANGE</td>
-                                        <td className="text-right">
+                                        <td className="text-left p-1">CHANGE</td>
+                                        <td className="text-right p-1">
                                             Rs. {orderDetails.customer_return}
                                         </td>
                                     </tr>
@@ -263,8 +268,8 @@ class Salereceipt extends Component {
                                         2
                                     ) !== parseFloat(orderDetails.total_received).toFixed(2) && orderDetails.order_status === "pending" && (
                                             <tr className="text-right">
-                                                <td>DUE:</td>
-                                                <td className="text-danger">
+                                                <td className="p-1">DUE:</td>
+                                                <td className="text-danger p-1">
                                                     {(
                                                         orderDetails.total_received - orderDetails.discount
                                                     ).toFixed(2)}

@@ -1,16 +1,19 @@
 import React from 'react';
-import { Modal, Button, Row, Col, Table } from "react-bootstrap";
+import { Modal, Button, Row, Col, Table, Alert } from "react-bootstrap";
 import FormInput from "../../components/FormInput/index.js";
+
 const Checkout = (props) => {
     let orderDetails = props.orderDetails;
     return (<Modal onHide={props.hideModal} show={props.showModal} onClose={props.close} size='lg'>
         <Modal.Body>
+            {props.error && <Alert variant="danger">{props.error}</Alert>}
             {orderDetails.overAllCost ? <><Row>
                 <Col sm="10">
                     <FormInput
                         name="customer_pay"
                         onChange={props.handleCustomerPay}
                         value={orderDetails.customer_pay}
+                        error={props.error}
                         label="Amount"
                         as="input"
                         type="number"

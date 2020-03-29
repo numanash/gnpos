@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Aux from '../../../constants/hoc/_Aux';
 import CustomCard from '../../../components/CustomCard';
-import { Tabs, Tab, Row, Col, Form, Alert, Button } from "react-bootstrap"
+import { Tabs, Tab, Row, Col, Form, Alert, Button } from "react-bootstrap";
 import FormInput from '../../../components/FormInput/Index';
 import { connect } from "react-redux";
 import axios from '../../../../services/Http';
@@ -12,7 +12,6 @@ import DatePicker from "react-datepicker";
 import middleware from '../../../../middleware';
 import scrollToTop from '../../../constants/ScrollToTop';
 import FormValidation from '../../../components/FormValidation';
-
 
 const customStyles = {
     control: base => ({
@@ -45,6 +44,7 @@ class AddProduct extends Component {
             promotional_start_date: new Date(),
             promotional_end_date: new Date(),
             categories: [],
+            subCategories:[],
             localErrors: {}
         }
     }
@@ -93,7 +93,6 @@ class AddProduct extends Component {
 
     }
 
-
     resetForm = e => {
         this.setState({
             name: '',
@@ -101,6 +100,7 @@ class AddProduct extends Component {
             description: '',
             ref_category: '',
             sku: '',
+            subCategories:[],
             product_status: 'Active',
             tax: '',
             weight: '',
@@ -132,8 +132,23 @@ class AddProduct extends Component {
 
     handleCategory = (e) => {
         const ref_category = e;
-        this.setState(() => ({ ref_category }));
+        axios.get(`/categories/sub-categories/${ref_category.value}`).then(res=>{
+            this.setState({
+                subCategories:res.data,
+                ref_category
+            })
+        }).catch(err=>{
+            console.log({err});
+            this.setState(() => ({ ref_category,subCategories:[] }));
+        })
     };
+
+    handleSubCategory = (e)=>{
+        const ref_category = e;
+        this.setState({
+            ref_category
+        })
+    }
 
     handleInput = e => {
         this.setState({
@@ -226,6 +241,9 @@ class AddProduct extends Component {
         const categoryOptions = this.state.categories.map(category => {
             return { value: category.id, label: category.categoryName }
         });
+        const subCategories = this.state.subCategories.map(category=>{
+            return {value: category.id, label: category.categoryName}
+        })
         const { name,
             selling_price,
             description,
@@ -279,6 +297,19 @@ class AddProduct extends Component {
                                         {ref_category && <p className="m-0"><small className="text-danger">{ref_category}</small></p>}
                                     </Form.Group>
                                 </Col>
+                                {this.state.subCategories.length ? 
+
+                                <Col sm="6">
+                                    <Form.Group controlId="ref_category">
+                                        <Form.Label>Sub Category</Form.Label>
+                                        <select placeholder="Select SubCategory">
+                                            {this.state.subCategories.map(category=>{
+                                            return <option value={category.value}>{category.label}</option>
+                                            })}
+                                        </select>
+                                    </Form.Group>
+                                </Col>
+                                : null}
                                 <Col sm="6">
                                     <FormInput label="Product SKU" error={sku} placeholder="SKU-123" name="sku" type="text" required size="sm" onChange={this.handleInput} value={this.state.sku} />
                                 </Col>

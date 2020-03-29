@@ -5,14 +5,20 @@ const OrderedItems = require("../models").OrderedItems;
 const ProductStockFlow = require("../models/").ProductStockFlow;
 const Products = require("../models/").Products;
 
+function isNullOrEmpty(value,returnVal){
+  return value ? value : returnVal
+}
+
 module.exports = {
   getAll: (data) => {
     // let query = "Select * from `category` ";
     return new Promise((resolve, reject) => {
       if (data.limit) {
+        let code = isNullOrEmpty(data.code,''), cname =isNullOrEmpty(data.cname,'');
+
         sequelize
           .query(
-            `Select pos.*, c.name as cname from point_of_sale pos INNER JOIN customers c ON c.id=pos.ref_client ORDER BY pos.${data.column} ${data.order} LIMIT ${data.offset}, ${data.limit} `,
+            `Select pos.*, c.name as cname from point_of_sale pos INNER JOIN customers c ON c.id=pos.ref_client WHERE pos.code LIKE '%${code}%' AND c.name LIKE '%${cname}%' ORDER BY pos.${data.column} ${data.order} LIMIT ${data.offset}, ${data.limit} `,
             {
               raw: false,
               type: Sequelize.QueryTypes.SELECT,

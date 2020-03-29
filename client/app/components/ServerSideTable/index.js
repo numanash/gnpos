@@ -48,13 +48,30 @@ class ServerSideTable extends React.Component {
     fetchData = (state, instance) => {
 
         const offset = state.pageSize * (state.page ? state.page : 1 - 1);
+        let filterData = state.filtered;
+        let params = {};
+        if(filterData.length){
+            filterData.map(data=>{
+                params[data.id] = data.value;
+            })
+        }
         this.setState({ loading: true });
-        let column = 'id', order = 'ASC';
+        let column = 'id', order = 'DESC';
         if (state.sortable && state.sorted.length) {
             column = state.sorted[0].id;
             order = state.sorted[0].desc ? 'DESC' : 'ASC'
         }
-        axios.get(`${this.props.url}?limit=${state.pageSize}&offset=${offset}&column=${column}&order=${order}`).then(result => {
+
+        params = {
+            ...params,
+            limit:state.pageSize,
+            offset,
+            column,
+            order
+        }
+        axios.get(this.props.url,{
+            params
+        }).then(result => {
             let pages, arr;
             if (result.data.count) {
                 pages = Math.ceil(result.data.count / state.pageSize);

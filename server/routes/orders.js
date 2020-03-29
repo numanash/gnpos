@@ -23,7 +23,6 @@ router.post("/place-order", async (req, res) => {
       }
     })
     .catch(e => {
-      console.log(e);
       res.status(500).send({
         error: new Error(e)
       });
@@ -34,7 +33,7 @@ router.get("/pending/:orderCode", async (req, res) => {
   await orders
     .getPendingOrder(req.params.orderCode)
     .then(result => {
-      res.status(200).send(result);
+      result.oi.length ? res.status(200).send(result) : res.status(404).send("Not Found")
     })
     .catch(e => {
       console.log(e);
