@@ -96,6 +96,8 @@ module.exports = function (sequelize, DataTypes) {
     tax: { type: Sequelize.INTEGER, defaultValue: 0 },
     service_charges: { type: Sequelize.INTEGER, defaultValue: 0 },
     discount: { type: Sequelize.INTEGER, allowNull: false, defaultValue: 0 }
+  },{
+    paranoid: true
   });
   Products.association = function (models) { };
   return Products;

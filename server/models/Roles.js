@@ -27,6 +27,8 @@ module.exports = function(sequelize, DataTypes) {
     },
     role_privileges: Sequelize.BLOB,
     status: { type: Sequelize.BOOLEAN(), defaultValue: 1 }
+  },{
+    paranoid: true
   });
   Roles.association = function(models) {
     Roles.belongsTo(models.Users);

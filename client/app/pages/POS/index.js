@@ -488,6 +488,12 @@ class PointOfSale extends Component {
     }
 
     submitPayNow = e => {
+
+        if(this.state.customer_pay < this.state.overAllCost){
+            return this.setState({
+                amountError: "Please pay full amount"
+            })
+        }
         if(!this.state.customers.length){
             this.setState({
                 error:"Customers not found."
@@ -590,6 +596,7 @@ class PointOfSale extends Component {
 
     render() {
         const { products } = this.state;
+        const selectedCustomer = this.state.customers.length ?  this.state.selectedCustomer : {value:0,label:"Customer Not Found"};
         return (
             <Aux>
                 {this.state.success && <SweetAlert
@@ -624,7 +631,7 @@ class PointOfSale extends Component {
                             submitPayNow={this.submitPayNow}
                             update={this.state.update}
                         />}
-                        {this.state.customers.length === 0 && !this.state.isLoading && <Alert variant="danger">Please add customer first. <Link to="/">Click Here</Link></Alert>}
+                        {this.state.customers.length === 0 && !this.state.isLoading && <Alert variant="danger">Please add customer first. <Link to="/customer/add">Click Here</Link></Alert>}
 
                     <Row>
                         <Col sm="12" md="5">
@@ -634,7 +641,7 @@ class PointOfSale extends Component {
                                     name="selectedCustomer"
                                     options={this.state.customers}
                                     onChange={this.handleSelectedCustomer}
-                                    value={this.state.selectedCustomer}
+                                    value={selectedCustomer}
                                 />
                                 {/* <AsyncSelect
                                     isMulti

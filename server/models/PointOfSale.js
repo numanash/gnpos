@@ -69,7 +69,8 @@ module.exports = function(sequelize, DataTypes) {
         allowNull: false
       }
     },
-    { tableName: "point_of_sale" }
+    { tableName: "point_of_sale",
+      paranoid: true }
   );
   return PointOfSale;
 };

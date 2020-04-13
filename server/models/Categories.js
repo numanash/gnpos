@@ -16,6 +16,8 @@ module.exports = function (sequelize, DataTypes) {
     categoryDescription: Sequelize.TEXT,
     status: { type: Sequelize.BOOLEAN(), defaultValue: 1 },
     parent_ref_id: { type: Sequelize.INTEGER(11), defaultValue: 0 }
+  },{
+    paranoid: true
   });
   return Categories;
 };

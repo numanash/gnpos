@@ -28,6 +28,7 @@ class AddProduct extends Component {
             selling_price: 0,
             description: '',
             ref_category: {},
+            sub_category:{},
             sku: '',
             product_status: 'Active',
             tax: 0,
@@ -144,9 +145,9 @@ class AddProduct extends Component {
     };
 
     handleSubCategory = (e)=>{
-        const ref_category = e;
+        const sub_category = e;
         this.setState({
-            ref_category
+            sub_category
         })
     }
 
@@ -280,6 +281,9 @@ class AddProduct extends Component {
                                     <FormInput label="Product Name" placeholder="Example: Eggs, T-shirt" error={name} name="name" type="text" required size="sm" onChange={this.handleInput} value={this.state.name} />
                                 </Col>
                                 <Col sm="6">
+                                    <FormInput label="Product SKU" error={sku} placeholder="SKU-123" name="sku" type="text" required size="sm" onChange={this.handleInput} value={this.state.sku} />
+                                </Col>
+                                <Col sm="6">
                                     <Form.Group controlId="ref_category">
                                         <Form.Label>Category <Required /> </Form.Label>
                                         <Select
@@ -302,17 +306,21 @@ class AddProduct extends Component {
                                 <Col sm="6">
                                     <Form.Group controlId="ref_category">
                                         <Form.Label>Sub Category</Form.Label>
-                                        <select placeholder="Select SubCategory">
-                                            {this.state.subCategories.map(category=>{
-                                            return <option value={category.value}>{category.label}</option>
-                                            })}
-                                        </select>
+                                        <Select
+                                            options={subCategories}
+                                            styles={customStyles}
+                                            name="sub_category"
+                                            components={makeAnimated()}
+                                            placeholder={
+                                                (this.state.sub_category !== '') ? this.state.sub_category : "Select Sub Category"
+                                            }
+                                            value={this.state.sub_category}
+                                            className={`text-dark`}
+                                            onChange={this.handleSubCategory}
+                                        />
                                     </Form.Group>
                                 </Col>
                                 : null}
-                                <Col sm="6">
-                                    <FormInput label="Product SKU" error={sku} placeholder="SKU-123" name="sku" type="text" required size="sm" onChange={this.handleInput} value={this.state.sku} />
-                                </Col>
 
                                 <Col sm="6">
                                     <FormInput label="Product Barcode" error={barcode} placeholder="AFJLA" name="barcode" type="text" size="sm" onChange={this.handleInput} value={this.state.barcode} />

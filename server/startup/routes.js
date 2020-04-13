@@ -7,6 +7,7 @@ const customers = require("../routes/customers");
 const orders = require("../routes/orders");
 const reports = require("../routes/reports");
 const users = require("../routes/users");
+const taxes = require("../routes/taxes");
 const auth = require("../middleware/auth");
 // const cors = require("cors");
 // const helmet = require("helmet");
@@ -21,4 +22,5 @@ module.exports = function (app) {
   app.use("/api/orders", orders);
   app.use("/api/reports", reports);
   app.use("/api/users", users);
+  app.use("/api/taxes", taxes);
 };

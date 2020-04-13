@@ -33,6 +33,8 @@ module.exports = function (sequelize, DataTypes) {
     country: Sequelize.CHAR(200),
     company_name: Sequelize.CHAR(200),
     status: { type: Sequelize.BOOLEAN(), defaultValue: 1 }
+  },{
+    paranoid: true
   });
   return Customers;
 };

@@ -34,6 +34,8 @@ module.exports = function (sequelize, DataTypes) {
       }
     },
     status: { type: Sequelize.BOOLEAN(), defaultValue: 1 }
+  },{
+    paranoid: true
   });
   // Supplies.associate = function(models) {
   //   Supplies.hasMany(models.Suppliers, {

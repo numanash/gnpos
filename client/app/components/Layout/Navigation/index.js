@@ -80,6 +80,7 @@ import NavGroup from './NavGroup/Index';
 import Aux from '../../../constants/hoc/_Aux';
 import { NavLink } from "react-router-dom"
 import windowSize from 'react-window-size';
+import PerfectScrollbar from 'react-perfect-scrollbar';
 
 class Navigation extends Component {
     constructor(props) {
@@ -119,26 +120,28 @@ class Navigation extends Component {
                     <span className="brand-text font-weight-light">GN POS</span>
                 </a>
                 <div className="sidebar">
-                    <div className="user-panel mt-3 pb-3 mb-3 d-flex">
-                        <div className="image">
-                            {/* <img
-                                src="dist/img/user2-160x160.jpg"
-                                className="img-circle elevation-2"
-                                alt="User Image"
-                            /> */}
-                            User Image
+                    <PerfectScrollbar>
+                        <div className="user-panel mt-3 pb-3 mb-3 d-flex">
+                            <div className="image">
+                                {/* <img
+                                    src="dist/img/user2-160x160.jpg"
+                                    className="img-circle elevation-2"
+                                    alt="User Image"
+                                /> */}
+                                User Image
+                            </div>
+                            <div className="info">
+                                {/* <NavLink to="/user/profile" className="d-block">
+                                    {user.user.name}
+                                </NavLink> */}
+                            </div>
                         </div>
-                        <div className="info">
-                            {/* <NavLink to="/user/profile" className="d-block">
-                                {user.user.name}
-                            </NavLink> */}
+                        <div className="slimScrollDiv">
+                                <nav className="mt-2">
+                                    <NavGroup items={menus} />
+                                </nav>
                         </div>
-                    </div>
-                    <div className="slimScrollDiv">
-                        <nav className="mt-2">
-                            <NavGroup items={menus} />
-                        </nav>
-                    </div>
+                    </PerfectScrollbar>
                 </div>
             </aside>
         </Aux >)

@@ -101,6 +101,10 @@ module.exports = {
           "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
         ),
         allowNull: false
+      },
+      deletedAt:{
+        type: "TIMESTAMP",
+        allowNull: true
       }
     });
   },

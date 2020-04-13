@@ -92,7 +92,9 @@ module.exports = function(sequelize, DataTypes) {
       description: Sequelize.TEXT,
       status: { type: Sequelize.BOOLEAN(), defaultValue: 1 }
     },
-    { tableName: "product_stock_flow" }
+    { tableName: "product_stock_flow",
+      paranoid: true
+     }
   );
   return ProductStockFlow;
 };

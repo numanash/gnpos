@@ -24,6 +24,8 @@ module.exports = function (sequelize, DataTypes) {
       type: Sequelize.TEXT
     },
     status: { type: Sequelize.BOOLEAN(), defaultValue: 1 }
+  },{
+    paranoid: true
   });
 
   // Suppliers.associate = models => {

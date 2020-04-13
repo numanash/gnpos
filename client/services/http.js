@@ -48,6 +48,9 @@ axios.interceptors.request.use(function (config) {
     if (error.response.status === 404 && error.response.data.parent && error.response.data.parent.code === "ECONNREFUSED") {
         alert("db not connected");
     }
+    if(error.response.status){
+        return Promise.reject({data:{message:"Sorry Url Not Found"}});
+    }
     return Promise.reject(error.response);
 });
 
@@ -80,6 +83,8 @@ axios.interceptors.response.use(function (response) {
             cookie.remove("Authorization");
             window.location.pathname = `/login?Redirect=${location}`;
             // logOutApi();
+        }if(error.status && error.status === 404){
+            return Promise.reject({data:{message:"Sorry Url Not Found"}});
         }
         return Promise.reject(error);
     });

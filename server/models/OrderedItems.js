@@ -54,7 +54,9 @@ module.exports = function(sequelize, DataTypes) {
       },
       status: { type: Sequelize.BOOLEAN(), defaultValue: 1 }
     },
-    { tableName: "ordered_items" }
+    { tableName: "ordered_items",
+      paranoid: true
+    }
   );
   return OrderedItems;
 };

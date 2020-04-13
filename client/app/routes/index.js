@@ -7,6 +7,7 @@ import CustomersRoutes from '../pages/customers/CustomersRoutes';
 import POSRoutes from '../pages/POS/POSRoutes';
 import OrdersRoutes from '../pages/Orders/OrdersRoutes';
 import ReportsRoutes from '../pages/Reports/ReportsRoutes';
+import TaxesRoutes from '../pages/Taxes/TaxesRoutes';
 
 const Dashboard = React.lazy(() => import("../pages/Dashboard"));
 
@@ -19,5 +20,6 @@ export default [
     ...SuppliersRoutes.routes,
     ...SupplyRoutes.routes,
     ...CustomersRoutes.routes,
-    ...ReportsRoutes.routes
+    ...ReportsRoutes.routes,
+    ...TaxesRoutes.routes
 ]

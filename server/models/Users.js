@@ -57,6 +57,8 @@ module.exports = function(sequelize, DataTypes) {
       type: Sequelize.TEXT,
       defaultValue: null
     }
+  },{
+    paranoid: true
   });
   Users.association = function(models) {
     Users.hasMany(models.Roles);

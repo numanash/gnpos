@@ -21,6 +21,16 @@ class ServerSideTable extends React.Component {
         };
     }
 
+    UNSAFE_componentWillReceiveProps(nextProps){
+        if(this.props.onMessage !== nextProps.onMessage){
+            
+            this.setState({
+                message: nextProps.onMessage
+            })
+            this.fetchData({offset:this.state.offset, pageSize: this.state.pageSize, filtered:[]});
+        }
+    }
+
     onView = val => {
         this.props.onView(val);
     }
@@ -55,7 +65,7 @@ class ServerSideTable extends React.Component {
                 params[data.id] = data.value;
             })
         }
-        this.setState({ loading: true });
+        this.setState({ loading: true, offset, pageSize: state.pageSize });
         let column = 'id', order = 'DESC';
         if (state.sortable && state.sorted.length) {
             column = state.sorted[0].id;
@@ -128,6 +138,7 @@ class ServerSideTable extends React.Component {
                 {this.state.error && <Alert variant="danger" onClose={() => this.setState({
                     error: undefined
                 })}>{this.state.error}</Alert>}
+                {this.state.message && <Alert variant="success">{this.state.message}</Alert>}
                 <ReactTable
                     columns={this.props.columns}
                     manual // Forces table not to paginate or sort automatically, so we can handle it server-side
