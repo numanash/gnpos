@@ -10,6 +10,7 @@ import ReactToPrint from "react-to-print";
 import "react-datepicker/dist/react-datepicker.css";
 // import Results from "./utils/result";
 import { month } from "./utils/dateMonth";
+import { Card, Button, Row, Col } from "react-bootstrap";
 
 class SalesReports extends Component {
     state = {
@@ -72,43 +73,57 @@ class SalesReports extends Component {
         const { result } = this.state;
         if (result) {
             return (
-                <React.Fragment>
-                    <div className="d-flex">
-                        <form onSubmit={this.searchResult} className="form-inline">
-                            <DatePicker
-                                selected={this.state.from}
-                                onChange={this.dateFromHandler}
-                                // dateFormat="YYYY-MM-DD"
-                                className="form-control"
-                                showTimeSelect
-                                timeFormat="HH:mm"
-                                timeIntervals={15}
-                                dateFormat="MMMM d, yyyy h:mm aa"
-                                timeCaption="time"
-                            />
-
-                            <DatePicker
-                                selected={this.state.to}
-                                onChange={this.dateToHandler}
-                                className="form-control"
-                                showTimeSelect
-                                timeFormat="HH:mm"
-                                timeIntervals={15}
-                                dateFormat="MMMM d, yyyy h:mm:ss aa"
-                                timeCaption="time"
-                            />
-                            {/* <input type="date" className="date" name="from" onChange={this.dateHandler} />
-                    <input type="date" className="date" name="to" onChange={this.dateHandler} /> */}
-                            <button className="submit">Search</button>
-                        </form>
-                        <button className="btn btn-primary">
-                            <ReactToPrint
-                                trigger={() => <a href="#">Print this out!</a>}
-                                content={() => this.componentRef}
-                            />
-                        </button>
-                    </div>
-                    <div className="container">
+                <Card>
+                    <Card.Header>
+                        <div className="d-flex w-100">
+                            <form onSubmit={this.searchResult} className=" w-100" >
+                                <Row className="100">
+                                    <Col md="4">
+                                        <DatePicker
+                                            selected={this.state.from}
+                                            onChange={this.dateFromHandler}
+                                            className="form-control w-100"
+                                            wrapperClassName="w-100 mr-3"
+                                            showTimeSelect
+                                            timeFormat="HH:mm"
+                                            timeIntervals={15}
+                                            dateFormat="MMMM d, yyyy h:mm aa"
+                                            timeCaption="time"
+                                        />
+                                    </Col>
+                                    <Col md="4">
+                                        <DatePicker
+                                            selected={this.state.to}
+                                            onChange={this.dateToHandler}
+                                            className="form-control w-100"
+                                            wrapperClassName="w-100 mr-3"
+                                            showTimeSelect
+                                            timeFormat="HH:mm"
+                                            timeIntervals={15}
+                                            dateFormat="MMMM d, yyyy h:mm:ss aa"
+                                            timeCaption="time"
+                                        />
+                                    </Col>
+                                    {/* <input type="date" className="date" name="from" onChange={this.dateHandler} />
+                                    <input type="date" className="date" name="to" onChange={this.dateHandler} /> */}
+                                    <Col > 
+                                        <Button type="submit">Search</Button>
+                                    </Col>
+                                    <Col>
+                                        <Button className="ml-3" type="button">
+                                            <ReactToPrint
+                                                trigger={() => <a className="style-none text-white" href="javascript:void(0)">Print this out!</a>}
+                                                content={() => this.componentRef}
+                                            />
+                                        </Button>
+                                    </Col>
+                                </Row>
+                            </form>
+                           
+                        </div>
+                    </Card.Header>
+                    <Card.Body>
+                        <div className="container">
                         <div className="row">
                             <div className="col-md-6 detailReport">
                                 <div className="Report" ref={el => (this.componentRef = el)}>
@@ -242,7 +257,8 @@ class SalesReports extends Component {
                             </div>
                         </div>
                     </div>
-                </React.Fragment>
+                    </Card.Body>
+                </Card>
             );
         } else {
             return <div />;

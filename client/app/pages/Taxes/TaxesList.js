@@ -34,20 +34,20 @@ class TaxesList extends Component {
         super(props);
         this.state = {}
     }
-    onEdit = id=>{
+    onEdit = tax=>{
         this.props.history.push({
-            pathname:`/tax/edit/${id}`,
+            pathname:`/tax/edit/${tax.id}`,
             params:{
-                id
+                id:tax.id
             }
         })
     }
     
-    onDelete= id =>{
+    onDelete= tax =>{
         this.setState({
             message:undefined
         })
-        axios.delete(`/taxes/${id}`).then(res=>{
+        axios.delete(`/taxes/${tax.id}`).then(res=>{
             this.setState({
                 message: res.data.message
             })

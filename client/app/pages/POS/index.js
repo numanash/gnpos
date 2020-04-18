@@ -100,7 +100,8 @@ class PointOfSale extends Component {
             }));
             this.setState({
                 customers,
-                isLoading:false
+                isLoading:false,
+                customerError: customers.length ? false : true
             });
         }
         if (this.props.categories !== prevProps.categories) {
@@ -631,7 +632,7 @@ class PointOfSale extends Component {
                             submitPayNow={this.submitPayNow}
                             update={this.state.update}
                         />}
-                        {this.state.customers.length === 0 && !this.state.isLoading && <Alert variant="danger">Please add customer first. <Link to="/customer/add">Click Here</Link></Alert>}
+                        {this.state.customers.length === 0 && this.state.customerError &&  <Alert variant="danger">Please add customer first. <Link to="/customer/add">Click Here</Link></Alert>}
 
                     <Row>
                         <Col sm="12" md="5">

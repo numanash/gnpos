@@ -5,13 +5,11 @@
 // import { connect } from "react-redux";
 // import { TOOGLE_COLLAPSED } from '../../../../Actions/MenuActions';
 
-
 // class Navbar extends Component {
 //     constructor(props) {
 //         super(props);
 //         this.state = {}
 //     }
-
 
 //     componentDidMount() {
 //         const currentIndex = ((document.location.pathname).toString().split('/')).findIndex(id => id === this.props.collapse.id);
@@ -22,8 +20,6 @@
 //     render() {
 
 //         const { isOpened, isTriggered } = this.props;
-
-
 
 //         return (
 
@@ -55,12 +51,8 @@
 //             </div>
 //         )
 
-
 //     }
 // }
-
-
-
 
 // const mapStateToProps = state => {
 //     return {
@@ -70,84 +62,81 @@
 //     }
 // }
 
-
 // export default connect(mapStateToProps, mapDispatchToProps)(Navbar);
 
-
-import React, { Component } from 'react'
-import menus from '../../../routes/menus';
-import NavGroup from './NavGroup/Index';
-import Aux from '../../../constants/hoc/_Aux';
-import { NavLink } from "react-router-dom"
-import windowSize from 'react-window-size';
-import PerfectScrollbar from 'react-perfect-scrollbar';
+import React, { Component } from "react";
+import menus from "../../../routes/menus";
+import NavGroup from "./NavGroup/Index";
+import Aux from "../../../constants/hoc/_Aux";
+import { NavLink } from "react-router-dom";
+import windowSize from "react-window-size";
+import PerfectScrollbar from "react-perfect-scrollbar";
 
 class Navigation extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {}
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
+  componentDidMount() {
+    window.addEventListener("scroll", this.scroll);
+  }
+
+  scroll = () => {
+    let ele = document.querySelector(".main-sidebar.sidebar-dark-primary");
+    const scrollPosition = window.pageYOffset;
+    if (scrollPosition > 60) {
+      ele.style.position = "fixed";
+      ele.style.transition = "none";
+    } else {
+      ele.style.position = "absolute";
     }
+  };
 
-    componentDidMount() {
-        window.addEventListener('scroll', this.scroll)
-    }
+  UNSAFE_componentWillUnmount() {
+    window.removeEventListener("scroll", this.scroll);
+  }
 
-    scroll = () => {
-        let ele = document.querySelector(".main-sidebar.sidebar-dark-primary");
-        const scrollPosition = window.pageYOffset;
-        if (scrollPosition > 60) {
-            ele.style.position = "fixed";
-            ele.style.transition = "none";
-        } else {
-            ele.style.position = 'absolute';
-        }
-    }
-
-    UNSAFE_componentWillUnmount() {
-        window.removeEventListener('scroll', this.scroll);
-    }
-
-    render() {
-
-        return (<Aux>
-            <aside className={`main-sidebar sidebar-dark-primary elevation-4`}>
-                <a href="index3.html" className="brand-link">
-                    {/* <img
+  render() {
+    return (
+      <Aux>
+        <aside className={`main-sidebar sidebar-dark-primary elevation-4`}>
+          <a href="index3.html" className="brand-link">
+            {/* <img
                         src="dist/img/AdminLTELogo.png"
                         alt="AdminLTE Logo"
                         className="brand-image img-circle elevation-3"
                     /> */}
-                    <span className="brand-text font-weight-light">GN POS</span>
-                </a>
-                <div className="sidebar">
-                    <PerfectScrollbar>
-                        <div className="user-panel mt-3 pb-3 mb-3 d-flex">
-                            <div className="image">
-                                {/* <img
+            <span className="brand-text font-weight-light">GN POS</span>
+          </a>
+          <div className="sidebar pr-0">
+            <PerfectScrollbar className="pr-2">
+              <div className="user-panel mt-3 pb-3 pr-1 mb-3 d-flex">
+                <div className="image text-white">
+                  {/* <img
                                     src="dist/img/user2-160x160.jpg"
                                     className="img-circle elevation-2"
                                     alt="User Image"
                                 /> */}
-                                User Image
-                            </div>
-                            <div className="info">
-                                {/* <NavLink to="/user/profile" className="d-block">
+                  User Image
+                </div>
+                <div className="info">
+                  {/* <NavLink to="/user/profile" className="d-block">
                                     {user.user.name}
                                 </NavLink> */}
-                            </div>
-                        </div>
-                        <div className="slimScrollDiv">
-                                <nav className="mt-2">
-                                    <NavGroup items={menus} />
-                                </nav>
-                        </div>
-                    </PerfectScrollbar>
                 </div>
-            </aside>
-        </Aux >)
-    }
+              </div>
+              <div className="slimScrollDiv">
+                <nav className="mt-2">
+                  <NavGroup items={menus} />
+                </nav>
+              </div>
+            </PerfectScrollbar>
+          </div>
+        </aside>
+      </Aux>
+    );
+  }
 }
 
 export default windowSize(Navigation);
-
-

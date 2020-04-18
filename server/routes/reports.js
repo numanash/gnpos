@@ -60,7 +60,7 @@ router.get("/yearly-report", async (req, res) => {
 
 router.get(
   "/dashboard",
-  [auth, inRoles(["admin", "cashier"])],
+  // [auth, inRoles(["admin", "cashier"])],
   async (req, res, next) => {
     let result = await reports.getReportsForDashboard();
     let inventory = await reports.getInventory();

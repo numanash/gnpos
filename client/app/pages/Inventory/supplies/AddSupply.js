@@ -22,7 +22,7 @@ class AddSupply extends Component {
             suppliers: [],
             supplies: [],
             products: [],
-            ref_provider: {},
+            ref_provider: '',
             supplyName: '',
             total: 0,
             totalItems: 0,
@@ -484,10 +484,10 @@ class AddSupply extends Component {
                                         return <tr name={product.label} id={product.value} key={product.value}>
                                             <td>{product.label}</td>
                                             <td>
-                                                <Form.Control as="input" type="number" name={product.label} onChange={this.handleQuantity} tabIndex={index} size="sm" value={products[index]["quantity"]} />
+                                                <Form.Control as="input" min="0" type="number" name={product.label} onChange={this.handleQuantity} tabIndex={index} size="sm" value={products[index]["quantity"]} />
                                             </td>
                                             <td className="d-inline-flex">
-                                                <Form.Control as="input" type="number" name={product.label} onChange={this.handlePrice} tabIndex={index} size="sm" value={products[index]["price"]} />
+                                                <Form.Control as="input" min="0" type="number" name={product.label} onChange={this.handlePrice} tabIndex={index} size="sm" value={products[index]["price"]} />
                                             </td>
                                             <td>
                                                 Rs. {product.total}
@@ -520,7 +520,7 @@ class AddSupply extends Component {
                                         onChange={this.handleSupplierChange}
                                         options={this.state.suppliers}
                                         value={this.state.ref_provider}
-                                        label="Select Supplier"
+                                        label={<>Select Supplier (<Button size="sm" className="bg-transparent no-foucs text-primary border-0" onClick={()=>this.props.history.push("/supplier/add")}>Create New</Button>) </>}
                                         error={ref_provider}
                                     />
 

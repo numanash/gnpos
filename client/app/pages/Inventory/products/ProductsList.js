@@ -34,9 +34,9 @@ class ProductsList extends Component {
     }
 
 
-    onEdit = id => {
-        this.props.history.push(`/inventory/product/edit/${id}`, {
-            id
+    onEdit = product => {
+        this.props.history.push(`/inventory/product/edit/${product.id}`, {
+            id:product.id
         })
     }
 

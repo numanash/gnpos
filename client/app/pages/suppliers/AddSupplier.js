@@ -27,6 +27,7 @@ class AddSupplier extends Component {
 
 
     componentDidMount() {
+        // console.log(this.props)
     }
 
 
@@ -69,7 +70,8 @@ class AddSupplier extends Component {
                 success: result.message
             }, () => {
                 this.resetForm();
-                this.scrollToTop()
+                this.scrollToTop();
+                this.props.history.goBack();
             })
         }).catch(error => {
             this.setState({

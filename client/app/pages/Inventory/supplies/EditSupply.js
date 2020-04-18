@@ -131,7 +131,7 @@ class EditSupply extends Component {
 
                     />
                     <FormInput error={description} as="textarea" rows="5" name="description" size="sm" label="Supply description" onChange={this.handleInput} value={this.state.description} />
-                    <Button type="submit">Update Supply</Button>&nbsp;<Button type="button" variant="danger">Cancel</Button>
+                    <Button type="submit">Update Supply</Button>&nbsp;<Button type="button" variant="danger" onClick={()=>this.props.history.push("/inventory/supply/list")}>Cancel</Button>
                 </FormValidation>
             </CustomCard>
         </Aux>);

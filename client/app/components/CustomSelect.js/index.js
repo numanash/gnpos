@@ -22,6 +22,7 @@ const CustomSelect = (props) => {
                 name={props.name}
                 components={makeAnimated()}
                 placeholder={props.placeholder}
+                title={props.placeholder}
                 value={props.value}
                 className={"text-dark " + props.className}
                 onChange={props.onChange}
@@ -36,9 +37,15 @@ const CustomSelect = (props) => {
 CustomSelect.propTypes = {
     options: PropTypes.array.isRequired,
     name: PropTypes.string,
-    label: PropTypes.string,
+    label: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.object
+    ]),
     placeholder: PropTypes.string,
-    value: PropTypes.object,
+    value: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.object
+    ]),
     className: PropTypes.string,
     parentClassName: PropTypes.string,
     onChange: PropTypes.func.isRequired

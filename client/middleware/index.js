@@ -10,16 +10,19 @@ export default function (actionName) {
         },
         fetchAll: (customAction) => {
             return (dispatch, getState) => {
-                Http.get(`${actionName}${customAction ? `/${customAction}` : ""} `).then(
-                    res => {
-                        dispatch(action.get(res.data));
-                    }
-                ).catch(err => {
-                    if (err.data.message) {
-                        return reject(err.data.message);
-                    } else {
-                        return reject({ message: "Something Wrong on Server" })
-                    }
+                new Promise((resolve, reject) => {
+                    Http.get(`${actionName}${customAction ? `/${customAction}` : ""} `).then(
+                        res => {
+                            dispatch(action.get(res.data));
+                            return resolve(res.data);
+                        }
+                    ).catch(err => {
+                        if (err.data.message) {
+                            return reject(err.data.message);
+                        } else {
+                            return reject({ message: "Something Wrong on Server" })
+                        }
+                    })
                 })
             }
         },

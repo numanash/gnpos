@@ -4,6 +4,7 @@ import { Form, Button, Alert } from 'react-bootstrap';
 import FormInput from '../../../components/FormInput/Index';
 import axios from '../../../../Services/Http';
 import CustomCard from '../../../components/CustomCard';
+import Loading from '../../../components/Loading';
 
 class EditSupplyProduct extends Component {
     constructor(props) {
@@ -37,7 +38,8 @@ class EditSupplyProduct extends Component {
         let state = this.state, quantity = state.quantity, quantity_after = state.quantity_after, quantity_before = state.quantity_before;
         this.setState({
             success: undefined,
-            error: undefined
+            error: undefined,
+            isLoading:true,
         })
         if (quantity <= state.old_quantity) {
             let newQuantity = state.old_quantity - quantity;
@@ -46,21 +48,24 @@ class EditSupplyProduct extends Component {
             quantity_after = quantity_before + quantity;
         }
         let data = {
+            ...state,
             quantity,
             quantity_after,
             unit_price: state.unit_price ? state.unit_price : 0,
-            id: state.id
+            total_price:state.unit_price? state.unit_price * quantity_after :0,
         }
         axios.put(`/supplies/product/${state.id}`, data).then(res => {
             this.setState({
                 success: res.data.message,
                 old_quantity: quantity,
                 quantity_after,
-                quantity_before
+                quantity_before,
+                isLoading:false
             })
         }).catch(err => {
             this.setState({
-                error: err.response.data.message
+                error: err.response.data.message,
+                isLoading:false
             })
         })
 
@@ -70,11 +75,12 @@ class EditSupplyProduct extends Component {
             <CustomCard>
                 {this.state.success && <Alert variant="success">{this.state.success}</Alert>}
                 {this.state.error && <Alert variant="danger">{this.state.error}</Alert>}
+                <Loading isLoading={this.state.isLoading} />
                 <Form onSubmit={this.onSubmit}>
                     <FormInput type="number" name="quantity" label="Quantity" onChange={this.handleInput} value={this.state.quantity} />
                     <FormInput type="number" name="unit_price" label="Price" onChange={this.handleInput} value={this.state.unit_price} />
                     <Button type="submit">Save</Button> &nbsp;
-                    <Button type="button" variant="danger">Cancel</Button>
+                    <Button type="button" variant="danger" onClick={()=>this.props.history.push(`/inventory/supply/products/list/${this.props.match.params.supplyId}`)}>Cancel</Button>
                 </Form>
 
             </CustomCard>

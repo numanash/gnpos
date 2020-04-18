@@ -11,7 +11,7 @@ export default {
         { path: '/inventory/supply/add', exact: true, name: 'AddSupply', component: AddSupply },
         { path: '/inventory/supply/list', exact: true, name: 'SuppliesList', component: SuppliesList },
         { path: '/inventory/supply/products/list/:id', exact: true, name: 'SupplyProductsList', component: SupplyProductsList },
-        { path: '/inventory/supply/products/edit/:id', exact: true, name: 'EditSupplyProduct', component: EditSupplyProduct },
+        { path: '/inventory/supply/products/edit/:supplyId/:id', exact: true, name: 'EditSupplyProduct', component: EditSupplyProduct },
         { path: '/inventory/supply/edit/:id', exact: true, name: 'EditSupply', component: EditSupply }
     ],
     "menus": {

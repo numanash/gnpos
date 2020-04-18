@@ -43,14 +43,14 @@ class SuppliesList extends Component {
     }
 
 
-    handleProducts = data => {
-        this.props.history.push(`/inventory/supply/products/list/${data}`, {
-            id: data
+    handleProducts = supply => {
+        this.props.history.push(`/inventory/supply/products/list/${supply.id}`, {
+            id: supply.id
         });
     }
-    onEdit = id => {
-        this.props.history.push(`/inventory/supply/edit/${id}`, {
-            id
+    onEdit = supply => {
+        this.props.history.push(`/inventory/supply/edit/${supply.id}`, {
+            id:supply.id
         })
     }
 
@@ -85,8 +85,8 @@ class SuppliesList extends Component {
                         }`
         })
     }
-    handleInvoice = id => {
-        axios.get(`/supplies/${id}`).then(result => {
+    handleInvoice = supply => {
+        axios.get(`/supplies/${supply.id}`).then(result => {
 
             let supplies = result.data;
 

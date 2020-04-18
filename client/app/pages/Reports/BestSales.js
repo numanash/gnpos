@@ -4,6 +4,7 @@ import { month } from "./utils/dateMonth";
 // import middleWare from "../../actions/middleWare";
 import moment from "moment";
 import { connect } from "react-redux";
+import {Card, Button, Col, Row} from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import ReactToPrint from "react-to-print";
 
@@ -58,7 +59,8 @@ class BestSales extends Component {
         const from = moment(this.state.from).format("YYYY-MM-DD HH:mm:ss");
         axios.get(`/reports/best-sales?from=${from}&to=${to}`).then(res => {
             this.setState({
-                ...res.data
+                ...res.data,
+                notFound:res.data.products.length === 0 ? "Nothing Found" : undefined
             })
         }).catch(err => {
             console.log({ err })
@@ -118,46 +120,61 @@ class BestSales extends Component {
         };
         return (
             <React.Fragment>
-                <div className="d-flex">
-                    <form onSubmit={this.searchResult} className="form-inline">
-                        <DatePicker
-                            selected={this.state.from}
-                            onChange={this.dateFromHandler}
-                            // dateFormat="YYYY-MM-DD"
-                            className="form-control"
-                            showTimeSelect
-                            timeFormat="HH:mm"
-                            timeIntervals={15}
-                            dateFormat="MMMM d, yyyy h:mm aa"
-                            timeCaption="time"
-                        />
-
-                        <DatePicker
-                            selected={this.state.to}
-                            onChange={this.dateToHandler}
-                            className="form-control"
-                            showTimeSelect
-                            timeFormat="HH:mm"
-                            timeIntervals={15}
-                            dateFormat="MMMM d, yyyy h:mm:ss aa"
-                            timeCaption="time"
-                        />
-                        {/* <input type="date" className="date" name="from" onChange={this.dateHandler} />
-                    <input type="date" className="date" name="to" onChange={this.dateHandler} /> */}
-                        <button className="submit">Search</button>
-                    </form>
-                    {/* <button className="btn btn-primary">
-                        <ReactToPrint
-                            trigger={() => <a href="#">Print this out!</a>}
-                            content={() => this.componentRef}
-                        />
-                    </button> */}
-                </div>
-                {this.state.products.length !== 0 ? (
-                    <Line data={data} options={options} />
-                ) : (
-                        <div>LOADING</div>
-                    )}
+                <Card>
+                    <Card.Header>
+                    <div className="d-flex">
+                                <form onSubmit={this.searchResult} className="form-inline w-100">
+                                    <Row className="w-100 align-items-center">
+                                        <Col md="4">
+                                            <DatePicker
+                                                selected={this.state.from}
+                                                onChange={this.dateFromHandler}
+                                                className="form-control w-100"
+                                                wrapperClassName="mr-3 w-100"
+                                                showTimeSelect
+                                                timeFormat="HH:mm"
+                                                timeIntervals={15}
+                                                dateFormat="MMMM d, yyyy h:mm aa"
+                                                timeCaption="time"
+                                            />
+                                        </Col>
+                                        <Col md="4">
+                                            <DatePicker
+                                                selected={this.state.to}
+                                                onChange={this.dateToHandler}
+                                                className="form-control w-100"
+                                                wrapperClassName="mr-3 w-100"
+                                                showTimeSelect
+                                                timeFormat="HH:mm"
+                                                timeIntervals={15}
+                                                dateFormat="MMMM d, yyyy h:mm:ss aa"
+                                                timeCaption="time"
+                                            />
+                                        </Col>
+                                            {/* <input type="date" className="date" name="from" onChange={this.dateHandler} />
+                                                <input type="date" className="date" name="to" onChange={this.dateHandler} /> */}
+                                        <Col md="4">
+                                            <Button type="submit" size="sm">Search</Button>
+                                        </Col>
+                                    </Row>
+                                </form>
+                                {/* <button className="btn btn-primary">
+                                    <ReactToPrint
+                                        trigger={() => <a href="#">Print this out!</a>}
+                                        content={() => this.componentRef}
+                                    />
+                                </button> */}
+                            </div>
+                            
+                    </Card.Header>
+                    <Card.Body>
+                            {this.state.products.length !== 0 ? (
+                                <Line data={data} options={options} />
+                            ) : (
+                            this.state.notFound ? <div>{this.state.notFound}</div> : <div>LOADING</div>
+                            )}
+                    </Card.Body>
+                </Card>
             </React.Fragment>
         );
     }

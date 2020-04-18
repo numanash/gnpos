@@ -47,9 +47,9 @@ class SuppliersList extends Component {
         this.state = {}
     }
 
-    getReceipt = code => {
+    getReceipt = order => {
         this.setState({
-            orderCode: code,
+            orderCode: order.code,
             showReceipt: true
         })
 
@@ -61,11 +61,11 @@ class SuppliersList extends Component {
         });
     };
 
-    completeOrder = orderCode => {
+    completeOrder = order => {
         this.props.history.push({
-            pathname: `/pos/${orderCode}`,
+            pathname: `/pos/${order.code}`,
             state: {
-                orderCode
+                orderCode:order.code
             }
         })
     }

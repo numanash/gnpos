@@ -41,7 +41,7 @@ module.exports = {
       if (data.limit) {
         sequelize
           .query(
-            `Select sup.*,supp.name as provider from supplies sup INNER JOIN suppliers supp ON sup.ref_provider = supp.id ORDER BY sup.${data.column} ${data.order} LIMIT ${data.offset}, ${data.limit} `,
+            `Select sup.name as name,sup.id as id,supp.name as provider, SUM(psf.total_price) as value, SUM(psf.quantity) as items from supplies sup INNER JOIN suppliers supp ON sup.ref_provider = supp.id INNER JOIN product_stock_flow psf ON sup.id=psf.ref_supply ORDER BY sup.${data.column} ${data.order} LIMIT ${data.offset}, ${data.limit} `,
             {
               raw: false,
               type: Sequelize.QueryTypes.SELECT,
@@ -77,7 +77,8 @@ module.exports = {
                   return Products.update(
                     {
                       purchase_cost: product.price,
-                      quantity: pro.quantity + product.quantity
+                      quantity: pro.quantity + product.quantity,
+                      quantity_remaining: (pro.quantity + product.quantity) - pro.quantity_sold
                     },
                     { where: { id: product.id }, transaction: t }
                   ).then(proUpdate => {
@@ -200,7 +201,7 @@ module.exports = {
   getProduct: id => {
     return new Promise((resolve, reject) => {
       ProductStockFlow.findAll({
-        attributes: ['id', 'ref_product_code', 'ref_product_id', 'quantity_before', 'quantity', 'quantity_after', 'unit_price'],
+        attributes: ['id', 'ref_product_code', 'ref_product_id', 'quantity_before', 'quantity', 'quantity_after', 'unit_price','ref_supply'],
         where: {
           id
         }
@@ -213,12 +214,38 @@ module.exports = {
   },
   updateProductStock: data => {
     return new Promise((resolve, reject) => {
-      ProductStockFlow.update(_.pick(data, ["unit_price", "quantity_after", "quantity"]), {
+      ProductStockFlow.update(_.pick(data, ["unit_price", "quantity_after", "quantity","total_price"]), {
         where: {
           id: data.id
         }
       }).then(res => {
-        resolve(res);
+        if(res[0] === 1){
+          sequelize
+        .query(
+          `SELECT SUM(psf.quantity) as quantity,SUM(psf.quantity_after) as quantity_after, SUM(total_price) as total_price, p.quantity_sold as sold  from product_stock_flow psf INNER JOIN products p ON p.id=psf.ref_product_id Where ref_product_id =${data.ref_product_id}  `,
+          {
+            raw: false,
+            type: Sequelize.QueryTypes.SELECT,
+            plain: false
+          }
+        )
+        .then(res => {
+          let product= res[0];
+          Products.update({
+            quantity: product.quantity,
+            quantity_remaining: product.quantity - product.sold
+          },{where:{
+            id:data.ref_product_id
+          }}).then(res=>{
+            resolve(res);
+          }).catch(err=>{
+            reject(err);
+          })
+        })
+        .catch(error => {
+          reject(error);
+        });
+        }
 
       }).catch(err => {
         reject(err)

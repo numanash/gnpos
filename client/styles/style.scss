@@ -101,3 +101,14 @@ button {
 .wrapper .content-wrapper{
   overflow-x:hidden;
 }
+
+
+// focus
+
+.no-foucs{
+  &:focus,&:active{
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+}

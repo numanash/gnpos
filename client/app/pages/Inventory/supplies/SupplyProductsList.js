@@ -76,8 +76,9 @@ class SuppliesList extends Component {
     }
 
     onEdit = data => {
-        this.props.history.push(`/inventory/supply/products/edit/${data}`, {
-            id: data
+        this.props.history.push(`/inventory/supply/products/edit/${this.props.match.params.id}/${data.id}`, {
+            id: data.id,
+            supplyId:this.props.match.params.id
         })
     }
 
