@@ -25,7 +25,6 @@ module.exports = {
       address: {
         type: Sequelize.TEXT,
         defaultValue: null
-
       },
       city: {
         type: Sequelize.CHAR(55),
@@ -47,9 +46,10 @@ module.exports = {
         ),
         allowNull: false
       },
-      deletedAt:{
+      deletedAt: {
         type: "TIMESTAMP",
-        allowNull: true
+        allowNull: true,
+        defaultValue: null
       }
     });
   },

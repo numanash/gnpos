@@ -91,8 +91,8 @@ module.exports = {
         unique: true
       },
       product_status: {
-        type: Sequelize.ENUM('Active', 'De-Active'),
-        defaultValue: 'Active',
+        type: Sequelize.ENUM("Active", "De-Active"),
+        defaultValue: "Active",
         allowNull: false
       },
       status: { type: Sequelize.BOOLEAN(), defaultValue: 1 },
@@ -121,9 +121,10 @@ module.exports = {
         ),
         allowNull: false
       },
-      deletedAt:{
+      deletedAt: {
         type: "TIMESTAMP",
-        allowNull: true
+        allowNull: true,
+        defaultValue: null
       }
     });
   },

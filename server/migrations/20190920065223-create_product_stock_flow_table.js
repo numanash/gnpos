@@ -102,9 +102,10 @@ module.exports = {
         ),
         allowNull: false
       },
-      deletedAt:{
+      deletedAt: {
         type: "TIMESTAMP",
-        allowNull: true
+        allowNull: true,
+        defaultValue: null
       }
     });
   },
