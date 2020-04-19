@@ -6,12 +6,8 @@ const Suppliers = require("../../models").Suppliers;
 const ProductStockFlow = require("../../models").ProductStockFlow;
 
 module.exports = {
-  getAll: (data) => {
-
-
+  getAll: data => {
     return new Promise((resolve, reject) => {
-
-
       //   // Supplies.hasMany(Suppliers, {
       //   //   foreignKey: "id"
       //   // });
@@ -55,11 +51,13 @@ module.exports = {
             reject(e);
           });
       } else {
-        Supplies.findAll().then(res => {
-          resolve(res);
-        }).catch(e => {
-          reject(e);
-        });
+        Supplies.findAll()
+          .then(res => {
+            resolve(res);
+          })
+          .catch(e => {
+            reject(e);
+          });
       }
     });
   },
@@ -78,7 +76,8 @@ module.exports = {
                     {
                       purchase_cost: product.price,
                       quantity: pro.quantity + product.quantity,
-                      quantity_remaining: (pro.quantity + product.quantity) - pro.quantity_sold
+                      quantity_remaining:
+                        pro.quantity_remaining + product.quantity
                     },
                     { where: { id: product.id }, transaction: t }
                   ).then(proUpdate => {
@@ -114,12 +113,12 @@ module.exports = {
       });
     });
   },
-  addNew: (data) => {
+  addNew: data => {
     return new Promise((resolve, reject) => {
-      Supplies.create(_.pick(data, ['name'])).then(result => {
-
-        resolve(result);
-      })
+      Supplies.create(_.pick(data, ["name"]))
+        .then(result => {
+          resolve(result);
+        })
         .catch(e => {
           reject(e);
         });
@@ -174,88 +173,117 @@ module.exports = {
   getSignle: id => {
     return new Promise((resolve, reject) => {
       Supplies.findAll({
-        attributes: ['id', 'ref_provider', 'name', 'description'],
+        attributes: ["id", "ref_provider", "name", "description"],
         where: {
           id
         }
-      }).then(res => {
-        resolve(res[0])
-      }).catch(err => {
-        reject(err)
       })
+        .then(res => {
+          resolve(res[0]);
+        })
+        .catch(err => {
+          reject(err);
+        });
     });
   },
   updateSignle: data => {
     return new Promise((resolve, reject) => {
-      Supplies.update(_.pick(data, ['name', 'description', 'ref_provider']), {
+      Supplies.update(_.pick(data, ["name", "description", "ref_provider"]), {
         where: {
           id: data.id
         }
-      }).then(res => {
-        resolve(res)
-      }).catch(err => {
-        reject(err)
       })
+        .then(res => {
+          resolve(res);
+        })
+        .catch(err => {
+          reject(err);
+        });
     });
   },
   getProduct: id => {
     return new Promise((resolve, reject) => {
       ProductStockFlow.findAll({
-        attributes: ['id', 'ref_product_code', 'ref_product_id', 'quantity_before', 'quantity', 'quantity_after', 'unit_price','ref_supply'],
+        attributes: [
+          "id",
+          "ref_product_code",
+          "ref_product_id",
+          "quantity_before",
+          "quantity",
+          "quantity_after",
+          "unit_price",
+          "ref_supply"
+        ],
         where: {
           id
         }
-      }).then(res => {
-        resolve(res[0])
-      }).catch(err => {
-        reject(err)
       })
+        .then(res => {
+          resolve(res[0]);
+        })
+        .catch(err => {
+          reject(err);
+        });
     });
   },
   updateProductStock: data => {
     return new Promise((resolve, reject) => {
-      ProductStockFlow.update(_.pick(data, ["unit_price", "quantity_after", "quantity","total_price"]), {
-        where: {
-          id: data.id
-        }
-      }).then(res => {
-        if(res[0] === 1){
-          sequelize
-        .query(
-          `SELECT SUM(psf.quantity) as quantity,SUM(psf.quantity_after) as quantity_after, SUM(total_price) as total_price, p.quantity_sold as sold  from product_stock_flow psf INNER JOIN products p ON p.id=psf.ref_product_id Where ref_product_id =${data.ref_product_id}  `,
-          {
-            raw: false,
-            type: Sequelize.QueryTypes.SELECT,
-            plain: false
+      ProductStockFlow.update(
+        _.pick(data, [
+          "unit_price",
+          "quantity_after",
+          "quantity",
+          "total_price"
+        ]),
+        {
+          where: {
+            id: data.id
           }
-        )
-        .then(res => {
-          let product= res[0];
-          Products.update({
-            quantity: product.quantity,
-            quantity_remaining: product.quantity - product.sold
-          },{where:{
-            id:data.ref_product_id
-          }}).then(res=>{
-            resolve(res);
-          }).catch(err=>{
-            reject(err);
-          })
-        })
-        .catch(error => {
-          reject(error);
-        });
         }
-
-      }).catch(err => {
-        reject(err)
-      })
-    })
+      )
+        .then(res => {
+          if (res[0] === 1) {
+            sequelize
+              .query(
+                `SELECT SUM(psf.quantity) as quantity,SUM(psf.quantity_after) as quantity_after, SUM(total_price) as total_price, p.quantity_sold as sold  from product_stock_flow psf INNER JOIN products p ON p.id=psf.ref_product_id Where ref_product_id =${data.ref_product_id} AND type = 'supply'                `,
+                {
+                  raw: false,
+                  type: Sequelize.QueryTypes.SELECT,
+                  plain: false
+                }
+              )
+              .then(res => {
+                let product = res[0];
+                Products.update(
+                  {
+                    quantity: product.quantity,
+                    quantity_remaining: product.quantity - product.sold
+                  },
+                  {
+                    where: {
+                      id: data.ref_product_id
+                    }
+                  }
+                )
+                  .then(res => {
+                    resolve(res);
+                  })
+                  .catch(err => {
+                    reject(err);
+                  });
+              })
+              .catch(error => {
+                reject(error);
+              });
+          }
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
   },
   edit: (data, param) => {
-    let query = `Update  SET Name=\'${data.Name}\',Description=\'${
-      data.Description
-      }\',parent=\'${data.parent}\' WHERE id=${param}`;
+    let query = `Update  SET Name=\'${data.Name}\',Description=\'${data.Description}\',parent=\'${data.parent}\' WHERE id=${param}`;
     return new Promise((resolve, reject) => {
       db.query(query, (err, result) => {
         if (err) reject("error", err);

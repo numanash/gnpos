@@ -105,9 +105,9 @@ module.exports = {
                     ).then(stockFlow => {
                       return Products.update(
                         {
-                          quantity: foundProduct.quantity - product.quantity,
-                          quantity_sold:
-                            foundProduct.quantity_sold + product.quantity
+                          // quantity: foundProduct.quantity + product.quantity,
+                          quantity_sold: foundProduct.quantity_sold + product.quantity,
+                          quantity_remaining: foundProduct.quantity_remaining - product.quantity,
                         },
                         { where: { id: foundProduct.id }, transaction: t }
                       ).then(updatedPro => {

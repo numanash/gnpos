@@ -1,7 +1,7 @@
 const db = require("../../db/connection");
 const Products = require("../../models").Products;
 module.exports = {
-  getAll: (query) => {
+  getAll: query => {
     return new Promise((resolve, reject) => {
       if (query.limit) {
         Products.findAndCountAll({
@@ -16,9 +16,10 @@ module.exports = {
             reject(e);
           });
       } else {
-        Products.findAll().then(res => {
-          resolve(res);
-        })
+        Products.findAll()
+          .then(res => {
+            resolve(res);
+          })
           .catch(e => {
             reject(e);
           });
@@ -28,16 +29,27 @@ module.exports = {
   getByCategory: categoryId => {
     return new Promise((resolve, reject) => {
       Products.findAll({
-        attributes: ["name", "barcode", "id", "sku", "purchase_cost", "selling_price"],
+        attributes: [
+          "name",
+          "barcode",
+          "id",
+          "sku",
+          "purchase_cost",
+          "selling_price",
+          "quantity_remaining",
+          "quantity_sold"
+        ],
         where: {
           ref_category: categoryId
         }
-      }).then(res => {
-        resolve(res);
-      }).catch(error => {
-        reject(error);
       })
-    })
+        .then(res => {
+          resolve(res);
+        })
+        .catch(error => {
+          reject(error);
+        });
+    });
   },
   add: data => {
     return new Promise((resolve, reject) => {
@@ -67,7 +79,7 @@ module.exports = {
         });
     });
   },
-  search: (query) => {
+  search: query => {
     return new Promise((resolve, reject) => {
       if (query.search) {
         const Op = Sequelize.Op;
@@ -76,23 +88,30 @@ module.exports = {
           limit: query.limit ? parseInt(query.limit) : 5,
           where: {
             [Op.or]: {
-              name: { [Op.like]: '%' + query.search + '%' },
-              sku: { [Op.like]: '%' + query.search + '%' },
-              barcode: { [Op.like]: '%' + query.search + '%' }
+              name: { [Op.like]: "%" + query.search + "%" },
+              sku: { [Op.like]: "%" + query.search + "%" },
+              barcode: { [Op.like]: "%" + query.search + "%" }
             }
           },
-          attributes: ["name", "barcode", "id", "sku", "purchase_cost", "selling_price"]
+          attributes: [
+            "name",
+            "barcode",
+            "id",
+            "sku",
+            "purchase_cost",
+            "selling_price",
+            "quantity_remaining",
+            "quantity_sold"
+          ]
         })
           .then(res => {
-
             resolve(res);
-
           })
           .catch(e => {
             reject(e);
           });
       } else {
-        reject("Nothing Found")
+        reject("Nothing Found");
       }
     });
   },
@@ -102,41 +121,47 @@ module.exports = {
         where: {
           id
         }
-      }).then(res => {
-        resolve(res)
-      }).catch(err => {
-        reject(err)
       })
-    })
-
+        .then(res => {
+          resolve(res);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
   },
   edit: (data, param) => {
     return new Promise((resolve, reject) => {
-      Products.update(_.pick(data, [
-        "name",
-        "ref_category",
-        "selling_price",
-        "description",
-        "sku",
-        "product_status",
-        "weight",
-        "height",
-        "width",
-        "colour",
-        "barcode",
-        "tax",
-        "service_charges",
-        "discount"
-      ]), {
-        where: {
-          id: data.id
+      Products.update(
+        _.pick(data, [
+          "name",
+          "ref_category",
+          "selling_price",
+          "description",
+          "sku",
+          "product_status",
+          "weight",
+          "height",
+          "width",
+          "colour",
+          "barcode",
+          "tax",
+          "service_charges",
+          "discount"
+        ]),
+        {
+          where: {
+            id: data.id
+          }
         }
-      }).then(res => {
-        resolve(res)
-      }).catch(err => {
-        reject(err)
-      })
-    })
+      )
+        .then(res => {
+          resolve(res);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
   },
   delete: params => {
     let query = `Delete FROM category Where id=${params}`;

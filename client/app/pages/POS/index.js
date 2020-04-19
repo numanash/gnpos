@@ -530,7 +530,9 @@ class PointOfSale extends Component {
                     orderCode: result.data.orders,
                     checkOut: false
                 })
+                // this.onCategoryClicked();
                 this.resetOrder();
+                this.onCategoryClicked(this.state.selectedCategory);
                 this.props.history.push("/orders")
             }).catch(err => {
                 console.log({ err });
@@ -560,6 +562,8 @@ class PointOfSale extends Component {
                 checkOut: false
             })
             this.resetOrder();
+            this.onCategoryClicked(this.state.selectedCategory);
+
         }).catch(err => {
             console.log({ err });
         })
@@ -696,7 +700,7 @@ class PointOfSale extends Component {
                                                             id={product.id}
                                                             key={product.id + "row"}
                                                         >
-                                                            <td >{product.name}</td>
+                                                            <td className={`${product.quantity_remaining>5 ? 'text-dark' : (product.quantity_remaining<=5 && product.quantity_remaining>=1)  ? 'text-warning' : 'text-danger' }`}>{product.name}</td>
                                                             <td>{product.selling_price}</td>
                                                             <td className="d-inline-flex">
                                                                 <Form.Control
@@ -852,10 +856,11 @@ class PointOfSale extends Component {
                                                 return (
                                                     <Button
                                                         key={item.id}
-                                                        variant="light"
-                                                        className="btn-products mr-1"
+                                                        variant={`${item.quantity_remaining>5 ? 'light' : (item.quantity_remaining<=5 && item.quantity_remaining>=1)  ? 'warning' : 'danger' }`}
+                                                        className={`btn-products mr-1 position-relative`}
                                                         onClick={() => this.addToCart(item.id)}
                                                     >
+                                            <p className="position-absolute right-0 top-0 px-2 py-1 font-weight-bold bg-dark" title="Quantity Remaining">{item.quantity_remaining}</p>
                                                         <img src="/img.jpg" />
                                                         <span>{item.name}</span>
                                                     </Button>

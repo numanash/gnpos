@@ -48,7 +48,8 @@ class AddSupply extends Component {
     componentDidUpdate(prevProps) {
         if (prevProps.suppliers !== this.props.suppliers) {
             this.setState({
-                suppliers: this.props.suppliers.map(supplier => ({ ...supplier, value: supplier.id, label: supplier.name }))
+                suppliers: this.props.suppliers.map(supplier => ({ ...supplier, value: supplier.id, label: supplier.name })),
+                supplierError: this.props.suppliers.length ? false : true
             })
         }
 
@@ -514,6 +515,7 @@ class AddSupply extends Component {
                         <CustomCard>
                             <Row className="align-items-center">
                                 <Col sm="6">
+                                    {this.state.supplierError && <Alert size="sm" className="py-1 w-75" variant="warning">Please add supplier first. <Button size="sm" className="bg-transparent no-foucs text-primary border-0" onClick={()=>this.props.history.push("/supplier/add")}>Create New</Button></Alert>}
                                     <CustomSelect
                                         className="w-75 "
                                         placeholder="Select Supplier"

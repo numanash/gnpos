@@ -12,6 +12,7 @@ import DatePicker from "react-datepicker";
 import middleware from '../../../../middleware';
 import scrollToTop from '../../../constants/ScrollToTop';
 import FormValidation from '../../../components/FormValidation';
+import {Link} from "react-router-dom";
 
 const customStyles = {
     control: base => ({
@@ -270,7 +271,7 @@ class AddProduct extends Component {
                     localErrors: props.localErrors,
                     error: props.error
                 })}>
-                    {this.state.categoryError && <Alert size="sm" variant="info" className="py-2" dismissible onClose={() => this.setState({ categoryError: undefined })}>{this.state.categoryError}</Alert>}
+                    {this.state.categoryError && <Alert size="sm" variant="info" className="py-2" dismissible onClose={() => this.setState({ categoryError: undefined })}>{this.state.categoryError} <Link to="/inventory/category/add">Click here</Link> to add category</Alert>}
                     {this.state.error && <Alert size="sm" variant="danger" className="py-2" dismissible onClose={() => this.setState({ error: undefined })}>{this.state.error}</Alert>}
                     {this.state.success && <Alert size="sm" variant="success" className="py-2" dismissible onClose={() => this.setState({ success: undefined })}>{this.state.success}</Alert>}
                     <Tabs defaultActiveKey="productIdentification" id="product-tab" >
