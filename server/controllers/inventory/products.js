@@ -1,13 +1,31 @@
 const db = require("../../db/connection");
 const Products = require("../../models").Products;
+const Categories = require("../../models").Categories;
+const ProductStockFlow = require("../../models").ProductStockFlow;
+
+function isNullOrEmpty(value, returnVal) {
+  return value ? value : returnVal;
+}
+const Sequelize = require("sequelize");
+const Op = Sequelize.Op;
 module.exports = {
   getAll: query => {
+    let name = isNullOrEmpty(query.name, "");
     return new Promise((resolve, reject) => {
       if (query.limit) {
+        Categories.hasMany(Products, { foreignKey: "id" });
+        Products.belongsTo(Categories, { foreignKey: "ref_category" });
+
         Products.findAndCountAll({
           limit: parseInt(query.limit),
           offset: parseInt(query.offset),
-          order: [[query.column, query.order]]
+          order: [[query.column, query.order]],
+          include: [Categories],
+          where: {
+            name: {
+              [Op.like]: `%${name}%`
+            }
+          }
         })
           .then(res => {
             resolve(res);
@@ -130,6 +148,24 @@ module.exports = {
         });
     });
   },
+  productStockFlow: (query, id) => {
+    return new Promise((resolve, reject) => {
+      ProductStockFlow.findAndCountAll({
+        limit: parseInt(query.limit),
+        offset: parseInt(query.offset),
+        order: [[query.column, query.order]],
+        where: {
+          ref_product_id: id
+        }
+      })
+        .then(res => {
+          resolve(res);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+  },
   edit: (data, param) => {
     return new Promise((resolve, reject) => {
       Products.update(
@@ -163,13 +199,21 @@ module.exports = {
         });
     });
   },
-  delete: params => {
-    let query = `Delete FROM category Where id=${params}`;
+  delete: id => {
     return new Promise((resolve, reject) => {
-      db.query(query, (err, result) => {
-        if (err) reject("error", err);
-        resolve(result);
-      });
+      Products.destroy({
+        where: {
+          id
+        }
+      })
+        .then(res => {
+          console.log(res);
+          resolve(res);
+        })
+        .catch(err => {
+          console.log({ err });
+          reject(err);
+        });
     });
   }
 };

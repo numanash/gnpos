@@ -32,7 +32,7 @@ router.put("/edit/:id", [auth, inRoles(["admin"])], async (req, res) => {
     .catch(ex => console.log(ex));
 });
 
-router.post("/add", [auth, inRoles(["admin"])], async (req, res) => {
+router.post("/add", async (req, res) => {
   let user = req.body;
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(user.password, salt);
@@ -59,7 +59,7 @@ router.post("/add", [auth, inRoles(["admin"])], async (req, res) => {
       if (e.code === "ER_DUP_ENTRY") {
         res.status(303).send({ message: "Email Already Exists!" });
       } else {
-        console.log(e.sqlMessage);
+        console.log(e);
         res.status(404).send({ message: "Internal Server Error" });
       }
     });
@@ -71,17 +71,16 @@ router.post("/login", async (req, res) => {
     .login(user)
     .then(async result => {
       if (!result)
-        res.status(404).send({ message: "Invalid Email or Password" });
+        res.status(403).send({ message: "Invalid Email or Password" });
       const validatePassword = await bcrypt.compare(
         user.password,
         result.password
       );
 
       if (!validatePassword) {
-        res.status(404).send({ message: "Invalid Email or Password" });
+        res.status(403).send({ message: "Invalid Email or Password" });
       }
       user = result;
-
 
       const roles = await users
         .getRoles(user.id)
@@ -92,11 +91,10 @@ router.post("/login", async (req, res) => {
           name: user.name,
           email: user.email,
           isAuthenticated: true,
-          _id: user.id,
+          _id: user.id
         },
         config.get("gn_pos_key")
       );
-
 
       return res
         .header("x-auth-token", token)
@@ -111,15 +109,14 @@ router.post("/login", async (req, res) => {
     .catch(e => {
       console.log(e);
       if (e.code === "ER_DUP_ENTRY") {
-        return res.status(404).send("Email Already Exists!");
+        return res.status(403).send("Email Already Exists!");
       } else if (e.message) {
         return res.status(403).send(e);
       } else {
-        return res.status(404).send({ message: e });
+        return res.status(403).send({ message: e });
       }
     });
 });
-
 
 router.get("/getUserActions", auth, async (req, res) => {
   await users

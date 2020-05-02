@@ -16,7 +16,14 @@ module.exports = {
       },
       ref_category: {
         type: Sequelize.INTEGER(11),
-        allowNull: false
+        allowNull: false,
+        foreignKey: true,
+        references: {
+          model: {
+            tableName: "categories"
+          },
+          key: "id"
+        }
       },
       quantity: {
         type: Sequelize.INTEGER(11),
