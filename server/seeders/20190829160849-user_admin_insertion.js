@@ -19,9 +19,9 @@ module.exports = {
         {
           username: "admin",
           name: "Numan Ashiq",
-          email: "numanash@yahoo.com",
+          email: "mnuman2772@gmail.com",
           password:
-            "$2b$10$.0ARD5VxfYsVHgCUJ7EHH.5bQ.Yx/vy6F40eFe2PdaApoouD6yR.G"
+            "$2b$10$LG3DdRDnjOe3Nwbmlgsl0uIi6RdAxmyrrhtfzRevGpb2Af/9rzZA2"
         }
       ],
       {}
