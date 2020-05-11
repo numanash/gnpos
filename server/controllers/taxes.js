@@ -2,7 +2,7 @@ const db = require("../db/connection");
 const Taxes = require("../models").Taxes;
 
 module.exports = {
-  getAll: (query) => {
+  getAll: query => {
     // let query = "Select * from `Taxes` where status = 1 ";
 
     return new Promise((resolve, reject) => {
@@ -10,7 +10,7 @@ module.exports = {
         Taxes.findAndCountAll({
           limit: parseInt(query.limit),
           offset: parseInt(query.offset),
-          order: [[query.column, query.order]],
+          order: [[query.column, query.order]]
         })
           .then(res => {
             resolve(res);
@@ -19,13 +19,10 @@ module.exports = {
             reject(e);
           });
       } else {
-        Taxes.findAll({
-          where:{
-            parent_ref_id:0
-          }
-        }).then(res => {
-          resolve(res);
-        })
+        Taxes.findAll()
+          .then(res => {
+            resolve(res);
+          })
           .catch(e => {
             reject(e);
           });
@@ -36,13 +33,13 @@ module.exports = {
       // });
     });
   },
-  getSubTaxes: id =>{
-    return new Promise((resolve,reject)=>{
+  getSubTaxes: id => {
+    return new Promise((resolve, reject) => {
       Taxes.findAll({
-        where:{parent_ref_id: id}
+        where: { parent_ref_id: id }
       })
         .then(res => {
-              resolve(res);
+          resolve(res);
         })
         .catch(e => {
           reject(e.original.sqlMessage);
@@ -54,21 +51,21 @@ module.exports = {
     //   data.categoryName
     // }\', \'${data.categoryDescription}\', \'${data.parentCategory}\')`;
     return new Promise((resolve, reject) => {
-      Taxes.create(
-        _.pick(data, ["name", "description", "type", "value"])
-      )
+      Taxes.create(_.pick(data, ["name", "description", "type", "value"]))
         .then(res => {
           if (res) {
-            Taxes.findAll().then(responce => {
-              resolve(responce);
-            }).catch(err => {
-              console.log({ err });
-              reject(err);
-            })
+            Taxes.findAll()
+              .then(responce => {
+                resolve(responce);
+              })
+              .catch(err => {
+                console.log({ err });
+                reject(err);
+              });
           }
         })
         .catch(e => {
-          if (e.original.code === 'ER_DUP_ENTRY') {
+          if (e.original.code === "ER_DUP_ENTRY") {
             return reject(e.original.sqlMessage);
           }
           reject(e.original.sqlMessage);
@@ -85,16 +82,12 @@ module.exports = {
     });
   },
   edit: (data, param) => {
-    let query = `Update Taxes SET name=\'${
-      data.name
-      }\',description=\'${data.description}\',value=\'${
-      data.value
-      }\',type=\'${
-        data.type
-        }\',updatedAt=\'${new Date()
-        .toISOString()
-        .slice(0, 19)
-        .replace("T", " ")}\' WHERE id = ${param};`;
+    let query = `Update Taxes SET name=\'${data.name}\',description=\'${
+      data.description
+    }\',value=\'${data.value}\',type=\'${data.type}\',updatedAt=\'${new Date()
+      .toISOString()
+      .slice(0, 19)
+      .replace("T", " ")}\' WHERE id = ${param};`;
     return new Promise((resolve, reject) => {
       db.query(query, (err, result) => {
         if (err) {
@@ -105,19 +98,21 @@ module.exports = {
     });
   },
   delete: id => {
-    console.log({id})
+    console.log({ id });
     return new Promise((resolve, reject) => {
       Taxes.destroy({
-        where:{
+        where: {
           id
         }
-      }).then(res=>{
-        console.log(res)
-          resolve(res);
-      }).catch(err=>{
-        console.log({err});
-        reject(err);
       })
+        .then(res => {
+          console.log(res);
+          resolve(res);
+        })
+        .catch(err => {
+          console.log({ err });
+          reject(err);
+        });
     });
   },
   find: input => {

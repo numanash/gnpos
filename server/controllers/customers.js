@@ -1,7 +1,7 @@
 const db = require("../db/connection");
 const Customers = require("../models/").Customers;
 module.exports = {
-  getAll: (query) => {
+  getAll: query => {
     // let query = "Select * from `customers` ";
     return new Promise((resolve, reject) => {
       if (query.limit) {
@@ -31,7 +31,6 @@ module.exports = {
         //   if (err) reject("error", err);
         //   resolve(result);
         // });
-
       }
     });
   },
@@ -74,40 +73,50 @@ module.exports = {
         where: {
           id
         }
-      }).then(res => {
-        resolve(res);
-      }).catch(err => {
-        reject(err);
       })
+        .then(res => {
+          resolve(res);
+        })
+        .catch(err => {
+          reject(err);
+        });
     });
   },
   edit: (data, id) => {
     console.log({ data, id });
     return new Promise((resolve, reject) => {
-      Customers.update(_.pick(data, ["name", "phone", "email", "address", "city", "description"]), {
-        where: {
-          id
-        }
-      }).then(res => {
-        console.log({ res });
-        resolve(res);
-      }).catch(err => {
-        console.log({ err })
-        resolve(err);
-      })
-    })
-
-  },
-  delete: params => {
-    return new Promise((resolve, reject) => {
       Customers.update(
-        { status: 0 },
+        _.pick(data, [
+          "name",
+          "phone",
+          "email",
+          "address",
+          "city",
+          "description"
+        ]),
         {
           where: {
-            id: params
+            id
           }
         }
       )
+        .then(res => {
+          console.log({ res });
+          resolve(res);
+        })
+        .catch(err => {
+          console.log({ err });
+          resolve(err);
+        });
+    });
+  },
+  delete: id => {
+    return new Promise((resolve, reject) => {
+      Customers.destroy({
+        where: {
+          id
+        }
+      })
         .then(res => {
           reject(res);
         })

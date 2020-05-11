@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Aux from "../../../constants/hoc/_Aux";
 import ServerSideTable from "../../../components/ServerSideTable";
+import axios from "../../../../services/http";
 const columns = [
   {
     Header: "Category Name",
@@ -29,16 +30,34 @@ class CategoriesList extends Component {
       id: data.id
     });
   };
-
+  onDeleteCategory = data => {
+    axios
+      .delete(`/categories/${data.id}`)
+      .then(res => {
+        this.setState({
+          message: data.categoryName + " " + res.data.message
+        });
+      })
+      .catch(err => {
+        this.setState({
+          error: "Something went wrong"
+        });
+      });
+  };
   render() {
     return (
       <Aux>
         <ServerSideTable
           actions="true"
           canView="true"
+          canEdit="true"
+          canDelete="true"
           url="/categories"
           columns={columns}
           onView={data => this.onViewCategory(data)}
+          onEdit={data => this.onViewCategory(data)}
+          onDelete={data => this.onDeleteCategory(data)}
+          onMessage={this.state.message}
         />
       </Aux>
     );

@@ -2,7 +2,7 @@ const db = require("../../db/connection");
 const Categories = require("../../models").Categories;
 
 module.exports = {
-  getAll: (query) => {
+  getAll: query => {
     // let query = "Select * from `categories` where status = 1 ";
 
     return new Promise((resolve, reject) => {
@@ -10,7 +10,7 @@ module.exports = {
         Categories.findAndCountAll({
           limit: parseInt(query.limit),
           offset: parseInt(query.offset),
-          order: [[query.column, query.order]],
+          order: [[query.column, query.order]]
         })
           .then(res => {
             resolve(res);
@@ -20,12 +20,13 @@ module.exports = {
           });
       } else {
         Categories.findAll({
-          where:{
-            parent_ref_id:0
+          where: {
+            parent_ref_id: 0
           }
-        }).then(res => {
-          resolve(res);
         })
+          .then(res => {
+            resolve(res);
+          })
           .catch(e => {
             reject(e);
           });
@@ -36,13 +37,13 @@ module.exports = {
       // });
     });
   },
-  getSubCategories: id =>{
-    return new Promise((resolve,reject)=>{
+  getSubCategories: id => {
+    return new Promise((resolve, reject) => {
       Categories.findAll({
-        where:{parent_ref_id: id}
+        where: { parent_ref_id: id }
       })
         .then(res => {
-              resolve(res);
+          resolve(res);
         })
         .catch(e => {
           reject(e.original.sqlMessage);
@@ -55,7 +56,13 @@ module.exports = {
     // }\', \'${data.categoryDescription}\', \'${data.parentCategory}\')`;
     return new Promise((resolve, reject) => {
       Categories.create(
-        _.pick(data, ["categoryName", "categoryDescription", "parent_ref_id", "tax", "discount"])
+        _.pick(data, [
+          "categoryName",
+          "categoryDescription",
+          "parent_ref_id",
+          "tax",
+          "discount"
+        ])
       )
         .then(res => {
           if (res) {
@@ -63,16 +70,18 @@ module.exports = {
               where: {
                 status: true
               }
-            }).then(responce => {
-              resolve(responce);
-            }).catch(err => {
-              console.log({ err });
-              reject(err);
             })
+              .then(responce => {
+                resolve(responce);
+              })
+              .catch(err => {
+                console.log({ err });
+                reject(err);
+              });
           }
         })
         .catch(e => {
-          if (e.original.code === 'ER_DUP_ENTRY') {
+          if (e.original.code === "ER_DUP_ENTRY") {
             return reject(e.original.sqlMessage);
           }
           reject(e.original.sqlMessage);
@@ -91,12 +100,12 @@ module.exports = {
   edit: (data, param) => {
     let query = `Update categories SET categoryName=\'${
       data.categoryName
-      }\',categoryDescription=\'${data.categoryDescription}\',parent_ref_id=\'${
+    }\',categoryDescription=\'${data.categoryDescription}\',parent_ref_id=\'${
       data.parentCategory
-      }\',updatedAt=\'${new Date()
-        .toISOString()
-        .slice(0, 19)
-        .replace("T", " ")}\' WHERE id = ${param};`;
+    }\',updatedAt=\'${new Date()
+      .toISOString()
+      .slice(0, 19)
+      .replace("T", " ")}\' WHERE id = ${param};`;
     return new Promise((resolve, reject) => {
       db.query(query, (err, result) => {
         if (err) {
@@ -106,15 +115,19 @@ module.exports = {
       });
     });
   },
-  delete: params => {
-    let query = `Delete FROM categories Where id=${params}`;
+  delete: id => {
     return new Promise((resolve, reject) => {
-      db.query(query, (err, result) => {
-        if (err) {
-          reject(err.sqlMessage);
+      Categories.destroy({
+        where: {
+          id
         }
-        resolve(result);
-      });
+      })
+        .then(res => {
+          resolve(res);
+        })
+        .catch(err => {
+          reject(err);
+        });
     });
   },
   find: input => {

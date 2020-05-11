@@ -2,6 +2,28 @@ const express = require("express");
 const router = express.Router();
 const products = require("../../controllers/inventory/products");
 const genCode = require("../../constant/generateCode");
+const multer = require("multer");
+var storage = multer.diskStorage({
+  destination: function(req, file, callback) {
+    callback(null, "../public/images/products");
+  },
+
+  filename: function(req, file, callback) {
+    if (!file.originalname.match(/\.(jpg|png|JPEG)$/)) {
+      var err = new Error();
+
+      err.code = "filetype";
+
+      return callback(err);
+    } else {
+      callback(null, Date.now() + file.originalname);
+    }
+  }
+});
+
+var upload = multer({ storage: storage, limits: { fileSize: 1000000 } }).single(
+  "imageUrl"
+);
 
 router.get("/", async (req, res, next) => {
   res.status(200).send(await products.getAll(req.query));
@@ -32,35 +54,54 @@ router.get("/category/:categoryId", async (req, res, next) => {
     });
 });
 
-router.post("/", async (req, res) => {
-  var productCode = await genCode(5);
-  let data = {
-    ...req.body,
-    barcode: productCode
-  };
-  await products
-    .add(data)
-    .then(result => {
-      res.status(201).send({
-        message: req.body.name + " Product Added"
-      });
-    })
-    .catch(e => {
-      if (e.original.code === "ER_DUP_ENTRY") {
-        res.status(500).send({
-          message: "Product Already Exists"
-        });
-      } else if (e.name === "SequelizeDatabaseError") {
-        res.status(500).send({
-          message: e.parent.sqlMessage
+router.post("/", (req, res) => {
+  upload(req, res, async function(err) {
+    if (err) {
+      if (err.code === "LIMIT_FILE_SIZE") {
+        return res.send({ success: false, msg: "limit file size 1MB " });
+      } else if (err.code === "filetype") {
+        return res.send({
+          success: false,
+          msg: "Must be valid file extension only jpg or png"
         });
       } else {
-        res.status(500).send({
-          message: "Server Error Review in request",
-          error: e
-        });
+        return res.send({ success: false, msg: "something went wrong" });
       }
-    });
+    } else {
+      if (!req.file) {
+        // return res.send({ success: false, msg: "No file selected" });
+      }
+      var productCode = await genCode(5);
+      let data = {
+        ...req.body,
+        barcode: productCode,
+        image: req.file.filename
+      };
+      await products
+        .add(data)
+        .then(result => {
+          res.status(201).send({
+            message: req.body.name + " Product Added"
+          });
+        })
+        .catch(e => {
+          if (e.original.code === "ER_DUP_ENTRY") {
+            res.status(500).send({
+              message: "Product Already Exists"
+            });
+          } else if (e.name === "SequelizeDatabaseError") {
+            res.status(500).send({
+              message: e.parent.sqlMessage
+            });
+          } else {
+            res.status(500).send({
+              message: "Server Error Review in request",
+              error: e
+            });
+          }
+        });
+    }
+  });
 });
 
 router.get("/:id", async (req, res) => {

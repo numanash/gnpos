@@ -1,40 +1,39 @@
-"use strict";
+const Sequelize = require("sequelize");
 
-module.exports = {
-  up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable("user_roles", {
+module.exports = function(sequelize, DataTypes) {
+  let ProductTax = sequelize.define(
+    "ProductTax",
+    {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true
       },
-      role_id: {
+      product_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         foreignKey: true,
         references: {
           model: {
-            tableName: "roles"
+            tableName: "products"
           },
           key: "id"
         }
       },
-      user_id: {
+      tax_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         foreignKey: true,
         references: {
           model: {
-            tableName: "users"
+            tableName: "tax"
           },
           key: "id"
         }
       }
-    });
-  },
-
-  down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("user_roles");
-  }
+    },
+    { tableName: "product_tax", timestamps: false }
+  );
+  return ProductTax;
 };

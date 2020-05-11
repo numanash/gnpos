@@ -95,6 +95,7 @@ module.exports = {
         allowNull: false
       },
       status: { type: Sequelize.BOOLEAN(), defaultValue: 1 },
+      image: { type: Sequelize.CHAR(255), allowNull: true },
       createdAt: {
         type: "TIMESTAMP",
         defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),

@@ -3,33 +3,27 @@ const router = express.Router();
 const categories = require("../../controllers/inventory/categories");
 
 router.get("/", async (req, res, next) => {
-
-  await categories.getAll(req.query).then(result =>
-    res.status(200).send(
-      result
-    )).catch(err => {
-      res.status(500).send(
-        err
-      )
-    })
-
+  await categories
+    .getAll(req.query)
+    .then(result => res.status(200).send(result))
+    .catch(err => {
+      res.status(500).send(err);
+    });
 });
 
-
 router.get("/sub-categories/:id", async (req, res, next) => {
-  await categories.getSubCategories(req.params.id).then(result =>{
-  if(result.length){
-    res.status(200).send(
-      result
-    )}else{
-      res.status(404).send("Not SubCategory Found")
-    }
-  }).catch(err => {
-      res.status(500).send(
-        err
-      )
+  await categories
+    .getSubCategories(req.params.id)
+    .then(result => {
+      if (result.length) {
+        res.status(200).send(result);
+      } else {
+        res.status(404).send("Not SubCategory Found");
+      }
     })
-
+    .catch(err => {
+      res.status(500).send(err);
+    });
 });
 
 router.post("/", async (req, res) => {
@@ -97,7 +91,7 @@ router.delete("/:id", async (req, res) => {
       });
     })
     .catch(e => {
-      res.status(404).send({
+      res.status(400).send({
         error: e.errno === 1451 ? "Category in use" : e.sqlMessage
       });
     });

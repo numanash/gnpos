@@ -3,10 +3,7 @@ const router = express.Router();
 const customers = require("../controllers/customers");
 
 router.get("/", async (req, res, next) => {
-  res.status(200).send(
-    await customers.getAll(req.query)
-  );
-
+  res.status(200).send(await customers.getAll(req.query));
 });
 
 router.post("/", async (req, res) => {
@@ -70,7 +67,7 @@ router.delete("/:id", async (req, res) => {
       });
     })
     .catch(e => {
-      res.status(404).send({
+      res.status(400).send({
         error: e.errno === 1451 ? "Category in use" : e.sqlMessage
       });
     });

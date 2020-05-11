@@ -28,11 +28,12 @@ class AddProduct extends Component {
             name: '',
             selling_price: 0,
             description: '',
-            ref_category: {},
+            ref_category: "",
             sub_category:{},
             sku: '',
             product_status: 'Active',
             tax: 0,
+            taxes:[],
             weight: 0,
             colour: 0,
             height: 0,
@@ -65,6 +66,8 @@ class AddProduct extends Component {
             })
 
         }
+
+        this.props.dispatch(middleware("taxes").fetchAll());
         axios.get("/categories").then(res => {
             if (this.props.edit) {
                 this.setState({
@@ -93,6 +96,23 @@ class AddProduct extends Component {
             })
         })
 
+
+
+
+    }
+
+    componentDidUpdate(prevProps){
+        if(this.props.taxes !== prevProps.taxes){
+            this.setState(state=>{
+                let taxes= this.props.taxes.data.map(tax=>({
+                    value:tax.id,
+                    label:tax.name
+                }))
+                return{
+                    taxes
+                }
+            })
+        }
     }
 
     resetForm = e => {
@@ -163,6 +183,18 @@ class AddProduct extends Component {
         })
     }
 
+    handleSelect = tax=>{
+        this.setState({
+            tax
+        })
+    }
+
+    handleFile = e=>{
+        this.setState({
+            file:e.target.file
+        })
+    }
+
 
     onUpdate = e => {
 
@@ -183,9 +215,22 @@ class AddProduct extends Component {
             success: undefined
         })
 
-        let ref_category = this.state.ref_category.value;
+        let state= this.state, formData = new FormData();
+        Object.keys(state).map(d=>{
+            formData.append(d,state[d])
+        });
+        formData.append("ref_category", this.state.ref_category.value);
+        formData.append("image",this.state.file);
 
-        this.props.dispatch(middleware("products").update({ ...this.state, ref_category }, this.props.product.id)).then(result => {
+        // let ref_category = this.state.ref_category.value;
+
+        this.props.dispatch(middleware("products").update(formData, this.props.product.id,{
+            headers: {
+              'accept': 'application/json',
+              'Accept-Language': 'en-US,en;q=0.8',
+              'Content-Type': `multipart/form-data`,
+            }
+          })).then(result => {
             this.setState({
                 success: result.message
             }, () => {
@@ -220,9 +265,19 @@ class AddProduct extends Component {
             error: undefined,
             success: undefined
         })
-
-        let ref_category = this.state.ref_category.value;
-        this.props.dispatch(middleware("products").postNew({ ...this.state, ref_category })).then(result => {
+        let state= this.state, formData = new FormData();
+        Object.keys(state).map(d=>{
+            formData.append(d,state[d]);
+        });
+        formData.append("ref_category",this.state.ref_category.value);
+        formData.append("image",this.state.file);
+        this.props.dispatch(middleware("products").postNew(formData,'',{
+            headers: {
+              'accept': 'application/json',
+              'Accept-Language': 'en-US,en;q=0.8',
+              'Content-Type': `multipart/form-data`,
+            }
+          })).then(result => {
             this.setState({
                 success: result.message
             }, () => {
@@ -292,9 +347,7 @@ class AddProduct extends Component {
                                             styles={customStyles}
                                             name="ref_category"
                                             components={makeAnimated()}
-                                            placeholder={
-                                                (this.state.ref_category !== '') ? this.state.ref_category : "Select Category"
-                                            }
+                                            placeholder= "Select Category"
                                             value={this.state.ref_category}
                                             className={`text-dark ${ref_category ? 'border-danger' : ''}`}
                                             onChange={this.handleCategory}
@@ -343,7 +396,8 @@ class AddProduct extends Component {
                         <Tab eventKey="pricing" title="Pricing" className="pt-5" tabClassName="font-weight-bold bg-gray text-dark border-bottom-0">
                             <Row>
                                 <Col sm="6">
-                                    <FormInput label="Product Tax" placeholder="" name="tax" type="number" size="sm" onChange={this.handleInput} value={this.state.tax} />
+                                    <Form.Label>Product Tax</Form.Label>
+                                    <Select placeholder="Select Tax" options={this.state.taxes} name="tax" type="number" size="sm" onChange={this.handleSelect} value={this.state.tax} />
                                 </Col>
                                 <Col sm="6">
                                     <FormInput label="Discount" placeholder="" name="discount" type="number" size="sm" onChange={this.handleInput} value={this.state.discount} message="Dicount from original price in local currency" />
@@ -401,6 +455,9 @@ class AddProduct extends Component {
                                 <Col sm="6">
                                     <FormInput label="Product Description" as="textarea" rows={6} placeholder="" name="description" type="text" size="sm" onChange={this.handleInput} value={this.state.description} />
                                 </Col>
+                                <Col sm="6">
+                                    <FormInput label="Product Image" as="input" rows={6} placeholder="" name="file" type="file" size="sm" onChange={this.handleFile}  />
+                                </Col>
                             </Row>
                         </Tab>
                     </Tabs>
@@ -414,4 +471,10 @@ class AddProduct extends Component {
     }
 }
 
-export default connect()(AddProduct);
+const mapStateToProps = state=>{
+    return{
+        taxes:state.taxes
+    }
+}
+
+export default connect(mapStateToProps)(AddProduct);

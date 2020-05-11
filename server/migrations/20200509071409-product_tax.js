@@ -2,31 +2,38 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable("user_roles", {
+    /*
+      Add altering commands here.
+      Return a promise to correctly handle asynchronicity.
+
+      Example:
+      return queryInterface.createTable('users', { id: Sequelize.INTEGER });
+    */
+    return queryInterface.createTable("product_tax", {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true
       },
-      role_id: {
+      product_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         foreignKey: true,
         references: {
           model: {
-            tableName: "roles"
+            tableName: "products"
           },
           key: "id"
         }
       },
-      user_id: {
+      tax_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         foreignKey: true,
         references: {
           model: {
-            tableName: "users"
+            tableName: "taxes"
           },
           key: "id"
         }
@@ -35,6 +42,12 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("user_roles");
+    /*
+      Add reverting commands here.
+      Return a promise to correctly handle asynchronicity.
+
+      Example:
+      return queryInterface.dropTable('users');
+    */
   }
 };

@@ -102,9 +102,20 @@ module.exports = function(sequelize, DataTypes) {
         allowNull: false
       },
       status: { type: Sequelize.BOOLEAN(), defaultValue: 1 },
-      tax: { type: Sequelize.INTEGER, defaultValue: 0 },
+      tax: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        foreignKey: true,
+        references: {
+          model: {
+            tableName: "taxes"
+          },
+          key: "id"
+        }
+      },
       service_charges: { type: Sequelize.INTEGER, defaultValue: 0 },
-      discount: { type: Sequelize.INTEGER, allowNull: false, defaultValue: 0 }
+      discount: { type: Sequelize.INTEGER, allowNull: false, defaultValue: 0 },
+      image: { type: Sequelize.CHAR(255), allowNull: true }
     },
     {
       paranoid: true

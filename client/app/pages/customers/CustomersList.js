@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import moment from "moment";
 import Aux from "../../constants/hoc/_Aux";
 import ServerSideTable from "../../components/ServerSideTable";
+import axios from "../../../services/Http";
+import { Alert } from "react-bootstrap";
 const columns = [
   {
     Header: "Customer Name",
@@ -60,16 +62,33 @@ class CustomersList extends Component {
       id: customer.id
     });
   };
-
+  handleDelete = customer => {
+    axios
+      .delete(`/customers/${customer.id}`)
+      .then(res => {
+        this.setState({
+          message: `${customer.name} ${res.data.message}`
+        });
+      })
+      .catch(err => {
+        this.setState({
+          error: err.response.data
+        });
+      });
+  };
   render() {
     return (
       <Aux>
+        {this.state.error && <Alert variant="danger">{this.state.error}</Alert>}
         <ServerSideTable
           actions="true"
           url="customers"
           canEdit="true"
+          canDelete="true"
           onEdit={this.handleEdit}
+          onDelete={this.handleDelete}
           actionId="id"
+          onMessage={this.state.message}
           columns={columns}
         />
       </Aux>

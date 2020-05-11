@@ -37,6 +37,7 @@ class PointOfSale extends Component {
             customers: [],
             products: [],
             categories: [],
+            taxes: [],
             itemsSearched: [],
             productsByCategory: [],
             selectedCustomer: { value: 1, label: "Walk In Customer" },
@@ -64,6 +65,8 @@ class PointOfSale extends Component {
         })
         this.props.dispatch(middleware("customers").fetchAll());
         this.props.dispatch(middleware("categories").fetchAll());
+        this.props.dispatch(middleware("taxes").fetchAll());
+
         this.onCategoryClicked(1);
         if (this.props.match.params.orderCode) {
             axios.get(`/orders/pending/${this.props.match.params.orderCode}`).then(res => {
@@ -110,6 +113,12 @@ class PointOfSale extends Component {
                 categories,
                 isLoading:false
             });
+        }
+        if(this.props.taxes !== prevProps.taxes){
+            let taxes = this.props.taxes;
+            this.setState({
+                taxes
+            })
         }
     }
 
@@ -577,11 +586,11 @@ class PointOfSale extends Component {
     
 
     advanceOrder = e => {
-        this.setState({
+        this.setState(state=>({
             error:undefined,
             order_status: "advance",
-            payment_type: "pending",
-        }, () => {
+            payment_type:  state.overAllCost > state.customer_pay ? "Advance" : "Pending",
+        }), () => {
             this.submitPayNow();
         })
     }
@@ -589,13 +598,19 @@ class PointOfSale extends Component {
     saveOrderNow = e => {
         this.setState({
             order_status: "pending",
-            payment_type: "pending",
+            payment_type: "Pending",
             total_received: 0,
             customer_pay: 0,
             error:undefined,
             customer_return: 0
         }, () => {
             this.submitPayNow();
+        })
+    }
+
+    handleTax = e=>{
+        this.setState({
+            tax:e.target.value
         })
     }
 
@@ -754,7 +769,11 @@ class PointOfSale extends Component {
                                             <tr>
                                                 <th className="text-left border-0">Tax</th>
                                                 <th className="font-weight-bold text-right border-0">
-                                                    {this.state.totalItems}
+                                                    <select name="tax" onChange={this.handleTax}>
+                                                        {this.state.taxes.map(tax=>{
+                                                        <option key={tax.name} value={tax.name}>{tax.name}</option>
+                                                        })}
+                                                    </select>
                                                 </th>
                                                 <th className="text-left border-0">Discount</th>
                                                 <th className="font-weight-bold text-right d-flex justify-content-end border-0" colSpan="2">
@@ -880,7 +899,8 @@ class PointOfSale extends Component {
 const mapStateToProps = state => {
     return {
         customers: state.customers.data,
-        categories: state.categories.data
+        categories: state.categories.data,
+        taxes:state.taxes.data
     };
 };
 

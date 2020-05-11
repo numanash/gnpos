@@ -110,12 +110,20 @@ module.exports = {
       },
       tax: {
         type: Sequelize.INTEGER,
-        defaultValue: 0
+        allowNull: true,
+        foreignKey: true,
+        references: {
+          model: {
+            tableName: "taxes"
+          },
+          key: "id"
+        }
       },
       discount: {
         type: Sequelize.INTEGER,
         allowNull: false
       },
+      image: { type: Sequelize.CHAR(255), allowNull: true },
       createdAt: {
         type: "TIMESTAMP",
         defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),

@@ -2,6 +2,7 @@ const db = require("../../db/connection");
 const Products = require("../../models").Products;
 const Categories = require("../../models").Categories;
 const ProductStockFlow = require("../../models").ProductStockFlow;
+const Taxes = require("../../models").Taxes;
 
 function isNullOrEmpty(value, returnVal) {
   return value ? value : returnVal;
@@ -16,11 +17,14 @@ module.exports = {
         Categories.hasMany(Products, { foreignKey: "id" });
         Products.belongsTo(Categories, { foreignKey: "ref_category" });
 
+        Taxes.hasMany(Products, { foreignKey: "id" });
+        Products.belongsTo(Taxes, { foreignKey: "tax" });
+
         Products.findAndCountAll({
           limit: parseInt(query.limit),
           offset: parseInt(query.offset),
           order: [[query.column, query.order]],
-          include: [Categories],
+          include: [Categories, Taxes],
           where: {
             name: {
               [Op.like]: `%${name}%`
@@ -74,6 +78,7 @@ module.exports = {
       Products.create(
         _.pick(data, [
           "name",
+          "image",
           "ref_category",
           "selling_price",
           "description",

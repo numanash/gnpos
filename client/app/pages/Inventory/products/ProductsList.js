@@ -38,7 +38,14 @@ const columns = [
     Header: "Tax",
     sortable: false,
     filterable: false,
-    accessor: "tax"
+    accessor: "Tax",
+    Cell: Tax => {
+      return Tax.value
+        ? Tax.value.type === "Percentage"
+          ? Tax.value.value + "%"
+          : "Rs. " + Tax.value.value
+        : null;
+    }
   },
   {
     Header: "Category",
