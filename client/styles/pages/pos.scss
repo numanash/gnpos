@@ -1,52 +1,58 @@
 .point_of_sale {
+  .table th,
+  .table td {
+    padding: 5px;
+  }
 
-    .table th,
-    .table td {
-        padding: 5px;
+  .pos_product_table {
+    min-height: 170px;
+    height: 180px;
+    max-height: 220px;
+    // overflow: hidden;
+    // overflow-x:hidden;
+  }
+
+  .category_bar {
+    .categories_list {
+      // overflow-x: auto;
+    }
+  }
+
+  .products_listed {
+    .products_scroller {
+      max-height: 400px;
+      min-height: 360px;
     }
 
-    .pos_product_table {
-        min-height: 170px;
-        height: 180px;
-        max-height: 220px;
-        // overflow: hidden;
-        // overflow-x:hidden;
+    .btn-products {
+      border: 1px solid #eee;
+      cursor: pointer;
+      height: 115px;
+      margin: 0 0 3px 2px;
+      padding: 2px;
+      width: 10.5%;
+      min-width: 100px;
+      overflow: hidden;
+      display: inline-block;
+      font-size: 13px;
+      &:hover {
+        opacity: 0.8;
+      }
+      span {
+        display: table-cell;
+        height: auto;
+        position: absolute;
+        line-height: 15px;
+        vertical-align: middle;
+        text-transform: uppercase;
+        width: 100%;
+        min-width: 100%;
+        overflow: hidden;
+        bottom: 0;
+        background: #0404049c;
+        padding: 8px 0px;
+        left: 0;
+      }
     }
-
-    .category_bar {
-        .categories_list {
-            // overflow-x: auto;
-        }
-    }
-
-    .products_listed {
-        .products_scroller {
-            max-height: 400px;
-            min-height: 360px;
-        }
-
-        .btn-products {
-            border: 1px solid #eee;
-            cursor: pointer;
-            height: 115px;
-            margin: 0 0 3px 2px;
-            padding: 2px;
-            width: 10.5%;
-            min-width: 100px;
-            overflow: hidden;
-            display: inline-block;
-            font-size: 13px;
-
-            span {
-                display: table-cell;
-                height: 45px;
-                line-height: 15px;
-                vertical-align: middle;
-                text-transform: uppercase;
-                width: 10.5%;
-                min-width: 94px;
-                overflow: hidden;
-            }
-        }
-    }
+  }
 }

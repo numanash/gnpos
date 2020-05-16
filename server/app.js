@@ -22,6 +22,9 @@ require("./models/index");
 require("./startup/globalAccess");
 require("./startup/routes")(app);
 require("./startup/config")();
+var multer = require("multer");
+var upload = multer();
+
 // app.use("/api/supplies", supplies);
 // app.use("/api/suppliers", suppliers);
 // app.use("/api/customers", customers);
@@ -42,6 +45,7 @@ app.use(
     extended: true
   })
 );
+app.use(upload.array());
 
 app.listen(PORT, () => {
   console.log("Listening to prot", PORT);

@@ -297,12 +297,12 @@ class PointOfSale extends Component {
                     ? {
                         ...p,
                         quantity: p.quantity + 1,
-                        total: (p.quantity + 1) * p.selling_price
+                        total: p.discounted ? (p.quantity + 1) * (p.selling_price - p.discount) : (p.quantity + 1) * p.selling_price,
                     }
                     : p
             );
         } else {
-            let product = { ...item, quantity: 1, total: 1 * item.selling_price };
+            let product = { ...item, quantity: 1, total: 1 * item.selling_price, discounted:false };
             products.push(product);
         }
 
@@ -366,7 +366,8 @@ class PointOfSale extends Component {
             products[id] = {
                 ...product,
                 quantity,
-                total: parseInt(product.selling_price) * quantity
+                total: product.discounted ? (product.quantity) * (product.selling_price - product.discount) : (product.quantity) * product.selling_price,
+                
             };
 
             let overAllCost = _.sumBy(products, "total"),
@@ -578,6 +579,37 @@ class PointOfSale extends Component {
         })
     }
 
+    handleProductDiscount = e=>{
+        let index = e.target.getAttribute('data-val');
+
+        let products=this.state.products, product = products[index];
+        if(product){
+            product.total =  product.discounted ? product.quantity * product.selling_price : (product.quantity * (product.selling_price - product.discount)),
+            product.discounted = !product.discounted;
+        }
+
+        products[index] = product;
+        let overAllCost = _.sumBy(products, "total"),
+        totalItems = _.sumBy(products, "quantity"),
+        total = _.sumBy(products, "price"),
+        subTotal = _.sumBy(products, "total");
+        if (this.state.discount) {
+            this.state.discount_type === "percentage" ?
+                overAllCost = subTotal - percentage(subTotal, this.state.discount)
+                :
+                overAllCost = subTotal - this.state.discount
+        }
+        this.setState({
+            products,
+            subTotal,
+            total,
+            totalItems,
+            overAllCost
+        })
+        
+
+    }
+
     closeReceipt = e => {
         this.setState({
             orderCode: undefined
@@ -698,9 +730,12 @@ class PointOfSale extends Component {
                                         <Table className="mb-0">
                                             <thead className="bg-gray-dark text-center">
                                                 <tr>
-                                                    <th width="30%">Product</th>
+                                                    <th width="5%">
+                                                        <i className="fa fa-tags"></i>
+                                                    </th>
+                                                    <th width="35%">Product</th>
                                                     <th width="15%">Price</th>
-                                                    <th width="25%">Qty</th>
+                                                    <th width="15%">Qty</th>
                                                     <th width="25%">SubTotal</th>
                                                     <th width="5%">
                                                         <i className="fa fa-trash"> </i>
@@ -715,8 +750,21 @@ class PointOfSale extends Component {
                                                             id={product.id}
                                                             key={product.id + "row"}
                                                         >
-                                                            <td className={`${product.quantity_remaining>5 ? 'text-dark' : (product.quantity_remaining<=5 && product.quantity_remaining>=1)  ? 'text-warning' : 'text-danger' }`}>{product.name}</td>
-                                                            <td>{product.selling_price}</td>
+                                                <td>
+                                                        <Form.Control
+                                                            as="input"
+                                                            type="checkbox"
+                                                            data-val={index}
+                                                            title="Add Discount"
+                                                            name={product.name}
+                                                            onChange={this.handleProductDiscount}
+                                                            tabIndex={index + 3}
+                                                            size="sm"
+                                                            value={products[index]["discounted"]}
+                                                        />
+                                                </td>
+                                                            <td className={`${product.quantity_remaining > 5 ? 'text-dark' : (product.quantity_remaining<=5 && product.quantity_remaining>=1)  ? 'text-warning' : 'text-danger' }`}>{product.name}</td>
+                                                    <td> {products[index]["discounted"] ? <span>{product.selling_price  - products[index]["discount"]}</span> : product.selling_price }</td>
                                                             <td className="d-inline-flex">
                                                                 <Form.Control
                                                                     as="input"
@@ -880,7 +928,7 @@ class PointOfSale extends Component {
                                                         onClick={() => this.addToCart(item.id)}
                                                     >
                                             <p className="position-absolute right-0 top-0 px-2 py-1 font-weight-bold bg-dark" title="Quantity Remaining">{item.quantity_remaining}</p>
-                                                        <img src="/img.jpg" />
+                                                        <img width="100%" height="100%" src={`/dist/images/products/${item.image !== '' ? item.image : 'no-image.png' }`} />
                                                         <span>{item.name}</span>
                                                     </Button>
                                                 );

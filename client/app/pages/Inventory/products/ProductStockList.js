@@ -20,11 +20,13 @@ const columns = [
     Cell: options =>
       options.original.type === "supply" ? (
         <>
-          <span class="text-success font-weight-bold">+</span> {options.value}
+          <span className="text-success font-weight-bold">+</span>{" "}
+          {options.value}
         </>
       ) : (
         <>
-          <span class="text-danger font-weight-bold">-</span> {options.value}
+          <span className="text-danger font-weight-bold">-</span>{" "}
+          {options.value}
         </>
       )
   },

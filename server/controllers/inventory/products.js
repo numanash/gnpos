@@ -56,10 +56,12 @@ module.exports = {
           "barcode",
           "id",
           "sku",
+          "discount",
           "purchase_cost",
           "selling_price",
           "quantity_remaining",
-          "quantity_sold"
+          "quantity_sold",
+          "image"
         ],
         where: {
           ref_category: categoryId
@@ -74,6 +76,7 @@ module.exports = {
     });
   },
   add: data => {
+    console.log({ data });
     return new Promise((resolve, reject) => {
       Products.create(
         _.pick(data, [

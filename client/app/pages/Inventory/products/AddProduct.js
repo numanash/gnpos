@@ -191,7 +191,7 @@ class AddProduct extends Component {
 
     handleFile = e=>{
         this.setState({
-            file:e.target.file
+            file:e.target.files[0]
         })
     }
 
@@ -217,9 +217,17 @@ class AddProduct extends Component {
 
         let state= this.state, formData = new FormData();
         Object.keys(state).map(d=>{
-            formData.append(d,state[d])
+            if(d !== "ref_category" && d!== "tax"){
+                if(typeof state[d] === "object")
+                    formData.append(d,JSON.stringify(state[d]));
+                else{
+                    if(state[d])
+                        formData.append(d,state[d]);
+                }
+            }
         });
-        formData.append("ref_category", this.state.ref_category.value);
+        formData.append("ref_category",this.state.ref_category.value);
+        this.state.tax && formData.append("tax", this.state.tax.value);
         formData.append("image",this.state.file);
 
         // let ref_category = this.state.ref_category.value;
@@ -248,7 +256,7 @@ class AddProduct extends Component {
 
 
     onSubmit = e => {
-
+        
         if (!this.state.ref_category.value) {
             this.setState({
                 ...this.state,
@@ -267,9 +275,17 @@ class AddProduct extends Component {
         })
         let state= this.state, formData = new FormData();
         Object.keys(state).map(d=>{
-            formData.append(d,state[d]);
+            if(d !== "ref_category" && d!== "tax"){
+                if(typeof state[d] === "object")
+                    formData.append(d,JSON.stringify(state[d]));
+                else{
+                    if(state[d])
+                        formData.append(d,state[d]);
+                }
+            }
         });
         formData.append("ref_category",this.state.ref_category.value);
+        this.state.tax && formData.append("tax", this.state.tax.value);
         formData.append("image",this.state.file);
         this.props.dispatch(middleware("products").postNew(formData,'',{
             headers: {
@@ -286,7 +302,7 @@ class AddProduct extends Component {
             })
         }).catch(error => {
             this.setState({
-                error: error.message
+                error: error.message ? error.message : JSON.stringify(error)
             }, () => {
                 scrollToTop();
             })

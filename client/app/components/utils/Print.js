@@ -62,7 +62,7 @@ export default props => {
             </style>`
   );
 
-  mywindow.document.write("</head><body class='bg-transparent'> ");
+  mywindow.document.write("</head><body className='bg-transparent'> ");
   mywindow.document.write(data);
   mywindow.document.write("</body></html>");
 

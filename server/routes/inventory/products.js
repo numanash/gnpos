@@ -5,7 +5,7 @@ const genCode = require("../../constant/generateCode");
 const multer = require("multer");
 var storage = multer.diskStorage({
   destination: function(req, file, callback) {
-    callback(null, "../public/images/products");
+    callback(null, "./dist/images/products");
   },
 
   filename: function(req, file, callback) {
@@ -16,13 +16,13 @@ var storage = multer.diskStorage({
 
       return callback(err);
     } else {
-      callback(null, Date.now() + file.originalname);
+      callback(null, file.originalname);
     }
   }
 });
 
 var upload = multer({ storage: storage, limits: { fileSize: 1000000 } }).single(
-  "imageUrl"
+  "image"
 );
 
 router.get("/", async (req, res, next) => {
@@ -54,18 +54,22 @@ router.get("/category/:categoryId", async (req, res, next) => {
     });
 });
 
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
+  // if (req.file) {
   upload(req, res, async function(err) {
+    console.log({ body: req.body });
+    console.log({ body: req.file });
+
     if (err) {
+      console.log({ err });
       if (err.code === "LIMIT_FILE_SIZE") {
-        return res.send({ success: false, msg: "limit file size 1MB " });
+        return res.status(400).send({ message: "limit file size 1MB " });
       } else if (err.code === "filetype") {
-        return res.send({
-          success: false,
-          msg: "Must be valid file extension only jpg or png"
+        return res.status(400).send({
+          message: "Must be valid file extension only jpg or png"
         });
       } else {
-        return res.send({ success: false, msg: "something went wrong" });
+        return res.status(400).send({ message: "something went wrong" });
       }
     } else {
       if (!req.file) {
@@ -75,7 +79,7 @@ router.post("/", (req, res) => {
       let data = {
         ...req.body,
         barcode: productCode,
-        image: req.file.filename
+        image: req.file ? req.file.filename : ""
       };
       await products
         .add(data)
@@ -102,6 +106,39 @@ router.post("/", (req, res) => {
         });
     }
   });
+  // } else {
+  //   var productCode = await genCode(5);
+
+  //   let data = {
+  //     ...req.body,
+  //     barcode: productCode,
+  //     image: req.file ? req.file.filename : ""
+  //   };
+  //   await products
+  //     .add(data)
+  //     .then(result => {
+  //       res.status(201).send({
+  //         message: req.body.name + " Product Added"
+  //       });
+  //     })
+  //     .catch(e => {
+  //       console.log({ e });
+  //       if (e.original.code === "ER_DUP_ENTRY") {
+  //         res.status(500).send({
+  //           message: "Product Already Exists"
+  //         });
+  //       } else if (e.name === "SequelizeDatabaseError") {
+  //         res.status(500).send({
+  //           message: e.parent.sqlMessage
+  //         });
+  //       } else {
+  //         res.status(500).send({
+  //           message: "Server Error Review in request",
+  //           error: e
+  //         });
+  //       }
+  //     });
+  // // }
 });
 
 router.get("/:id", async (req, res) => {

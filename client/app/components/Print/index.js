@@ -67,7 +67,7 @@ export default props => {
             </style>`
     );
 
-    mywindow.document.write("</head><body class='bg-transparent'>  ");
+    mywindow.document.write("</head><body className='bg-transparent'>  ");
     mywindow.document.write(`<h1 style="text-align:center">${config.name}</h1><div className="text-muted" style="text-align:center"><small >Date: ${moment(new Date()).format("DD-MM-YYYY hh:mm:ss A")}</small></div> `);
     mywindow.document.write(data);
     mywindow.document.write("</body></html>");

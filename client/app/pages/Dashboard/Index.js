@@ -165,7 +165,7 @@ const Dashboard = props => {
                         className="float-right"
                         eventKey="0"
                       >
-                        <i class="fa fa-minus"></i>
+                        <i className="fa fa-minus"></i>
                       </Accordion.Toggle>
                     </Card.Title>
                   </Card.Header>
