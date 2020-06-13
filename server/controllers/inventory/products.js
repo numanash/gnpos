@@ -1,8 +1,8 @@
 const db = require("../../db/connection");
-const Products = require("../../models").Products;
-const Categories = require("../../models").Categories;
-const ProductStockFlow = require("../../models").ProductStockFlow;
-const Taxes = require("../../models").Taxes;
+const Products = require("../../models").products;
+const Categories = require("../../models").categories;
+const ProductStockFlow = require("../../models").product_stock_flow;
+const Taxes = require("../../models").taxes;
 
 function isNullOrEmpty(value, returnVal) {
   return value ? value : returnVal;

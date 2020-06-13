@@ -2,7 +2,7 @@ const Sequelize = require("sequelize");
 
 module.exports = function(sequelize, DataTypes) {
   let UserRoles = sequelize.define(
-    "UserRoles",
+    "user_roles",
     {
       id: {
         type: Sequelize.INTEGER,

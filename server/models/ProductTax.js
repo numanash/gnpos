@@ -2,7 +2,7 @@ const Sequelize = require("sequelize");
 
 module.exports = function(sequelize, DataTypes) {
   let ProductTax = sequelize.define(
-    "ProductTax",
+    "product_tax",
     {
       id: {
         type: Sequelize.INTEGER,

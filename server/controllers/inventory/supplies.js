@@ -1,9 +1,9 @@
 const db = require("../../db/connection");
-const Supplies = require("../../models").Supplies;
-const Products = require("../../models").Products;
-const Suppliers = require("../../models").Suppliers;
+const Supplies = require("../../models").supplies;
+const Products = require("../../models").products;
+const Suppliers = require("../../models").suppliers;
 
-const ProductStockFlow = require("../../models").ProductStockFlow;
+const ProductStockFlow = require("../../models").product_stock_flow;
 
 module.exports = {
   getAll: data => {

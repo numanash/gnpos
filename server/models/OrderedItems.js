@@ -2,7 +2,7 @@ const Sequelize = require("sequelize");
 
 module.exports = function(sequelize, DataTypes) {
   let OrderedItems = sequelize.define(
-    "OrderedItems",
+    "ordered_items",
     {
       id: {
         type: Sequelize.INTEGER,
@@ -54,9 +54,7 @@ module.exports = function(sequelize, DataTypes) {
       },
       status: { type: Sequelize.BOOLEAN(), defaultValue: 1 }
     },
-    { tableName: "ordered_items",
-      paranoid: true
-    }
+    { tableName: "ordered_items", paranoid: true }
   );
   return OrderedItems;
 };

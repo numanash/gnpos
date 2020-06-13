@@ -1,7 +1,7 @@
 const Sequelize = require("sequelize");
 module.exports = function(sequelize, DataTypes) {
   let PointOfSale = sequelize.define(
-    "PointOfSale",
+    "point_of_sale",
     {
       id: {
         type: Sequelize.INTEGER,
@@ -13,8 +13,8 @@ module.exports = function(sequelize, DataTypes) {
       description: Sequelize.CHAR(200),
       code: {
         type: Sequelize.CHAR(255),
-        unique: true, 
-        allowNull:false
+        unique: true,
+        allowNull: false
       },
       total_items: {
         type: Sequelize.INTEGER(11),
@@ -69,8 +69,7 @@ module.exports = function(sequelize, DataTypes) {
         allowNull: false
       }
     },
-    { tableName: "point_of_sale",
-      paranoid: true }
+    { tableName: "point_of_sale", paranoid: true }
   );
   return PointOfSale;
 };

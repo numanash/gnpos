@@ -1,5 +1,5 @@
 const db = require("../../db/connection");
-const Categories = require("../../models").Categories;
+const Categories = require("../../models").categories;
 
 module.exports = {
   getAll: query => {

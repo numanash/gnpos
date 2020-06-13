@@ -1,20 +1,21 @@
 "use strict";
 const db = require("../db/connection");
-const PointOfSale = require("../models").PointOfSale;
-const OrderedItems = require("../models").OrderedItems;
-const ProductStockFlow = require("../models/").ProductStockFlow;
-const Products = require("../models/").Products;
+const PointOfSale = require("../models").point_of_sale;
+const OrderedItems = require("../models").ordered_items;
+const ProductStockFlow = require("../models/").product_stock_flow;
+const Products = require("../models/").products;
 
-function isNullOrEmpty(value,returnVal){
-  return value ? value : returnVal
+function isNullOrEmpty(value, returnVal) {
+  return value ? value : returnVal;
 }
 
 module.exports = {
-  getAll: (data) => {
+  getAll: data => {
     // let query = "Select * from `category` ";
     return new Promise((resolve, reject) => {
       if (data.limit) {
-        let code = isNullOrEmpty(data.code,''), cname =isNullOrEmpty(data.cname,'');
+        let code = isNullOrEmpty(data.code, ""),
+          cname = isNullOrEmpty(data.cname, "");
 
         sequelize
           .query(
@@ -24,12 +25,14 @@ module.exports = {
               type: Sequelize.QueryTypes.SELECT,
               plain: false
             }
-          ).then(res => {
+          )
+          .then(res => {
             console.log({ res });
             resolve(res);
-          }).catch(e => {
-            reject(e);
           })
+          .catch(e => {
+            reject(e);
+          });
       }
     });
   },
@@ -106,8 +109,10 @@ module.exports = {
                       return Products.update(
                         {
                           // quantity: foundProduct.quantity + product.quantity,
-                          quantity_sold: foundProduct.quantity_sold + product.quantity,
-                          quantity_remaining: foundProduct.quantity_remaining - product.quantity,
+                          quantity_sold:
+                            foundProduct.quantity_sold + product.quantity,
+                          quantity_remaining:
+                            foundProduct.quantity_remaining - product.quantity
                         },
                         { where: { id: foundProduct.id }, transaction: t }
                       ).then(updatedPro => {
@@ -196,19 +201,21 @@ module.exports = {
                   foundProduct => {
                     return ProductStockFlow.update(
                       {
-
                         quantity_before: foundProduct.quantity,
                         quantity: product.quantity,
-                        quantity_after: foundProduct.quantity - product.quantity,
+                        quantity_after:
+                          foundProduct.quantity - product.quantity,
                         type: "sale",
                         unit_price: foundProduct.selling_price,
-                        total_price: foundProduct.selling_price * product.quantity,
+                        total_price:
+                          foundProduct.selling_price * product.quantity
                       },
                       {
                         where: {
                           ref_product_id: product.id,
                           ref_pos_code: data.code
-                        }, transaction: t
+                        },
+                        transaction: t
                       }
                     ).then(stockFlow => {
                       return Products.update(
@@ -310,17 +317,7 @@ module.exports = {
     });
   },
   edit: (data, param) => {
-    let query = `UPDATE products SET name='${data.name}', ref_category='${
-      data.ref_category
-      }', selling_price='${data.selling_price}', description='${
-      data.description
-      }', sku='${data.sku}', product_status='${
-      data.status
-      }', selling_price_TTC_all_taxes_included='${
-      data.selling_price_TTC_all_taxes_included
-      }',weight='${data.weight}',height='${data.height}',width='${
-      data.width
-      }',colour='${data.colour}',codebar='${data.codebar}' WHERE id=${param}`;
+    let query = `UPDATE products SET name='${data.name}', ref_category='${data.ref_category}', selling_price='${data.selling_price}', description='${data.description}', sku='${data.sku}', product_status='${data.status}', selling_price_TTC_all_taxes_included='${data.selling_price_TTC_all_taxes_included}',weight='${data.weight}',height='${data.height}',width='${data.width}',colour='${data.colour}',codebar='${data.codebar}' WHERE id=${param}`;
     return new Promise((resolve, reject) => {
       db.query(query, (err, result) => {
         if (err) {

@@ -1,5 +1,5 @@
 const db = require("../db/connection");
-const Customers = require("../models/").Customers;
+const Customers = require("../models/").customers;
 module.exports = {
   getAll: query => {
     // let query = "Select * from `customers` ";

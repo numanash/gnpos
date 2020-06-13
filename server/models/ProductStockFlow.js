@@ -2,7 +2,7 @@ const Sequelize = require("sequelize");
 
 module.exports = function(sequelize, DataTypes) {
   let ProductStockFlow = sequelize.define(
-    "ProductStockFlow",
+    "products_stock_flow",
     {
       id: {
         type: Sequelize.INTEGER,
@@ -92,9 +92,7 @@ module.exports = function(sequelize, DataTypes) {
       description: Sequelize.TEXT,
       status: { type: Sequelize.BOOLEAN(), defaultValue: 1 }
     },
-    { tableName: "product_stock_flow",
-      paranoid: true
-     }
+    { tableName: "product_stock_flow", paranoid: true }
   );
   return ProductStockFlow;
 };

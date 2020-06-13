@@ -1,7 +1,7 @@
 const db = require("../db/connection");
-const Users = require("../models").Users;
+const Users = require("../models").users;
 const Roles = require("../models/Roles");
-const UserRoles = require("../models").UserRoles;
+const UserRoles = require("../models").user_roles;
 
 module.exports = {
   getAll: () => {
@@ -71,9 +71,7 @@ module.exports = {
   updateUser: (id, user) => {
     return new Promise((resolve, reject) => {
       db.query(
-        `Update users SET name='${user.name}', email='${
-        user.email
-        }' where users.id = ${id}`,
+        `Update users SET name='${user.name}', email='${user.email}' where users.id = ${id}`,
         (err, result) => {
           if (err) {
             reject(err);
@@ -84,7 +82,7 @@ module.exports = {
     });
   },
   register: user => {
-    console.log({ user })
+    console.log({ user });
     return new Promise((resolve, reject) => {
       Users.create({
         username: user.username,
@@ -96,11 +94,13 @@ module.exports = {
         UserRoles.create({
           user_id: addedUser.id,
           role_id: user.role
-        }).then(rolesAdded => {
-          resolve(rolesAdded);
-        }).catch(e => {
-          reject(e)
-        });
+        })
+          .then(rolesAdded => {
+            resolve(rolesAdded);
+          })
+          .catch(e => {
+            reject(e);
+          });
       });
 
       // db.query(
@@ -152,7 +152,6 @@ module.exports = {
     });
   },
   getRoles: id => {
-
     let query = `Select GROUP_CONCAT(role_name) as roleName from user_roles ur JOIN roles r ON ur.user_id = ${id} AND ur.role_id = r.id GROUP BY ur.user_id`;
     return new Promise((resolve, reject) => {
       db.query(query, (err, result) => {
@@ -183,17 +182,7 @@ module.exports = {
     let query = "Insert Into action";
   },
   edit: (data, param) => {
-    let query = `UPDATE products SET name='${data.name}', ref_category='${
-      data.ref_category
-      }', selling_price='${data.selling_price}', description='${
-      data.description
-      }', sku='${data.sku}', status='${
-      data.status
-      }', selling_price_TTC_all_taxes_included='${
-      data.selling_price_TTC_all_taxes_included
-      }',weight='${data.weight}',height='${data.height}',width='${
-      data.width
-      }',colour='${data.colour}',codebar='${data.codebar}' WHERE id=${param}`;
+    let query = `UPDATE products SET name='${data.name}', ref_category='${data.ref_category}', selling_price='${data.selling_price}', description='${data.description}', sku='${data.sku}', status='${data.status}', selling_price_TTC_all_taxes_included='${data.selling_price_TTC_all_taxes_included}',weight='${data.weight}',height='${data.height}',width='${data.width}',colour='${data.colour}',codebar='${data.codebar}' WHERE id=${param}`;
     return new Promise((resolve, reject) => {
       db.query(query, (err, result) => {
         if (err) reject("error", err);

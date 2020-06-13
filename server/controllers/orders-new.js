@@ -1,8 +1,8 @@
 const db = require("../db/connection");
-const PointOfSale = require("../models").PointOfSale;
-const OrderedItems = require("../models").OrderedItems;
-const ProductStockFlow = require("../models/").ProductStockFlow;
-const Products = require("../models/").Products;
+const PointOfSale = require("../models").point_of_sale;
+const OrderedItems = require("../models").order_items;
+const ProductStockFlow = require("../models/").product_stock_flow;
+const Products = require("../models/").products;
 
 module.exports = {
   getAll: () => {
@@ -151,17 +151,7 @@ module.exports = {
     });
   },
   edit: (data, param) => {
-    let query = `UPDATE products SET name='${data.name}', ref_category='${
-      data.ref_category
-    }', selling_price='${data.selling_price}', description='${
-      data.description
-    }', sku='${data.sku}', product_status='${
-      data.status
-    }', selling_price_TTC_all_taxes_included='${
-      data.selling_price_TTC_all_taxes_included
-    }',weight='${data.weight}',height='${data.height}',width='${
-      data.width
-    }',colour='${data.colour}',codebar='${data.codebar}' WHERE id=${param}`;
+    let query = `UPDATE products SET name='${data.name}', ref_category='${data.ref_category}', selling_price='${data.selling_price}', description='${data.description}', sku='${data.sku}', product_status='${data.status}', selling_price_TTC_all_taxes_included='${data.selling_price_TTC_all_taxes_included}',weight='${data.weight}',height='${data.height}',width='${data.width}',colour='${data.colour}',codebar='${data.codebar}' WHERE id=${param}`;
     return new Promise((resolve, reject) => {
       db.query(query, (err, result) => {
         if (err) reject("error", err);

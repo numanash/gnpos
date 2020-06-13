@@ -1,7 +1,7 @@
 const Sequelize = require("sequelize");
 module.exports = function(sequelize, DataTypes) {
   let Products = sequelize.define(
-    "Products",
+    "products",
     {
       id: {
         type: Sequelize.INTEGER,
